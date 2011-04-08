@@ -1,0 +1,14 @@
+== hammer-render
+
+Experimental html renderer with Markaby like API but much faster
+
+== Benchmark
+
+                          user     system      total        real
+render                9.500000   0.020000   9.520000 (  9.757283)
+render1               9.760000   0.030000   9.790000 ( 10.097856)
+markaby              33.670000   0.070000  33.740000 ( 34.467664)
+erubis               11.570000   0.000000  11.570000 ( 11.686937)
+erubis-cache          6.090000   0.020000   6.110000 (  6.448882)
+fasterubis           13.490000   0.060000  13.550000 ( 14.487466)
+fasterubis-cache      5.700000   0.010000   5.710000 (  5.832240)
