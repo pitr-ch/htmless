@@ -1,6 +1,6 @@
 == hammer-render
 
-Experimental html renderer with Markaby like API but much faster
+Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but much faster
 
 == Benchmark
 
