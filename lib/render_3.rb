@@ -37,6 +37,7 @@ module Render3
 
   # TODO doctype
   # TODO comment
+  # TODO add full attribute set
   # TODO YARD :)
 
   class Output < String
