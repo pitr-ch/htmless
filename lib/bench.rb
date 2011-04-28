@@ -2,6 +2,7 @@ require 'benchmark'
 require "#{File.dirname(__FILE__)}/render.rb"
 require "#{File.dirname(__FILE__)}/render_1.rb"
 require "#{File.dirname(__FILE__)}/render_2.rb"
+require "#{File.dirname(__FILE__)}/render_3.rb"
 
 class ::Class
   def spy
@@ -19,10 +20,15 @@ class ::Class
   end
 end
 
-#r = Render2::Builder.spy.new
-#r.html.classes('a').with do
-#  r.p.id('sdd').classes('a', 'b')
-#  r.p.classes(['a', 'b'])
+#r = Render3::Builder.new
+#r.body do
+#  r.p.id('i').class('a', 'b').with { r.text 'c' }
+#  r.p.id('i').class('a', 'b') { r.text 'c' }
+#  r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
+#  r.p('c')['i'].class('a', 'b')
+#  r.p('c')['i'].class(['a', 'b'])
+#  r.p 'c', :id => 'i', :class => ['a', 'b']
+#  r.p('c', :class => 'a b')['i']
 #end
 #puts r
 #
@@ -31,6 +37,7 @@ end
 
 TIMES = 50000
 #TIMES =  10000
+#TIMES =  1
 
 class AModel
   attr_reader :a, :b
@@ -43,7 +50,7 @@ require 'markaby'
 require 'erubis'
 
 model = AModel.new 'a', 'b'
-(TIMES/10).times do
+(TIMES/100).times do
   r = Render::Builder.new
   r.html.with do
     r.head
@@ -61,7 +68,6 @@ model = AModel.new 'a', 'b'
       end
     end
   end
-  #      puts r.to_s
 end
 
 Benchmark.bm(20) do |b|
@@ -85,30 +91,28 @@ Benchmark.bm(20) do |b|
           end
         end
       end
-      #      puts r.to_s
     end
   end
-  b.report("render1") do
+  b.report("render3") do
     model = AModel.new 'a', 'b'
     TIMES.times do
-      r = Render1::Builder.new
-      r.html.with do
+      r = Render3::Builder.new
+      r.html do
         r.head
-        r.body.with do
-          r.div.id('menu').with do
-            r.ul.with do
+        r.body do
+          r.div :id => 'menu' do
+            r.ul do
               10.times do
                 r.li model.a
                 r.li model.b
               end
             end
           end
-          r.div.id('content').with do
+          r.div['content'].with do
             10.times { r.text 'asd asha sdha sdjhas ahs'*10 }
           end
         end
       end
-      #      puts r.to_s
     end
   end
 

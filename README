@@ -1,6 +1,20 @@
 == hammer-render
 
-Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but much faster
+Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but faster
+
+r.body do
+  r.p.id('i').class('a', 'b').with { r.text 'c' }
+  r.p.id('i').class('a', 'b') { r.text 'c' }
+  r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
+  r.p('c')['i'].class('a', 'b')
+  r.p('c')['i'].class(['a', 'b'])
+  r.p 'c', :id => 'i', :class => ['a', 'b']
+  r.p('c', :class => 'a b')['i']
+end
+
+renders 7 identical elements
+<p id="i" class="a b">c</p>
+
 
 == Benchmark
 
