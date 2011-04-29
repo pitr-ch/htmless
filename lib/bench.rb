@@ -20,23 +20,22 @@ class ::Class
   end
 end
 
-#r = Render3::Builder.new
-#r.go_in('id') do |id|
-#  body do
-#    p.id(id).class('a', 'b').with { r.text 'a content' }
-#    br['id']
-#    p.id(id).class('a', 'b') { r.text 'a content' }
-#    p.id(id); current.class('a', 'b') { r.text 'a content' }
-#    p('a content')[id].class('a', 'b')
-#    p('a content')[id].class(['a', 'b'])
-#    p 'a content', :id => id, :class => ['a', 'b']
-#    p('a content', :class => 'a b')[id]
-#  end
-#end
-#
-#puts r
-#
-#exit
+r = Render3::Builder.new
+r.go_in do
+  body do
+    p.id('i').class('a', 'b').with { r.text 'a content' }
+    p.id('i').class('a', 'b') { r.text 'a content' }
+    p.id('i'); current.class('a', 'b') { r.text 'a content' }
+    p('a content')['i'].class('a', 'b')
+    p('a content')['i'].class(['a', 'b'])
+    p 'a content', :id => 'i', :class => ['a', 'b']
+    p('a content', :class => 'a b')['i']
+  end
+end
+
+puts r
+
+exit
 
 #require 'ruby-prof'
 #
@@ -67,10 +66,10 @@ end
 
 
 TIMES = 100000
-TIMES = 50000
-#TIMES =  1000
-#TIMES =  100
-#TIMES =  1
+TIMES =  50000
+TIMES =   1000
+#TIMES =    100
+#TIMES =      1
 
 class AModel
   attr_reader :a, :b
