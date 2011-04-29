@@ -1,7 +1,7 @@
 require 'benchmark'
 require "#{File.dirname(__FILE__)}/render.rb"
-require "#{File.dirname(__FILE__)}/render_1.rb"
-require "#{File.dirname(__FILE__)}/render_2.rb"
+#require "#{File.dirname(__FILE__)}/render_1.rb"
+#require "#{File.dirname(__FILE__)}/render_2.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 
 class ::Class
@@ -21,19 +21,23 @@ class ::Class
 end
 
 #r = Render3::Builder.new
-#r.body do
-#  r.p.id('i').class('a', 'b').with { r.text 'c' }
-#  r.br['id']
-#  r.p.id('i').class('a', 'b') { r.text 'c' }
-#  r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
-#  r.p('c')['i'].class('a', 'b')
-#  r.p('c')['i'].class(['a', 'b'])
-#  r.p 'c', :id => 'i', :class => ['a', 'b']
-#  r.p('c', :class => 'a b')['i']
+#r.go_in('id') do |id|
+#  body do
+#    p.id(id).class('a', 'b').with { r.text 'a content' }
+#    br['id']
+#    p.id(id).class('a', 'b') { r.text 'a content' }
+#    p.id(id); current.class('a', 'b') { r.text 'a content' }
+#    p('a content')[id].class('a', 'b')
+#    p('a content')[id].class(['a', 'b'])
+#    p 'a content', :id => id, :class => ['a', 'b']
+#    p('a content', :class => 'a b')[id]
+#  end
 #end
 #
 #puts r
 #
+#exit
+
 #require 'ruby-prof'
 #
 #result = RubyProf.profile do
@@ -62,8 +66,10 @@ end
 
 
 
+TIMES = 100000
 TIMES = 50000
-#TIMES =  10000
+#TIMES =  1000
+#TIMES =  100
 #TIMES =  1
 
 class AModel
@@ -75,6 +81,8 @@ end
 
 require 'markaby'
 require 'erubis'
+require 'tagz'
+require 'erector'
 
 model = AModel.new 'a', 'b'
 (TIMES/100).times do
@@ -125,32 +133,9 @@ Benchmark.bm(20) do |b|
     model = AModel.new 'a', 'b'
     TIMES.times do
       r = Render3::Builder.new
-      r.html do
-        r.head
-        r.body do
-          r.div :id => 'menu' do
-            r.ul do
-              10.times do
-                r.li model.a
-                r.li model.b
-              end
-            end
-          end
-          r.div['content'].with do
-            10.times { r.text 'asd asha sdha sdjhas ahs'*10 }
-          end
-        end
-      end
-      puts r.to_s if TIMES == 1
-    end
-  end
-
-  b.report('markaby') do
-    model = AModel.new 'a', 'b'
-    TIMES.times do
-      r = Markaby::Builder.new(:model => model) do
+      r.go_in do 
         html do
-          head {}
+          head
           body do
             div :id => 'menu' do
               ul do
@@ -160,13 +145,13 @@ Benchmark.bm(20) do |b|
                 end
               end
             end
-            div :id => 'content' do
+            div['content'].with do
               10.times { text 'asd asha sdha sdjhas ahs'*10 }
             end
           end
         end
       end
-      #      puts r.to_s
+      puts r.to_s if TIMES == 1
     end
   end
 
@@ -215,6 +200,86 @@ TMP
       erub.result(binding())
     end
     GC.start
+  end
+
+  class AWidget < Erector::Widget
+    def content
+      html do
+        head {}
+        body do
+          div :id => 'menu' do
+            ul do
+              10.times do
+                li @model.a
+                li @model.b
+              end
+            end
+          end
+          div :id => 'content' do
+            10.times { text 'asd asha sdha sdjhas ahs'*10 }
+          end
+        end
+      end
+    end
+  end
+
+  b.report('erector') do
+    model = AModel.new 'a', 'b'
+    TIMES.times do
+      w = AWidget.new :model => model
+      w.to_html
+      puts w.to_html if TIMES == 1
+    end
+  end
+
+  b.report('markaby') do
+    model = AModel.new 'a', 'b'
+    TIMES.times do
+      r = Markaby::Builder.new(:model => model) do
+        html do
+          head {}
+          body do
+            div :id => 'menu' do
+              ul do
+                10.times do
+                  li model.a
+                  li model.b
+                end
+              end
+            end
+            div :id => 'content' do
+              10.times { text 'asd asha sdha sdjhas ahs'*10 }
+            end
+          end
+        end
+      end
+      puts r.to_s if TIMES == 1
+    end
+  end
+
+  include Tagz
+
+  b.report('tagz') do
+    model = AModel.new 'a', 'b'
+    TIMES.times do
+      r = html_ do
+        head_
+        body_ do
+          div_ :id => 'menu' do
+            ul_ do
+              10.times do
+                li_ model.a
+                li_ model.b
+              end
+            end
+          end
+          div_ :id => 'content' do
+            10.times { text_ 'asd asha sdha sdjhas ahs'*10 }
+          end
+        end
+      end
+      puts r.to_s if TIMES == 1
+    end
   end
 end
 

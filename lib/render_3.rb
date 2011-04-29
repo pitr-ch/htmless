@@ -29,26 +29,20 @@ module Render3
   ]
   ATTRIBUTES = ["id", "class", "style", "title", "onclick", "ondblclick", "onmousedown", "onmouseup", "onmouseover",
     "onmousemove", "onmouseout", "onkeypress", "onkeydown", "onkeyup", "accesskey", "tabindex",
-    "onfocus", "onblur", "align", "char", "charoff", "lang", "xml:lang", "dir", "valign"]
+    "onfocus", "onblur", "align", "char", "charoff", "lang", "dir", "valign"] # "xml:lang"
 
   # << faster then +
   # yield faster then block.call
+  # accessing ivar is faster then accesing hash or constants
+  # class_eval faster then define_method
 
   # TODO doctype
   # TODO comment
   # TODO add full attribute set
   # TODO YARD
 
-  module Tools
-    extend self
-    
-    def escape(text)
-      CGI.escapeHTML(text)
-    end
-  end
+  class ATag
 
-  class ATag    
-      
     def initialize(builder)
       @builder = builder
       @output = builder.instance_eval { @output }
@@ -56,7 +50,7 @@ module Render3
 
     def open(tag, attributes = nil)
       @output << '<' << tag
-      @builder.open_tag = self
+      @builder.current = self
       attributes(attributes)
       self
     end
@@ -70,134 +64,140 @@ module Render3
     end
 
     def attribute(attribute, content)
-      @output << " #{attribute}=\"" << Tools.escape(content) << '"'
+      @output << " #{attribute}=\"" << CGI.escapeHTML(content) << '"'
     end
+
 
     (ATTRIBUTES).each do |attr|
-      define_method(attr) do |content|
-        @output << " #{attr}=\"" << Tools.escape(content) << '"'
-        self
-      end
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def #{attr}(content)
+          @output << ' #{attr}="' << CGI.escapeHTML(content) << '"'
+          self
+        end
+      RUBYCODE
     end
 
-    def class(*classes)
+    class_eval <<-RUBYCODE, __FILE__, __LINE__
+      def class(*classes)
         attribute 'class', classes.join(' ')
         self
       end
+    RUBYCODE
 
-      def [](id)
-        id(id)
-      end
+    alias :[] :id
+  end
 
+  class EmptyTag < ATag
+    def flush
+      @output << ' />'
+      nil
+    end
+  end
+
+  class DoubleTag < ATag
+    def initialize(builder)
+      super
+      @stack = builder.instance_eval { @stack }
+      @content = nil
     end
 
-    class EmptyTag < ATag
-      def flush
-        @output << ' />'
-        nil
+    def open(tag, content_or_attributes, attributes, &block)
+      if content_or_attributes.kind_of?(String)
+        @content = content_or_attributes
+      else
+        attributes = content_or_attributes
+      end
+      super tag, attributes
+      @stack << tag
+      if block
+        with &block
+      else
+        self
       end
     end
 
-    class DoubleTag < ATag
-      def initialize(builder)
-        super
-        @stack = builder.instance_eval { @stack }
-        @content = nil
-      end
+    def flush
+      @output << '>'
+      @output << CGI.escapeHTML(@content) if @content
+      @output << '</' << @stack.pop << '>'
+      @content = nil
+    end
 
-      def open(tag, content_or_attributes, attributes, &block)
-        if content_or_attributes.kind_of?(String)
-          @content = content_or_attributes
-        else
-          attributes = content_or_attributes
-        end
-        super tag, attributes
-        @stack << tag
-        if block
-          with &block
-        else
-          self
-        end
-      end
+    def with
+      @output << '>'
+      @content = nil
+      @builder.current = nil
+      yield
+      @builder.flush
+      @output << '</' << @stack.pop << '>'
+      nil
+    end
 
-      def flush
-        @output << '>' 
-        @output << Tools.escape(@content) if @content
-        @output << '</' << @stack.pop << '>'        
-        @content = nil
-      end
-
-      def with
-        @output << '>'
-        @content = nil
-        @builder.open_tag = nil
-        yield
-        @builder.flush
-        @output << '</' << @stack.pop << '>'
-        nil
-      end
-
-      (ATTRIBUTES + ['class']).each do |attr|
-        define_method(attr) do |*args, &block|
+    (ATTRIBUTES + ['class']).each do |attr|
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def #{attr}(*args, &block)
           super *args
           return with(&block) if block
           self
         end
-      end
-    end
-
-    class Builder
-
-      def initialize() # TODO tag classes
-        @output = ""
-        @stack = []
-        @empty_tag = EmptyTag.new self
-        @double_tag = DoubleTag.new self
-        @open_tag = nil
-      end
-
-      def text(text)
-        @output << Tools.escape(text.to_s)
-      end
-
-      def raw(text)
-        @output << text.to_s
-      end
-
-      def open_tag=(tag)        
-        @open_tag = tag
-      end
-
-      def current
-        @open_tag
-      end
-
-      def flush
-        if @open_tag
-          @open_tag.flush
-          @open_tag = nil          
-        end
-      end
-
-      DOUBLE_TAGS.each do |tag|
-        define_method(tag) do |content_or_attributes = nil, attributes = nil, &block|
-          flush
-          @double_tag.open(tag, content_or_attributes, attributes, &block)
-        end
-      end
-
-      EMPTY_TAGS.each do |tag|
-        define_method(tag) do |attributes = nil|
-          flush
-          @empty_tag.open(tag, attributes)
-        end
-      end
-
-      def to_s
-        flush
-        @output
-      end
+      RUBYCODE
     end
 
   end
+
+  class Builder
+    attr_accessor :current
+
+    def initialize() # TODO tag classes
+      @output = ""
+      @stack = []
+      @empty_tag = EmptyTag.new self
+      @double_tag = DoubleTag.new self
+      @current = nil
+    end
+
+    def text(text)
+      @output << CGI.escapeHTML(text.to_s)
+    end
+
+    def raw(text)
+      @output << text.to_s
+    end
+
+    def flush
+      if @current
+        @current.flush
+        @current = nil
+      end
+    end
+
+    def go_in(*variables, &block)
+      instance_exec *variables, &block
+    end
+
+    DOUBLE_TAGS.each do |tag|
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def #{tag}(content_or_attributes = nil, attributes = nil, &block)
+          flush
+          @double_tag.open('#{tag}', content_or_attributes, attributes, &block)
+        end
+      RUBYCODE
+    end
+
+    EMPTY_TAGS.each do |tag|
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def #{tag}(attributes = nil)
+          flush
+          @empty_tag.open('#{tag}', attributes)
+        end
+      RUBYCODE
+    end
+
+    def to_s
+      flush
+      @output
+    end
+  end
+
+end
 
