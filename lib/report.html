@@ -1,0 +1,2079 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <style media="all" type="text/css">
+    table {
+      border-collapse: collapse;
+      border: 1px solid #CCC;
+      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      line-height: normal;
+      width: 100%;
+    }
+
+    th {
+      text-align: center;
+      border-top: 1px solid #FB7A31;
+      border-bottom: 1px solid #FB7A31;
+      background: #FFC;
+      padding: 0.3em;
+      border-left: 1px solid silver;
+    }
+
+    tr.break td {
+      border: 0;
+      border-top: 1px solid #FB7A31;
+      padding: 0;
+      margin: 0;
+    }
+
+    tr.method td {
+      font-weight: bold;
+    }
+
+    td {
+      padding: 0.3em;
+    }
+
+    td:first-child {
+      width: 190px;
+      }
+
+    td {
+      border-left: 1px solid #CCC;
+      text-align: center;
+    }
+
+    .method_name {
+      text-align: left;
+    }
+  </style>
+  </head>
+  <body>
+    <h1>Profile Report</h1>
+    <!-- Threads Table -->
+    <table>
+      <tr>
+        <th>Thread ID</th>
+        <th>Total Time</th>
+      </tr>
+      
+      <tr>
+        <td><a href="#3466140">3466140</a></td>
+        <td>4.792068302</td>
+      </tr>
+      
+    </table>
+
+    <!-- Methods Tables -->
+    
+      <h2><a name="3466140">Thread 3466140</a></h2>
+
+      <table>
+        <tr>
+          <th>  %Total</th>
+          <th>   %Self</th>
+          <th>     Total</th>
+          <th>      Self</th>
+          <th>      Wait</th>
+          <th>       Child</th>
+          <th>               Calls</th>
+          <th class="method_name">Name</th>
+          <th>Line</th>
+        </tr>
+
+        
+
+            <!-- Parents -->
+            
+
+            <tr class="method">
+              <td> 100.00%</td>
+              <td>   0.00%</td>
+              <td>      4.79</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      4.79</td>
+              <td>                   1</td>
+              <td class="method_name"><a name="Global_[No method]_3466140">Global#[No method]</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb?line=40" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb:40">40</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.79</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      4.74</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Integer_times_3466140">Integer#times</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb?line=41" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb:41">41</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Kernel_puts_3466140">Kernel#puts</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb?line=54" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb:54">54</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.79</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      4.74</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Global_[No method]_3466140">Global#[No method]</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb?line=41" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb:41">41</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td> 100.00%</td>
+              <td>   1.12%</td>
+              <td>      4.79</td>
+              <td>      0.05</td>
+              <td>      0.00</td>
+              <td>      4.74</td>
+              <td>                   1</td>
+              <td class="method_name"><a name="Integer_times_3466140">Integer#times</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.45</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      4.40</td>
+                
+                <td>         10000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.28</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.26</td>
+                
+                <td>         10000/30000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        10000/130001</td>
+                <td class="method_name"><a href="#Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+                <td></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.30</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         70000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=185" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:185">185</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.45</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      4.40</td>
+                
+                <td>         10000/80000</td>
+                <td class="method_name"><a href="#Integer_times_3466140">Integer#times</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  92.91%</td>
+              <td>   7.26%</td>
+              <td>      4.45</td>
+              <td>      0.35</td>
+              <td>      0.00</td>
+              <td>      4.40</td>
+              <td>               80000</td>
+              <td class="method_name"><a name="Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=108" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:108">108</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.34</td>
+                <td>      0.75</td>
+                <td>      0.00</td>
+                <td>      3.59</td>
+                
+                <td>         10000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=117" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:117">117</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.96</td>
+                <td>      0.32</td>
+                <td>      0.00</td>
+                <td>      0.64</td>
+                
+                <td>         80000/90000</td>
+                <td class="method_name"><a href="#Render3__ATag_open_3466140">Render3::ATag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=114" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:114">114</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.05</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         80000/80000</td>
+                <td class="method_name"><a href="#Kernel_kind_of__3466140">Kernel#kind_of?</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=109" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:109">109</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.23</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=143" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:143">143</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      4.34</td>
+                <td>      0.75</td>
+                <td>      0.00</td>
+                <td>      3.59</td>
+                
+                <td>         10000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=117" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:117">117</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  90.49%</td>
+              <td>  20.43%</td>
+              <td>      4.34</td>
+              <td>      0.98</td>
+              <td>      0.00</td>
+              <td>      3.59</td>
+              <td>               40000</td>
+              <td class="method_name"><a name="Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=130" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:130">130</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.62</td>
+                <td>      0.20</td>
+                <td>      0.00</td>
+                <td>      0.42</td>
+                
+                <td>       120000/130001</td>
+                <td class="method_name"><a href="#Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=135" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:135">135</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.61</td>
+                <td>      0.13</td>
+                <td>      0.00</td>
+                <td>      0.48</td>
+                
+                <td>         50000/70000</td>
+                <td class="method_name"><a href="#Render3__ATag_class_3466140">Render3::ATag#class</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=142" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:142">142</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.42</td>
+                <td>      0.22</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         40000/40000</td>
+                <td class="method_name"><a href="#Render3__ATag_[]_3466140">Render3::ATag#[]</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=185" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:185">185</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.20</td>
+                <td>      0.06</td>
+                <td>      0.00</td>
+                <td>      0.14</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#Render3__Builder_text_3466140">Render3::Builder#text</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=47" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:47">47</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.14</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.10</td>
+                
+                <td>        30000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=78" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:78">78</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.06</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.02</td>
+                
+                <td>         10000/90000</td>
+                <td class="method_name"><a href="#Render3__ATag_open_3466140">Render3::ATag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=192" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:192">192</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        40000/130000</td>
+                <td class="method_name"><a href="#Render3__Builder_open_tag__3466140">Render3::Builder#open_tag=</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=133" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:133">133</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         40000/80000</td>
+                <td class="method_name"><a href="#Array_pop_3466140">Array#pop</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=136" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:136">136</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__Builder_current_3466140">Render3::Builder#current</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=47" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:47">47</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.30</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         70000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=185" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:185">185</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.23</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=143" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:143">143</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.06</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.02</td>
+                
+                <td>         10000/90000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=192" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:192">192</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.96</td>
+                <td>      0.32</td>
+                <td>      0.00</td>
+                <td>      0.64</td>
+                
+                <td>         80000/90000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=114" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:114">114</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  21.20%</td>
+              <td>   7.36%</td>
+              <td>      1.02</td>
+              <td>      0.35</td>
+              <td>      0.00</td>
+              <td>      0.66</td>
+              <td>               90000</td>
+              <td class="method_name"><a name="Render3__ATag_open_3466140">Render3::ATag#open</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=57" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:57">57</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.58</td>
+                <td>      0.11</td>
+                <td>      0.00</td>
+                <td>      0.47</td>
+                
+                <td>         90000/90000</td>
+                <td class="method_name"><a href="#Render3__ATag_attributes_3466140">Render3::ATag#attributes</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=60" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:60">60</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.09</td>
+                <td>      0.09</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        90000/130000</td>
+                <td class="method_name"><a href="#Render3__Builder_open_tag__3466140">Render3::Builder#open_tag=</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=59" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:59">59</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.03</td>
+                
+                <td>        10000/220000</td>
+                <td class="method_name"><a href="#Hash_each_3466140">Hash#each</a></td>
+                <td></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.12</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.08</td>
+                
+                <td>        30000/220000</td>
+                <td class="method_name"><a href="#Render3__Builder_text_3466140">Render3::Builder#text</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=160" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:160">160</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.14</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.10</td>
+                
+                <td>        30000/220000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=78" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:78">78</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.18</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.12</td>
+                
+                <td>        40000/220000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_flush_3466140">Render3::DoubleTag#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=125" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:125">125</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.20</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.14</td>
+                
+                <td>        40000/220000</td>
+                <td class="method_name"><a href="#Render3__ATag_[]_3466140">Render3::ATag#[]</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=78" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:78">78</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.31</td>
+                <td>      0.10</td>
+                <td>      0.00</td>
+                <td>      0.21</td>
+                
+                <td>        70000/220000</td>
+                <td class="method_name"><a href="#Render3__ATag_attribute_3466140">Render3::ATag#attribute</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=73" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:73">73</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  20.64%</td>
+              <td>   6.31%</td>
+              <td>      0.99</td>
+              <td>      0.30</td>
+              <td>      0.00</td>
+              <td>      0.69</td>
+              <td>              220000</td>
+              <td class="method_name"><a name="Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=45" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:45">45</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.69</td>
+                <td>      0.30</td>
+                <td>      0.00</td>
+                <td>      0.39</td>
+                
+                <td>       220000/220000</td>
+                <td class="method_name"><a href="#_Class__CGI__escapeHTML_3466140">&lt;Class::CGI&gt;#escapeHTML</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=46" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:46">46</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.25</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         20000/70000</td>
+                <td class="method_name"><a href="#Hash_each_3466140">Hash#each</a></td>
+                <td></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.61</td>
+                <td>      0.13</td>
+                <td>      0.00</td>
+                <td>      0.48</td>
+                
+                <td>         50000/70000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=142" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:142">142</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  18.02%</td>
+              <td>   3.78%</td>
+              <td>      0.86</td>
+              <td>      0.18</td>
+              <td>      0.00</td>
+              <td>      0.68</td>
+              <td>               70000</td>
+              <td class="method_name"><a name="Render3__ATag_class_3466140">Render3::ATag#class</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=83" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:83">83</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.56</td>
+                <td>      0.25</td>
+                <td>      0.00</td>
+                <td>      0.31</td>
+                
+                <td>         70000/70000</td>
+                <td class="method_name"><a href="#Render3__ATag_attribute_3466140">Render3::ATag#attribute</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=84" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:84">84</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.12</td>
+                <td>      0.12</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         70000/70000</td>
+                <td class="method_name"><a href="#Array_join_3466140">Array#join</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=84" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:84">84</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.69</td>
+                <td>      0.30</td>
+                <td>      0.00</td>
+                <td>      0.39</td>
+                
+                <td>       220000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=46" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:46">46</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  14.33%</td>
+              <td>   6.26%</td>
+              <td>      0.69</td>
+              <td>      0.30</td>
+              <td>      0.00</td>
+              <td>      0.39</td>
+              <td>              220000</td>
+              <td class="method_name"><a name="_Class__CGI__escapeHTML_3466140">&lt;Class::CGI&gt;#escapeHTML</a></td>
+              <td><a href="file:///home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb?line=33" title="/home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb:33">33</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.39</td>
+                <td>      0.39</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>       220000/220000</td>
+                <td class="method_name"><a href="#String_gsub_3466140">String#gsub</a></td>
+                <td><a href="file:///home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb?line=34" title="/home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb:34">34</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>            1/130001</td>
+                <td class="method_name"><a href="#Render3__Builder_to_s_3466140">Render3::Builder#to_s</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=197" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:197">197</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        10000/130001</td>
+                <td class="method_name"><a href="#Integer_times_3466140">Integer#times</a></td>
+                <td></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.62</td>
+                <td>      0.20</td>
+                <td>      0.00</td>
+                <td>      0.42</td>
+                
+                <td>       120000/130001</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=135" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:135">135</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  13.16%</td>
+              <td>   4.45%</td>
+              <td>      0.63</td>
+              <td>      0.21</td>
+              <td>      0.00</td>
+              <td>      0.42</td>
+              <td>              130001</td>
+              <td class="method_name"><a name="Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=175" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:175">175</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.40</td>
+                <td>      0.20</td>
+                <td>      0.00</td>
+                <td>      0.21</td>
+                
+                <td>         40000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_flush_3466140">Render3::DoubleTag#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=177" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:177">177</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__EmptyTag_flush_3466140">Render3::EmptyTag#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=177" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:177">177</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.58</td>
+                <td>      0.11</td>
+                <td>      0.00</td>
+                <td>      0.47</td>
+                
+                <td>         90000/90000</td>
+                <td class="method_name"><a href="#Render3__ATag_open_3466140">Render3::ATag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=60" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:60">60</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  12.01%</td>
+              <td>   2.22%</td>
+              <td>      0.58</td>
+              <td>      0.11</td>
+              <td>      0.00</td>
+              <td>      0.47</td>
+              <td>               90000</td>
+              <td class="method_name"><a name="Render3__ATag_attributes_3466140">Render3::ATag#attributes</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=64" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:64">64</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.47</td>
+                <td>      0.17</td>
+                <td>      0.00</td>
+                <td>      0.30</td>
+                
+                <td>         20000/20000</td>
+                <td class="method_name"><a href="#Hash_each_3466140">Hash#each</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=66" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:66">66</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.56</td>
+                <td>      0.25</td>
+                <td>      0.00</td>
+                <td>      0.31</td>
+                
+                <td>         70000/70000</td>
+                <td class="method_name"><a href="#Render3__ATag_class_3466140">Render3::ATag#class</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=84" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:84">84</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>  11.76%</td>
+              <td>   5.30%</td>
+              <td>      0.56</td>
+              <td>      0.25</td>
+              <td>      0.00</td>
+              <td>      0.31</td>
+              <td>               70000</td>
+              <td class="method_name"><a name="Render3__ATag_attribute_3466140">Render3::ATag#attribute</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=72" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:72">72</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.31</td>
+                <td>      0.10</td>
+                <td>      0.00</td>
+                <td>      0.21</td>
+                
+                <td>        70000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=73" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:73">73</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.47</td>
+                <td>      0.17</td>
+                <td>      0.00</td>
+                <td>      0.30</td>
+                
+                <td>         20000/20000</td>
+                <td class="method_name"><a href="#Render3__ATag_attributes_3466140">Render3::ATag#attributes</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=66" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:66">66</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   9.78%</td>
+              <td>   3.62%</td>
+              <td>      0.47</td>
+              <td>      0.17</td>
+              <td>      0.00</td>
+              <td>      0.30</td>
+              <td>               20000</td>
+              <td class="method_name"><a name="Hash_each_3466140">Hash#each</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.25</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         20000/70000</td>
+                <td class="method_name"><a href="#Render3__ATag_class_3466140">Render3::ATag#class</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.03</td>
+                
+                <td>        10000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.42</td>
+                <td>      0.22</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         40000/40000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=185" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:185">185</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   8.68%</td>
+              <td>   4.59%</td>
+              <td>      0.42</td>
+              <td>      0.22</td>
+              <td>      0.00</td>
+              <td>      0.20</td>
+              <td>               40000</td>
+              <td class="method_name"><a name="Render3__ATag_[]_3466140">Render3::ATag#[]</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=88" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:88">88</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.20</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.14</td>
+                
+                <td>        40000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=78" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:78">78</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.40</td>
+                <td>      0.20</td>
+                <td>      0.00</td>
+                <td>      0.21</td>
+                
+                <td>         40000/40000</td>
+                <td class="method_name"><a href="#Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=177" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:177">177</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   8.45%</td>
+              <td>   4.17%</td>
+              <td>      0.40</td>
+              <td>      0.20</td>
+              <td>      0.00</td>
+              <td>      0.21</td>
+              <td>               40000</td>
+              <td class="method_name"><a name="Render3__DoubleTag_flush_3466140">Render3::DoubleTag#flush</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=123" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:123">123</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.18</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.12</td>
+                
+                <td>        40000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=125" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:125">125</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.03</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         40000/80000</td>
+                <td class="method_name"><a href="#Array_pop_3466140">Array#pop</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=126" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:126">126</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.39</td>
+                <td>      0.39</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>       220000/220000</td>
+                <td class="method_name"><a href="#_Class__CGI__escapeHTML_3466140">&lt;Class::CGI&gt;#escapeHTML</a></td>
+                <td><a href="file:///home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb?line=34" title="/home/pitr/.rvm/rubies/ruby-1.9.2-p180/lib/ruby/1.9.1/cgi/util.rb:34">34</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   8.07%</td>
+              <td>   8.07%</td>
+              <td>      0.39</td>
+              <td>      0.39</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>              220000</td>
+              <td class="method_name"><a name="String_gsub_3466140">String#gsub</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         20000/30000</td>
+                <td class="method_name"><a href="#Render3__Builder_initialize_3466140">Render3::Builder#initialize</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=155" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:155">155</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.28</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.26</td>
+                
+                <td>         10000/30000</td>
+                <td class="method_name"><a href="#Integer_times_3466140">Integer#times</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   5.75%</td>
+              <td>   1.10%</td>
+              <td>      0.28</td>
+              <td>      0.05</td>
+              <td>      0.00</td>
+              <td>      0.26</td>
+              <td>               30000</td>
+              <td class="method_name"><a name="Class_new_3466140">Class#new</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.25</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__Builder_initialize_3466140">Render3::Builder#initialize</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.08</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.05</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_initialize_3466140">Render3::DoubleTag#initialize</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.08</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.06</td>
+                
+                <td>         10000/20000</td>
+                <td class="method_name"><a href="#Render3__ATag_initialize_3466140">Render3::ATag#initialize</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#_Class__BasicObject__allocate_3466140">&lt;Class::BasicObject&gt;#allocate</a></td>
+                <td></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.25</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.20</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   5.19%</td>
+              <td>   0.93%</td>
+              <td>      0.25</td>
+              <td>      0.04</td>
+              <td>      0.00</td>
+              <td>      0.20</td>
+              <td>               10000</td>
+              <td class="method_name"><a name="Render3__Builder_initialize_3466140">Render3::Builder#initialize</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=151" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:151">151</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         20000/30000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=155" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:155">155</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.20</td>
+                <td>      0.06</td>
+                <td>      0.00</td>
+                <td>      0.14</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=47" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:47">47</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   4.18%</td>
+              <td>   1.32%</td>
+              <td>      0.20</td>
+              <td>      0.06</td>
+              <td>      0.00</td>
+              <td>      0.14</td>
+              <td>               30000</td>
+              <td class="method_name"><a name="Render3__Builder_text_3466140">Render3::Builder#text</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=159" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:159">159</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.12</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.08</td>
+                
+                <td>        30000/220000</td>
+                <td class="method_name"><a href="#Render3__Tools_escape_3466140">Render3::Tools#escape</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=160" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:160">160</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#String_to_s_3466140">String#to_s</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=160" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:160">160</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.04</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        40000/130000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=133" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:133">133</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.09</td>
+                <td>      0.09</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>        90000/130000</td>
+                <td class="method_name"><a href="#Render3__ATag_open_3466140">Render3::ATag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=59" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:59">59</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   2.62%</td>
+              <td>   2.62%</td>
+              <td>      0.13</td>
+              <td>      0.13</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>              130000</td>
+              <td class="method_name"><a name="Render3__Builder_open_tag__3466140">Render3::Builder#open_tag=</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=167" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:167">167</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.12</td>
+                <td>      0.12</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         70000/70000</td>
+                <td class="method_name"><a href="#Render3__ATag_class_3466140">Render3::ATag#class</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=84" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:84">84</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   2.48%</td>
+              <td>   2.48%</td>
+              <td>      0.12</td>
+              <td>      0.12</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               70000</td>
+              <td class="method_name"><a name="Array_join_3466140">Array#join</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.01</td>
+                
+                <td>         10000/20000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_initialize_3466140">Render3::DoubleTag#initialize</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=103" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:103">103</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.08</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.06</td>
+                
+                <td>         10000/20000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   2.41%</td>
+              <td>   0.95%</td>
+              <td>      0.12</td>
+              <td>      0.05</td>
+              <td>      0.00</td>
+              <td>      0.07</td>
+              <td>               20000</td>
+              <td class="method_name"><a name="Render3__ATag_initialize_3466140">Render3::ATag#initialize</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=52" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:52">52</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.07</td>
+                <td>      0.07</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         20000/30000</td>
+                <td class="method_name"><a href="#BasicObject_instance_eval_3466140">BasicObject#instance_eval</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=54" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:54">54</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/30000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_initialize_3466140">Render3::DoubleTag#initialize</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=104" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:104">104</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.07</td>
+                <td>      0.07</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         20000/30000</td>
+                <td class="method_name"><a href="#Render3__ATag_initialize_3466140">Render3::ATag#initialize</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=54" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:54">54</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   1.73%</td>
+              <td>   1.73%</td>
+              <td>      0.08</td>
+              <td>      0.08</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               30000</td>
+              <td class="method_name"><a name="BasicObject_instance_eval_3466140">BasicObject#instance_eval</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.08</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.05</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   1.72%</td>
+              <td>   0.64%</td>
+              <td>      0.08</td>
+              <td>      0.03</td>
+              <td>      0.00</td>
+              <td>      0.05</td>
+              <td>               10000</td>
+              <td class="method_name"><a name="Render3__DoubleTag_initialize_3466140">Render3::DoubleTag#initialize</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=102" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:102">102</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.04</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.01</td>
+                
+                <td>         10000/20000</td>
+                <td class="method_name"><a href="#Render3__ATag_initialize_3466140">Render3::ATag#initialize</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=103" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:103">103</a></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/30000</td>
+                <td class="method_name"><a href="#BasicObject_instance_eval_3466140">BasicObject#instance_eval</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=104" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:104">104</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         40000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=136" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:136">136</a></td>
+              </tr>
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.03</td>
+                <td>      0.03</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         40000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_flush_3466140">Render3::DoubleTag#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=126" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:126">126</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   1.08%</td>
+              <td>   1.08%</td>
+              <td>      0.05</td>
+              <td>      0.05</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               80000</td>
+              <td class="method_name"><a name="Array_pop_3466140">Array#pop</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.05</td>
+                <td>      0.05</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         80000/80000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_open_3466140">Render3::DoubleTag#open</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=109" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:109">109</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.98%</td>
+              <td>   0.98%</td>
+              <td>      0.05</td>
+              <td>      0.05</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               80000</td>
+              <td class="method_name"><a name="Kernel_kind_of__3466140">Kernel#kind_of?</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#Class_new_3466140">Class#new</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.38%</td>
+              <td>   0.38%</td>
+              <td>      0.02</td>
+              <td>      0.02</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               30000</td>
+              <td class="method_name"><a name="_Class__BasicObject__allocate_3466140">&lt;Class::BasicObject&gt;#allocate</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.02</td>
+                <td>      0.02</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         30000/30000</td>
+                <td class="method_name"><a href="#Render3__Builder_text_3466140">Render3::Builder#text</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=160" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:160">160</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.35%</td>
+              <td>   0.35%</td>
+              <td>      0.02</td>
+              <td>      0.02</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               30000</td>
+              <td class="method_name"><a name="String_to_s_3466140">String#to_s</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=177" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:177">177</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.26%</td>
+              <td>   0.26%</td>
+              <td>      0.01</td>
+              <td>      0.01</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               10000</td>
+              <td class="method_name"><a name="Render3__EmptyTag_flush_3466140">Render3::EmptyTag#flush</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=95" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:95">95</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.01</td>
+                <td>      0.01</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>         10000/10000</td>
+                <td class="method_name"><a href="#Render3__DoubleTag_with_3466140">Render3::DoubleTag#with</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=47" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:47">47</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.21%</td>
+              <td>   0.21%</td>
+              <td>      0.01</td>
+              <td>      0.01</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>               10000</td>
+              <td class="method_name"><a name="Render3__Builder_current_3466140">Render3::Builder#current</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=171" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:171">171</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Global_[No method]_3466140">Global#[No method]</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb?line=54" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/bench.rb:54">54</a></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.00%</td>
+              <td>   0.00%</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>                   1</td>
+              <td class="method_name"><a name="Kernel_puts_3466140">Kernel#puts</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#IO_puts_3466140">IO#puts</a></td>
+                <td></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Kernel_puts_3466140">Kernel#puts</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.00%</td>
+              <td>   0.00%</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>                   1</td>
+              <td class="method_name"><a name="IO_puts_3466140">IO#puts</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 2/2</td>
+                <td class="method_name"><a href="#IO_write_3466140">IO#write</a></td>
+                <td></td>
+              </tr>
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#Render3__Builder_to_s_3466140">Render3::Builder#to_s</a></td>
+                <td></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 2/2</td>
+                <td class="method_name"><a href="#IO_puts_3466140">IO#puts</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.00%</td>
+              <td>   0.00%</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>                   2</td>
+              <td class="method_name"><a name="IO_write_3466140">IO#write</a></td>
+              <td></td>
+            </tr>
+
+            <!-- Children -->
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+
+            <!-- Parents -->
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>                 1/1</td>
+                <td class="method_name"><a href="#IO_puts_3466140">IO#puts</a></td>
+                <td></td>
+              </tr>
+            
+
+            <tr class="method">
+              <td>   0.00%</td>
+              <td>   0.00%</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>      0.00</td>
+              <td>                   1</td>
+              <td class="method_name"><a name="Render3__Builder_to_s_3466140">Render3::Builder#to_s</a></td>
+              <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=196" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:196">196</a></td>
+            </tr>
+
+            <!-- Children -->
+            
+            
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                <td>      0.00</td>
+                
+                <td>            1/130001</td>
+                <td class="method_name"><a href="#Render3__Builder_flush_3466140">Render3::Builder#flush</a></td>
+                <td><a href="file:///home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb?line=197" title="/home/pitr/NetBeansProjects/hammer/hammer-render/lib/render_3.rb:197">197</a></td>
+              </tr>
+            
+            <!-- Create divider row -->
+            <tr class="break"><td colspan="9"></td></tr>
+        
+      </table>
+    
+  </body>
+</html>

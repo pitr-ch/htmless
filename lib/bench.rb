@@ -23,6 +23,7 @@ end
 #r = Render3::Builder.new
 #r.body do
 #  r.p.id('i').class('a', 'b').with { r.text 'c' }
+#  r.br['id']
 #  r.p.id('i').class('a', 'b') { r.text 'c' }
 #  r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
 #  r.p('c')['i'].class('a', 'b')
@@ -30,9 +31,35 @@ end
 #  r.p 'c', :id => 'i', :class => ['a', 'b']
 #  r.p('c', :class => 'a b')['i']
 #end
+#
 #puts r
 #
+#require 'ruby-prof'
+#
+#result = RubyProf.profile do
+#  r = nil
+#  10000.times do
+#    r = Render3::Builder.new
+#    r.body do
+#      r.p.id('i').class('a', 'b').with { r.text 'c' }
+#      r.br['id']
+#      r.p.id('i').class('a', 'b') { r.text 'c' }
+#      r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
+#      r.p('c')['i'].class('a', 'b')
+#      r.p('c')['i'].class(['a', 'b'])
+#      r.p 'c', :id => 'i', :class => ['a', 'b']
+#      r.p('c', :class => 'a b')['i']
+#    end
+#  end
+#  puts r
+#end
+#
+#printer = RubyProf::GraphHtmlPrinter.new(result)
+#File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
+#
 #exit
+
+
 
 
 TIMES = 50000
@@ -91,6 +118,7 @@ Benchmark.bm(20) do |b|
           end
         end
       end
+      puts r.to_s if TIMES == 1
     end
   end
   b.report("render3") do
@@ -113,6 +141,7 @@ Benchmark.bm(20) do |b|
           end
         end
       end
+      puts r.to_s if TIMES == 1
     end
   end
 

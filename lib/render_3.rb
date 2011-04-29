@@ -27,10 +27,9 @@ module Render3
     'u', 'ul',
     'var', 'video'
   ]
-  ATTRIBUTES=[
-    'id', 'style', 'title'
-    #'class'
-  ]
+  ATTRIBUTES = ["id", "class", "style", "title", "onclick", "ondblclick", "onmousedown", "onmouseup", "onmouseover",
+    "onmousemove", "onmouseout", "onkeypress", "onkeydown", "onkeyup", "accesskey", "tabindex",
+    "onfocus", "onblur", "align", "char", "charoff", "lang", "xml:lang", "dir", "valign"]
 
   # << faster then +
   # yield faster then block.call
@@ -38,56 +37,51 @@ module Render3
   # TODO doctype
   # TODO comment
   # TODO add full attribute set
-  # TODO YARD :)
+  # TODO YARD
 
-  class Output < String
+  module Tools
+    extend self
+    
     def escape(text)
-      self.<< CGI.escapeHTML(text)
+      CGI.escapeHTML(text)
     end
   end
 
-  class ATag
+  class ATag    
+      
     def initialize(builder)
       @builder = builder
       @output = builder.instance_eval { @output }
-      @inside = false
-      @classes = []
     end
 
     def open(tag, attributes = nil)
-      @inside = true
       @output << '<' << tag
       @builder.open_tag = self
       attributes(attributes)
       self
     end
 
-    def attributes(hash)
-      hash.each do |attr, value|
+    def attributes(attrs)
+      return self unless attrs
+      attrs.each do |attr, value|
         __send__(attr, *value)
-      end if hash
+      end
+      self
     end
 
     def attribute(attribute, content)
-      @output << " #{attribute}=\""
-      @output.escape content
-      @output << '"'
-    end
-
-    def flush_classes
-      attribute 'class', @classes.join(' ') unless @classes.empty?
-      @classes.clear
+      @output << " #{attribute}=\"" << Tools.escape(content) << '"'
     end
 
     (ATTRIBUTES).each do |attr|
       define_method(attr) do |content|
-        (@output << " #{attr}=\"").escape(content) << '"'
+        @output << " #{attr}=\"" << Tools.escape(content) << '"'
         self
       end
     end
 
     def class(*classes)
-        @classes.push [*classes]
+        attribute 'class', classes.join(' ')
         self
       end
 
@@ -99,9 +93,7 @@ module Render3
 
     class EmptyTag < ATag
       def flush
-        flush_classes
-        @output << ' />' if @inside
-        @inside = false
+        @output << ' />'
         nil
       end
     end
@@ -110,7 +102,6 @@ module Render3
       def initialize(builder)
         super
         @stack = builder.instance_eval { @stack }
-        @open = false
         @content = nil
       end
 
@@ -121,7 +112,6 @@ module Render3
           attributes = content_or_attributes
         end
         super tag, attributes
-        @open = true
         @stack << tag
         if block
           with &block
@@ -131,19 +121,16 @@ module Render3
       end
 
       def flush
-        flush_classes
-        @output << '>' if @inside
-        @output.escape(@content) if @content
-        @output << '</' << @stack.pop << '>' if @open
-        @inside = @open = false
+        @output << '>' 
+        @output << Tools.escape(@content) if @content
+        @output << '</' << @stack.pop << '>'        
         @content = nil
       end
 
       def with
-        flush_classes
         @output << '>'
-        @open = @inside = false
         @content = nil
+        @builder.open_tag = nil
         yield
         @builder.flush
         @output << '</' << @stack.pop << '>'
@@ -162,7 +149,7 @@ module Render3
     class Builder
 
       def initialize() # TODO tag classes
-        @output = Output.new
+        @output = ""
         @stack = []
         @empty_tag = EmptyTag.new self
         @double_tag = DoubleTag.new self
@@ -170,7 +157,7 @@ module Render3
       end
 
       def text(text)
-        @output.escape(text.to_s)
+        @output << Tools.escape(text.to_s)
       end
 
       def raw(text)
@@ -195,7 +182,6 @@ module Render3
       DOUBLE_TAGS.each do |tag|
         define_method(tag) do |content_or_attributes = nil, attributes = nil, &block|
           flush
-          @output << "\n"
           @double_tag.open(tag, content_or_attributes, attributes, &block)
         end
       end
@@ -203,7 +189,6 @@ module Render3
       EMPTY_TAGS.each do |tag|
         define_method(tag) do |attributes = nil|
           flush
-          @output << "\n"
           @empty_tag.open(tag, attributes)
         end
       end
