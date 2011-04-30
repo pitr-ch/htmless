@@ -1,7 +1,6 @@
 require 'cgi'
-require "nokogiri"
 
-module Render3
+module Render4
 
   EMPTY_TAGS = [
     'area', 'base', 'br', 'col', 'embed', 'frame',
@@ -37,23 +36,55 @@ module Render3
   # accessing ivar is faster then accesing hash or constants
   # class_eval faster then define_method
 
+  # TODO doctype
+  # TODO comment
   # TODO add full attribute set
   # TODO YARD
-  # TODO class for each tag?
-  # TODO xmlns="http://www.w3.org/1999/xhtml" to hml tag
+  # TODO ability to reset builder
 
   class ATag
 
     def initialize(builder)
       @builder = builder
       @output = builder.instance_eval { @output }
+      @stack = builder.instance_eval { @stack }
+      define_by_format
     end
 
-    def open(tag, attributes = nil)
-      @output << '<' << tag
-      @builder.current = self
-      attributes(attributes)
-      self
+    def define_by_format
+      define_open
+    end
+
+    def define_open
+      case @builder.format
+      when :oneline then
+        instance_eval do
+          def open(tag, attributes = nil)
+            @output << '<' << tag
+            @builder.current = self
+            attributes(attributes)
+            self
+          end
+        end
+      when :multiline  then
+        instance_eval do
+          def open(tag, attributes = nil)
+            @output << "\n<" << tag
+            @builder.current = self
+            attributes(attributes)
+            self
+          end
+        end
+      when :indented then
+        instance_eval do
+          def open(tag, attributes = nil)
+            @output << "\n" << '  ' * @stack.size << '<' << tag
+            @builder.current = self
+            attributes(attributes)
+            self
+          end
+        end
+      end
     end
 
     def attributes(attrs)
@@ -65,9 +96,8 @@ module Render3
     end
 
     def attribute(attribute, content)
-      @output << ' ' << attribute << '="' << CGI.escapeHTML(content) << '"'
+      @output << ' ' << CGI.escapeHTML(attribute) << '="' << CGI.escapeHTML(content) << '"'
     end
-
 
     (ATTRIBUTES).each do |attr|
       class_eval <<-RUBYCODE, __FILE__, __LINE__
@@ -98,23 +128,7 @@ module Render3
   class DoubleTag < ATag
     def initialize(builder)
       super
-      @stack = builder.instance_eval { @stack }
       @content = nil
-    end
-
-    def open(tag, content_or_attributes, attributes, &block)
-      if content_or_attributes.kind_of?(String)
-        @content = content_or_attributes
-      else
-        attributes = content_or_attributes
-      end
-      super tag, attributes
-      @stack << tag
-      if block
-        with &block
-      else
-        self
-      end
     end
 
     def flush
@@ -124,15 +138,73 @@ module Render3
       @content = nil
     end
 
-    def with
-      @output << '>'
-      @content = nil
-      @builder.current = nil
-      yield
-      @builder.flush
-      @output << '</' << @stack.pop << '>'
-      nil
+    def define_by_format
+      super
+      define_with
+      redefine_open
     end
+
+    def redefine_open
+      @old_open = method(:open)
+      instance_eval do 
+        def open(tag, content_or_attributes, attributes, &block)
+          if content_or_attributes.kind_of?(String)
+            @content = content_or_attributes
+          else
+            attributes = content_or_attributes
+          end
+          @old_open.call tag, attributes
+          @stack << tag
+          if block
+            with &block
+          else
+            self
+          end
+        end
+      end
+    end
+
+    def define_with
+      case @builder.format
+      when :oneline then
+        instance_eval do
+          def with
+            @output << '>'
+            @content = nil
+            @builder.current = nil
+            yield
+            @builder.flush
+            @output << '</' << @stack.pop << '>'
+            nil
+          end
+        end
+      when :multiline  then
+        instance_eval do
+          def with
+            @output << '>'
+            @content = nil
+            @builder.current = nil
+            yield
+            @builder.flush
+            @output << "\n</" << @stack.pop << '>'
+            nil
+          end
+        end
+      when :indented then
+        instance_eval do
+          def with
+            @output << '>'
+            @content = nil
+            @builder.current = nil
+            yield
+            @builder.flush
+            @output << "\n" << '  ' * (@stack.size-1) << '</' << @stack.pop << '>'
+            nil
+          end
+        end
+      end
+    end
+    
 
     (ATTRIBUTES + ['class']).each do |attr|
       class_eval <<-RUBYCODE, __FILE__, __LINE__
@@ -147,11 +219,14 @@ module Render3
   end
 
   class Builder
+    FORMATS = [ :oneline, :multiline, :indented ]
     attr_accessor :current
+    attr_reader :format
 
     def initialize() # TODO tag classes
       @output = ""
       @stack = []
+      @format = :oneline
       @empty_tag = EmptyTag.new self
       @double_tag = DoubleTag.new self
       @current = nil
@@ -165,10 +240,6 @@ module Render3
       @output << text.to_s
     end
 
-    def comment(comment)
-      @output << "<!--" << comment << '-->'
-    end
-
     def flush
       if @current
         @current.flush
@@ -176,14 +247,15 @@ module Render3
       end
     end
 
-    def reset
-      flush
-      @output.clear
-      @stack.clear
-    end
-
     def go_in(*variables, &block)
       instance_exec *variables, &block
+    end
+
+    def format=(value)
+      raise unless FORMATS.include?(value)
+      @format = value
+      @empty_tag.define_by_format
+      @double_tag.define_by_format
     end
 
     DOUBLE_TAGS.each do |tag|
@@ -204,18 +276,9 @@ module Render3
       RUBYCODE
     end
 
-    def to_s(options = {})
+    def to_s
       flush
-      out = unless options[:format]
-        @output
-      else
-        indent = options[:format].kind_of?(Integer) ? options[:format] : 2
-        Nokogiri::XML::DocumentFragment.parse(@output).to_xml(:indent => indent)
-      end
-      if options[:head]
-        '<?xml version="1.0" encoding="UTF-8"?>' + "\n" + '<!DOCTYPE html>' + "\n" + out
-      else out
-      end
+      @output
     end
   end
 
