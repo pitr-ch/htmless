@@ -4,6 +4,7 @@ require "#{File.dirname(__FILE__)}/render.rb"
 #require "#{File.dirname(__FILE__)}/render_2.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
+require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 
 class ::Class
   def spy
@@ -21,34 +22,38 @@ class ::Class
   end
 end
 
-TIMES = 100000
-TIMES =  75000
+#TIMES = 100000
+#TIMES =  75000
 TIMES =  50000
 #TIMES =  10000
 #TIMES =   1000
+#TIMES =    500
 #TIMES =    100
 #TIMES =      1
 
 
 
-r = Render3::Builder.new
-r.go_in do
-  html do
-    comment 'asd'
-    head { comment 'asd' }
-    body do
-      p.id('a').class('a', 'b').with { r.text 'a content' }
-      p.id('b').class('a', 'b') { r.text 'a content' }
-      p.id('c'); current.class('a', 'b') { r.text 'a content' }
-      p('a content')['d'].class('a', 'b')
-      p('a content')['e'].class(['a', 'b'])
-      p 'a content', :id => 'f', :class => ['a', 'b']
-      p('a content', :class => 'a b')['g']
-    end
-  end
-end
-puts r.to_s(:format => true, :head => true)
-exit
+#r = Hammer::Builder.new
+#r.go_in do
+#  div do
+#    div('a')[12]
+#    div[13]
+#  end
+#end
+#puts r.to_html
+#
+#r2 = Hammer::FormatedBuilder.new
+#r2.go_in do
+#  div do
+#    div('a')[12]
+#    div[13]
+#  end
+#end
+#puts r2.to_html
+#
+#exit
+
+
 #r = Render4::Builder.new
 #def testt(r)
 #  r.go_in do
@@ -74,21 +79,22 @@ exit
 #require 'ruby-prof'
 #
 #result = RubyProf.profile do
-#  r = nil
+#  r = Hammer::Builder.new
 #  10000.times do
-#    r = Render3::Builder.new
-#    r.body do
-#      r.p.id('i').class('a', 'b').with { r.text 'c' }
-#      r.br['id']
-#      r.p.id('i').class('a', 'b') { r.text 'c' }
-#      r.p.id('i'); r.current.class('a', 'b') { r.text 'c' }
-#      r.p('c')['i'].class('a', 'b')
-#      r.p('c')['i'].class(['a', 'b'])
-#      r.p 'c', :id => 'i', :class => ['a', 'b']
-#      r.p('c', :class => 'a b')['i']
+#    r.go_in do
+#      body do
+#        p.id('i').class('a', 'b').with { r.text 'c' }
+#        p.id('i').class('a', 'b') { r.text 'c' }
+#        p.id('i'); current.class('a', 'b') { r.text 'c' }
+#        p('c')['i'].class('a', 'b')
+#        div('c')['i'].class(['a', 'b'])
+#        span 'c', :id => 'i', :class => ['a', 'b']
+#        p('c', :class => 'a b')['i']
+#      end
 #    end
+#    r.reset
 #  end
-#  puts r
+#  puts 'done'
 #end
 #
 #printer = RubyProf::GraphHtmlPrinter.new(result)
@@ -109,7 +115,7 @@ require 'erubis'
 require 'tagz'
 require 'erector'
 
-Benchmark.bm(20) do |b|
+Benchmark.bmbm(23) do |b|
   b.report("render") do
     model = AModel.new 'a', 'b'    
     TIMES.times do
@@ -158,10 +164,10 @@ Benchmark.bm(20) do |b|
       puts r.to_s if TIMES == 1
     end
   end
-  b.report("render4") do
+  b.report("hammer-builder") do
     model = AModel.new 'a', 'b'
-    TIMES.times do
-      r = Render4::Builder.new
+    r = Hammer::Builder.new
+    TIMES.times do      
       r.go_in do
         html do
           head
@@ -181,6 +187,33 @@ Benchmark.bm(20) do |b|
         end
       end
       puts r.to_s if TIMES == 1
+      r.reset
+    end
+  end
+  b.report("hammer-formated_builder") do
+    model = AModel.new 'a', 'b'
+    r = Hammer::FormatedBuilder.new
+    TIMES.times do
+      r.go_in do
+        html do
+          head
+          body do
+            div :id => 'menu' do
+              ul do
+                10.times do
+                  li model.a
+                  li model.b
+                end
+              end
+            end
+            div['content'].with do
+              10.times { text 'asd asha sdha sdjhas ahs'*10 }
+            end
+          end
+        end
+      end
+      puts r.to_s if TIMES == 1
+      r.reset
     end
   end
 
@@ -254,8 +287,8 @@ TMP
 
   b.report('erector') do
     model = AModel.new 'a', 'b'
-    TIMES.times do
-      w = AWidget.new :model => model
+    w = AWidget.new :model => model
+    TIMES.times do      
       w.to_html
       puts w.to_html if TIMES == 1
     end
