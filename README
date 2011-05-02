@@ -1,22 +1,73 @@
-== hammer-render
+= hammer-render
+
+== Syntax
 
 Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but faster
 
-r = Render3::Builder.new
-r.go_in do
-  body do
-    p.id('i').class('a', 'b').with { r.text 'a content' }
-    p.id('i').class('a', 'b') { r.text 'a content' }
-    p.id('i'); current.class('a', 'b') { r.text 'a content' }
-    p('a content')['i'].class('a', 'b')
-    p('a content')['i'].class(['a', 'b'])
-    p 'a content', :id => 'i', :class => ['a', 'b']
-    p('a content', :class => 'a b')['i']
-  end
-end
+    Hammer::FormatedBuilder.new.go_in do
+      html do
+        head { title 'a title' }
+        div.id('menu').class('left') do
+          ul do
+            li 'home'
+            li 'contacts', :class => 'active'
+          end
+        end
+        div.id('content') do
+          article.id 'article1' do
+            h1 'header'
+            p('some text').class('centered')
+            div(:class => 'like').with do
+              text 'like on '
+              strong 'Facebook'
+            end
+          end
+        end
 
-renders 7 identical elements
-<p id="i" class="a b">c</p>
+      end
+    end.to_html
+
+    # =>
+    #<html>
+    #  <head>
+    #    <title>a title</title>
+    #  </head>
+    #  <div id="menu" class="left">
+    #    <ul>
+    #      <li>home</li>
+    #      <li class="active">contacts</li>
+    #    </ul>
+    #  </div>
+    #  <div id="content">
+    #    <article id="article1">
+    #      <h1>header</h1>
+    #      <p class="centered">some text</p>
+    #      <div class="like">like on
+    #        <strong>Facebook</strong>
+    #      </div>
+    #    </article>
+    #  </div>
+    #</html>
+
+== Extensibility
+
+Creating new tag
+  class MyBuilder < Hammer::Builder
+    define_tag_class :new_tag, :abstract_double_tag do
+      set_tag :new_tag
+    end
+  end
+
+Add method only to div tags
+  class MyBuilder < Hammer::Builder
+    redefine_class :div do
+      def left!
+        class 'left'
+      end
+    end
+  end
+
+and more ...
 
 == Benchmark
 

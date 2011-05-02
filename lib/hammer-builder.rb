@@ -16,10 +16,7 @@ module Hammer
 
     # TODO add full attribute set
     # TODO YARD
-    # TODO class for each tag?
     # TODO xmlns="http://www.w3.org/1999/xhtml" to hml tag
-
-    public
 
     def self.define_class(klass_name, superclass_name = nil, &definition)
       raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
@@ -203,6 +200,8 @@ module Hammer
       @output << CGI.escapeHTML(text.to_s)
     end
 
+    alias :[] :text
+
     def raw(text)
       @output << text.to_s
     end
@@ -226,6 +225,7 @@ module Hammer
 
     def go_in(*variables, &block)
       instance_exec *variables, &block
+      self
     end
 
     def to_html()

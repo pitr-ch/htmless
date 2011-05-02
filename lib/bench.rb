@@ -42,16 +42,30 @@ TIMES =  50000
 #end
 #puts r.to_html
 #
-#r2 = Hammer::FormatedBuilder.new
-#r2.go_in do
-#  div do
-#    div('a')[12]
-#    div[13]
-#  end
-#end
-#puts r2.to_html
-#
-#exit
+puts(Hammer::FormatedBuilder.new.go_in do
+  html do
+    head { title 'a title' }
+    div.id('menu').class('left') do
+      ul do
+        li 'home'
+        li 'contacts', :class => 'active'
+      end
+    end
+    div.id('content') do
+      article.id 'article1' do
+        h1 'header'
+        p('some text').class('centered')
+        div(:class => 'like').with do
+          text 'like on '
+          strong 'Facebook'
+        end
+      end
+    end
+
+  end
+end.to_html)
+
+exit
 
 
 #r = Render4::Builder.new
