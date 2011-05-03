@@ -1,5 +1,6 @@
 require 'cgi'
 require 'active_support/core_ext/class/inheritable_attributes'
+require 'active_support/core_ext/string/inflections'
 
 module Hammer
   class AbstractBuilder
@@ -22,8 +23,10 @@ module Hammer
       raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
 
       define_singleton_method "#{klass_name}_class" do |builder|
-        builder.instance_variable_get("@#{klass_name}_class") || begin          
-          builder.instance_variable_set("@#{klass_name}_class", builder.send("#{klass_name}_class_definition", builder))          
+        builder.instance_variable_get("@#{klass_name}_class") || begin
+          klass = builder.send("#{klass_name}_class_definition", builder)
+          builder.const_set klass_name.to_s.classify, klass
+          builder.instance_variable_set("@#{klass_name}_class", klass)
         end
       end
 
