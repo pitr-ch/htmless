@@ -16,7 +16,7 @@ module Hammer
 
     # TODO add full attribute set
     # TODO YARD
-    # TODO xmlns="http://www.w3.org/1999/xhtml" to hml tag
+    # TODO xmlns="http://www.w3.org/1999/xhtml" to html tag
 
     def self.define_class(klass_name, superclass_name = nil, &definition)
       raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
@@ -62,6 +62,7 @@ module Hammer
         @builder = builder
         @output = builder.instance_eval { @output }
         @stack = builder.instance_eval { @stack }
+        @classes = []
         set_tag
       end
 
@@ -101,7 +102,7 @@ module Hammer
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__
         def class(*classes)
-          @output << ' class="' << CGI.escapeHTML(classes.join(' ')) << '"'
+          @classes.push(*classes)          
           self
         end
       RUBYCODE
@@ -111,6 +112,10 @@ module Hammer
 
     define_class :abstract_empty_tag, :abstract_tag do
       def flush
+        unless @classes.empty?
+          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @classes.clear
+        end
         @output << ' />'
         nil
       end
@@ -143,6 +148,10 @@ module Hammer
       RUBYCODE
 
       def flush
+        unless @classes.empty?
+          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @classes.clear
+        end
         @output << '>'
         @output << CGI.escapeHTML(@content) if @content
         @output << '</' << @stack.pop << '>'
@@ -150,6 +159,10 @@ module Hammer
       end
 
       def with
+        unless @classes.empty?
+          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @classes.clear
+        end
         @output << '>'
         @content = nil
         @builder.current = nil
@@ -289,6 +302,10 @@ module Hammer
 
     redefine_class :abstract_double_tag do
       def with
+        unless @classes.empty?
+          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @classes.clear
+        end
         @output << '>'
         @content = nil
         @builder.current = nil

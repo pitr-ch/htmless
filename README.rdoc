@@ -49,25 +49,71 @@ Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but 
     #  </div>
     #</html>
 
+== Helpers
+
+You can mix it directly to Builder's instance
+
+  require 'active_support'
+  require 'action_view'
+
+  Hammer::FormatedBuilder.new.go_in do
+    extend ActionView::Helpers::NumberHelper
+    div number_with_precision(Math::PI, :precision => 4)
+  end.to_html # => <div>3.1416</div>
+
+or make your own Builder
+
+  require 'active_support'
+  require 'action_view'
+
+  class MyBuilder < Hammer::FormatedBuilder
+    include ActionView::Helpers::NumberHelper
+  end
+
+  MyBuilder.new.go_in do
+    div number_with_precision(Math::PI, :precision => 4)
+  end.to_html # => <div>3.1416</div>
+
 == Extensibility
 
-Creating new tag
-  class MyBuilder < Hammer::Builder
-    define_tag_class :new_tag, :abstract_double_tag do
-      set_tag :new_tag
-    end
-  end
+  class MyBuilder < Hammer::FormatedBuilder
 
-Add method only to div tags
-  class MyBuilder < Hammer::Builder
-    redefine_class :div do
-      def left!
-        class 'left'
+    # define new method to all tags
+    redefine_class :abstract_tag do
+      def hide!
+        self.class 'hidden'
       end
     end
+
+    # add pseudo tag
+    define_tag_class :component, :div do
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def open(id, attributes = nil, &block)
+          super(attributes, &nil).id(id).class('component')
+          block ? with(&block) : self
+        end
+      RUBYCODE
+    end
   end
 
-and more ...
+  MyBuilder.new.go_in do
+    div[:content].with do
+      span.id('secret').class('left').hide!
+      component('component-1') do
+        strong 'something'
+      end
+    end
+  end.to_html
+
+and result is
+
+  <div id="content">
+    <span id="secret" class="left hidden"></span>
+    <div id="component-1" class="component">
+      <strong>something</strong>
+    </div>
+  </div>
+
 
 == Benchmark
 
