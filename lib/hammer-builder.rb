@@ -15,9 +15,8 @@ module Hammer
     # accessing ivar is faster then accesing hash or constants
     # class_eval faster then define_method
 
-    # TODO add full attribute set
-    # TODO YARD
-    # TODO xmlns="http://www.w3.org/1999/xhtml" to html tag
+    # TODO documentation
+    # TODO tests
 
     def self.define_class(klass_name, superclass_name = nil, &definition)
       raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
@@ -25,7 +24,7 @@ module Hammer
       define_singleton_method "#{klass_name}_class" do |builder|
         builder.instance_variable_get("@#{klass_name}_class") || begin
           klass = builder.send("#{klass_name}_class_definition", builder)
-          builder.const_set klass_name.to_s.classify, klass
+          builder.const_set klass_name.to_s.classify, klass rescue nil # FIXME why 's'.to_s.classify => '' ?
           builder.instance_variable_set("@#{klass_name}_class", klass)
         end
       end
@@ -43,16 +42,12 @@ module Hammer
     def self.redefine_class(klass_name, &definition)
       raise "class: '#{klass_name}' not defined" unless respond_to? "#{klass_name}_class"
 
-      define_singleton_method "#{klass_name}_class_definition" do |builder|        
+      define_singleton_method "#{klass_name}_class_definition" do |builder|
         Class.new(super(builder), &definition)
       end
     end
 
     define_class :abstract_tag do
-      def self.attributes
-        ["id", "class", "style", "title"]
-      end
-
       def self.set_tag(tag)
         class_eval <<-RUBYCODE, __FILE__, __LINE__
           def set_tag
@@ -94,18 +89,35 @@ module Hammer
 
       alias_method(:rclass, :class)
 
-      attributes.each do |attr|
-        class_eval <<-RUBYCODE, __FILE__, __LINE__
-          def #{attr}(content)
-            @output << ' #{attr}="' << CGI.escapeHTML(content.to_s) << '"'
-            self
-          end
-        RUBYCODE
+      def self.attributes
+        # global HTML5 attributes
+        [ 'accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang',
+          'spellcheck','style','tabindex','title','onabort','onblur','oncanplay','oncanplaythrough','onchange',
+          'onclick','oncontextmenu','oncuechange','ondblclick','ondrag','ondragend','ondragenter','ondragleave',
+          'ondragover','ondragstart','ondrop','ondurationchange','onemptied','onended','onerror','onfocus','oninput',
+          'oninvalid','onkeydown','onkeypress','onkeyup','onload','onloadeddata','onloadedmetadata','onloadstart',
+          'onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onmousewheel','onpause','onplay',
+          'onplaying','onprogress','onratechange','onreadystatechange','onreset','onscroll','onseeked','onseeking',
+          'onselect','onshow','onstalled','onsubmit','onsuspend','ontimeupdate','onvolumechange','onwaiting']
       end
+
+      def self.define_attributes
+        attributes.each do |attr|
+          next if instance_methods.include?(attr.to_sym)
+          class_eval <<-RUBYCODE, __FILE__, __LINE__
+            def #{attr}(content)
+              @output << ' #{attr}="' << CGI.escapeHTML(content.to_s) << '"'
+              self
+            end
+          RUBYCODE
+        end
+      end
+
+      define_attributes
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__
         def class(*classes)
-          @classes.push(*classes)          
+          @classes.push(*classes)
           self
         end
       RUBYCODE
@@ -175,15 +187,26 @@ module Hammer
         nil
       end
 
-      attributes.each do |attr|
-        # TODO super may be inlined ...
-        class_eval <<-RUBYCODE, __FILE__, __LINE__
-          def #{attr}(*args, &block)
-            super *args
-            return with(&block) if block
-            self
+      def self.define_attributes
+        attributes.each do |attr|
+          if instance_methods.include?(attr.to_sym)
+            class_eval <<-RUBYCODE, __FILE__, __LINE__
+              def #{attr}(*args, &block)
+                super(*args, &nil)
+                return with(&block) if block
+                self
+              end
+            RUBYCODE
+          else
+            class_eval <<-RUBYCODE, __FILE__, __LINE__
+              def #{attr}(content, &block)
+                @output << ' #{attr}="' << CGI.escapeHTML(content.to_s) << '"'
+                return with(&block) if block
+                self
+              end
+            RUBYCODE
           end
-        RUBYCODE
+        end
       end
     end
 
@@ -226,6 +249,22 @@ module Hammer
       @output << "<!--" << comment << '-->'
     end
 
+    #  <?xml version="1.0" encoding="UTF-8"?>
+    #  <!DOCTYPE html>
+
+    def xml_version(version = '1.0', encoding = 'UTF-8')
+      @output << "<?xml version=\"#{version}\" encoding=\"#{encoding}\"?>"
+    end
+
+    def doctype
+      @output << "<!DOCTYPE html>"
+    end
+
+    def xhtml5!
+      xml_version
+      doctype
+    end
+
     def flush
       if @current
         @current.flush
@@ -253,42 +292,195 @@ module Hammer
 
   class Builder < AbstractBuilder
 
+    EXTRA_ATTRIBUTES = {
+      "a" => ["href", "target", "ping", "rel", "media", "hreflang", "type"],
+      "abbr" => [],
+      "address" => [],
+      "area" => ["alt", "coords", "shape", "href", "target", "ping", "rel", "media", "hreflang", "type"],
+      "article" => [],
+      "aside" => [],
+      "audio" => ["src", "preload", "autoplay", "mediagroup", "loop", "controls"],
+      "b" => [],
+      "base" => ["href", "target"],
+      "bdi" => [],
+      "bdo" => [],
+      "blockquote" => ["cite"],
+      "body" => ["onafterprint", "onbeforeprint", "onbeforeunload", "onblur", "onerror", "onfocus", "onhashchange",
+        "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate", "onredo", "onresize",
+        "onscroll", "onstorage", "onundo", "onunload"],
+      "br" => [],
+      "button" => ["autofocus", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate",
+        "formtarget", "name", "type", "value"],
+      "canvas" => ["width", "height"],
+      "caption" => [],
+      "cite" => [],
+      "code" => [],
+      "col" => ["span"],
+      "colgroup" => ["span"],
+      "command" => ["type", "label", "icon", "disabled", "checked", "radiogroup"],
+      "datalist" => ["option"],
+      "dd" => [],
+      "del" => ["cite", "datetime"],
+      "details" => ["open"],
+      "dfn" => [],
+      "div" => [],
+      "dl" => [],
+      "dt" => [],
+      "em" => [],
+      "embed" => ["src", "type", "width", "height"],
+      "fieldset" => ["disabled", "form", "name"],
+      "figcaption" => [],
+      "figure" => [],
+      "footer" => [],
+      "form" => ["action", "autocomplete", "enctype", "method", "name", "novalidate", "target"], # FIXME add "accept-charset"
+      "h1" => [],
+      "h2" => [],
+      "h3" => [],
+      "h4" => [],
+      "h5" => [],
+      "h6" => [],
+      "head" => [],
+      "header" => [],
+      "hgroup" => [],
+      "hr" => [],
+      "html" => ["manifest"],
+      "i" => [],
+      "iframe" => ["src", "srcdoc", "name", "sandbox", "seamless", "width", "height"],
+      "img" => ["alt", "src", "usemap", "ismap", "width", "height"],
+      "input" => ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction",
+        "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min",
+        "multiple", "name", "pattern", "placeholder", "readonly", "required", "size", "src", "step", "type", "value",
+        "width"],
+      "ins" => ["cite", "datetime"],
+      "kbd" => [],
+      "keygen" => ["autofocus", "challenge", "disabled", "form", "keytype", "name"],
+      "label" => ["form", "for"],
+      "legend" => [],
+      "li" => ["value"],
+      "link" => ["href", "rel", "media", "hreflang", "type", "sizes"],
+      "map" => ["name"],
+      "mark" => [],
+      "menu" => ["type", "label"],
+      "meta" => ["name", "content", "charset"], # FIXME add "http-equiv"
+      "meter" => ["value", "min", "max", "low", "high", "optimum", "form"],
+      "nav" => [],
+      "noscript" => [],
+      "object" => ["data", "type", "name", "usemap", "form", "width", "height"],
+      "ol" => ["reversed", "start"],
+      "optgroup" => ["disabled", "label"],
+      "option" => ["disabled", "label", "selected", "value"],
+      "output" => ["for", "form", "name"],
+      "p" => [],
+      "param" => ["name", "value"],
+      "pre" => [],
+      "progress" => ["value", "max", "form"],
+      "q" => ["cite"],
+      "rp" => [],
+      "rt" => [],
+      "ruby" => [],
+      "s" => [],
+      "samp" => [],
+      "script" => ["src", "async", "defer", "type", "charset"],
+      "section" => [],
+      "select" => ["autofocus", "disabled", "form", "multiple", "name", "required", "size"],
+      "small" => [],
+      "source" => ["src", "type", "media"],
+      "span" => [],
+      "strong" => [],
+      "style" => ["media", "type", "scoped"],
+      "sub" => [],
+      "summary" => [],
+      "sup" => [],
+      "table" => ["border"],
+      "tbody" => [],
+      "td" => ["colspan", "rowspan", "headers"],
+      "textarea" => ["autofocus", "cols", "disabled", "form", "maxlength", "name", "placeholder", "readonly",
+        "required", "rows", "wrap"],
+      "tfoot" => [],
+      "th" => ["colspan", "rowspan", "headers", "scope"],
+      "thead" => [],
+      "time" => ["datetime", "pubdate"],
+      "title" => [],
+      "tr" => [],
+      "track" => ["default", "kind", "label", "src", "srclang"],
+      "u" => [],
+      "ul" => [],
+      "var" => [],
+      "video" => ["src", "poster", "preload", "autoplay", "mediagroup", "loop", "controls", "width", "height"],
+      "wbr" => []
+    }
+
     DOUBLE_TAGS = [
-      'a', 'abbr', 'acronym', 'address', 'article', 'aside', 'audio',
-      'b', 'bdo', 'big', 'blockquote', 'body', 'button',
-      'canvas', 'caption', 'center', 'cite', 'code', 'colgroup', 'command',
-      'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt',
+      'a', 'abbr', 'address', 'article', 'aside', 'audio',
+      'b', 'bdo', 'blockquote', 'body', 'button',
+      'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
+      'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
       'em',
-      'fieldset', 'figure', 'footer', 'form', 'frameset',
+      'fieldset', 'figure', 'footer', 'form', 
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i',
       'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li',
       'map', 'mark', 'meter',
-      'nav', 'noframes', 'noscript',
+      'nav', 'noscript',
       'object', 'ol', 'optgroup', 'option',
       'p', 'pre', 'progress',
       'q', 'ruby', 'rt', 'rp', 's',
-      'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike',
+      'samp', 'script', 'section', 'select', 'small', 'source', 'span',
       'strong', 'style', 'sub', 'sup',
       'table', 'tbody', 'td', 'textarea', 'tfoot',
-      'th', 'thead', 'time', 'title', 'tr', 'tt',
+      'th', 'thead', 'time', 'title', 'tr',
       'u', 'ul',
       'var', 'video'
     ]
 
-    DOUBLE_TAGS.each do |tag|
+    (DOUBLE_TAGS - ['html']).each do |tag|
       define_tag_class tag, :abstract_double_tag do
         set_tag tag
+
+        class_eval <<-RUBYCODE, __FILE__, __LINE__
+          def self.attributes
+            super + EXTRA_ATTRIBUTES['#{tag}'] 
+          end
+        RUBYCODE
+
+        define_attributes
       end
     end
 
+    define_tag_class :html, :abstract_double_tag do
+      set_tag 'html'
+
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def self.attributes
+          super + ['xmlns'] + EXTRA_ATTRIBUTES['html']
+        end
+      RUBYCODE
+
+      define_attributes
+
+      class_eval <<-RUBYCODE, __FILE__, __LINE__
+        def open(*args, &block)
+          super(*args, &nil).xmlns('http://www.w3.org/1999/xhtml')
+          block ? with(&block) : self
+        end
+      RUBYCODE
+    end
+
     EMPTY_TAGS = [
-      'area', 'base', 'br', 'col', 'embed', 'frame',
+      'area', 'base', 'br', 'col', 'embed', 
       'hr', 'img', 'input', 'link', 'meta', 'param'
     ]
 
     EMPTY_TAGS.each do |tag|
       define_tag_class tag, :abstract_empty_tag do
         set_tag tag
+
+        class_eval <<-RUBYCODE, __FILE__, __LINE__
+          def self.attributes
+            super + EXTRA_ATTRIBUTES['#{tag}']
+          end
+        RUBYCODE
+
+        define_attributes
       end
     end
   end

@@ -5,49 +5,54 @@
 Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but faster
 
     Hammer::FormatedBuilder.new.go_in do
+      xhtml5!
       html do
         head { title 'a title' }
-        div.id('menu').class('left') do
-          ul do
-            li 'home'
-            li 'contacts', :class => 'active'
+        body do
+          div.id('menu').class('left') do
+            ul do
+              li 'home'
+              li 'contacts', :class => 'active'
+            end
           end
-        end
-        div.id('content') do
-          article.id 'article1' do
-            h1 'header'
-            p('some text').class('centered')
-            div(:class => 'like').with do
-              text 'like on '
-              strong 'Facebook'
+          div.id('content') do
+            article.id 'article1' do
+              h1 'header'
+              p('some text').class('centered')
+              div(:class => 'like').class('hide').with do
+                text 'like on '
+                strong 'Facebook'
+              end
             end
           end
         end
-
       end
     end.to_html
+    #=>
+    <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <title>a title</title>
+      </head>
+      <body>
+        <div id="menu" class="left">
+          <ul>
+            <li>home</li>
+            <li class="active">contacts</li>
+          </ul>
+        </div>
+        <div id="content">
+          <article id="article1">
+            <h1>header</h1>
+            <p class="centered">some text</p>
+            <div class="like hide">like on
+              <strong>Facebook</strong>
+            </div>
+          </article>
+        </div>
+      </body>
+    </html>
 
-    # =>
-    #<html>
-    #  <head>
-    #    <title>a title</title>
-    #  </head>
-    #  <div id="menu" class="left">
-    #    <ul>
-    #      <li>home</li>
-    #      <li class="active">contacts</li>
-    #    </ul>
-    #  </div>
-    #  <div id="content">
-    #    <article id="article1">
-    #      <h1>header</h1>
-    #      <p class="centered">some text</p>
-    #      <div class="like">like on
-    #        <strong>Facebook</strong>
-    #      </div>
-    #    </article>
-    #  </div>
-    #</html>
 
 == Helpers
 

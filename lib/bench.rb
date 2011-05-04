@@ -73,7 +73,7 @@ TIMES =  50000
 #        super(attributes, &nil).id(id).class('component')
 #        block ? with(&block) : self
 #      end
-    #RUBYCODE
+#RUBYCODE
 #  end
 #end
 #
@@ -91,25 +91,29 @@ TIMES =  50000
 
 
 #html = Hammer::FormatedBuilder.new.go_in do
+#  xhtml5!
 #  html do
 #    head { title 'a title' }
-#    div.id('menu').class('left') do
-#      ul do
-#        li 'home'
-#        li 'contacts', :class => 'active'
+#    body do
+#      div.id('menu').class('left') do
+#        ul do
+#          li 'home'
+#          li 'contacts', :class => 'active'
+#        end
 #      end
-#    end
-#    div.id('content') do
-#      article.id 'article1' do
-#        h1 'header'
-#        p('some text').class('centered')
-#        div(:class => 'like').class('hide').with do
-#          text 'like on '
-#          strong 'Facebook'
+#      div.id('content') do
+#        article.id 'article1' do
+#          h1 'header'
+#          p('some text').class('centered')
+#          div(:class => 'like').class('hide').with do
+#            a.href('http://www.facebook.com/') do
+#              text 'like on '
+#              strong 'Facebook'
+#            end
+#          end
 #        end
 #      end
 #    end
-#
 #  end
 #end.to_html
 #puts html
@@ -117,53 +121,46 @@ TIMES =  50000
 #exit
 
 
-#r = Render4::Builder.new
-#def testt(r)
-#  r.go_in do
-#    body do
-#      p 'a content'
-#      p do
-#        span 'c'
-#      end
-#    end
-#  end
-#end
-#
-#testt(r)
-#r.format = :multiline
-#testt(r)
-#r.format = :indented
-#testt(r)
-#
-#puts r
-#
-#exit
+require 'ruby-prof'
 
-#require 'ruby-prof'
-#
-#result = RubyProf.profile do
-#  r = Hammer::Builder.new
-#  10000.times do
-#    r.go_in do
-#      body do
-#        p.id('i').class('a', 'b').with { r.text 'c' }
-#        p.id('i').class('a', 'b') { r.text 'c' }
-#        p.id('i'); current.class('a', 'b') { r.text 'c' }
-#        p('c')['i'].class('a', 'b')
-#        div('c')['i'].class(['a', 'b'])
-#        span 'c', :id => 'i', :class => ['a', 'b']
-#        p('c', :class => 'a b')['i']
-#      end
-#    end
-#    r.reset
-#  end
-#  puts 'done'
-#end
-#
-#printer = RubyProf::GraphHtmlPrinter.new(result)
-#File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
-#
-#exit
+r = Hammer::Builder.new
+result = RubyProf.profile do  
+  4000.times do
+    r.go_in do
+      xhtml5!
+      html do
+        head { title 'a title' }
+        body do
+          div.id('menu').class('left') do
+            ul do
+              li 'home'
+              li 'contacts', :class => 'active'
+            end
+          end
+          div.id('content') do
+            article.id 'article1' do
+              h1 'header'
+              p('some text').class('centered')
+              div(:class => 'like').class('hide').with do
+                a.href('http://www.facebook.com/') do
+                  text 'like on '
+                  strong 'Facebook'
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    r.reset
+  end
+  puts 'done'
+end
+
+printer = RubyProf::GraphHtmlPrinter.new(result)
+File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
+
+exit
 
 
 class AModel
