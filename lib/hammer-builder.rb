@@ -61,15 +61,34 @@ module Hammer
         @output = builder.instance_eval { @output }
         @stack = builder.instance_eval { @stack }
         @classes = []
+
+        @lt = '<'
+        @gt = '>'
+        @slash_lt = '</'
+        @slash_gt = ' />'
+        @space = ' '
+        @space2 = '  '
+        @newline = "\n"
+        @quote = '"'
+        @eql = '='
+        @eql_quote = @eql + @quote
+
         set_tag
+        set_attributes
       end
 
       def set_tag
         @tag = 'abstract'
       end
 
+      def set_attributes
+        self.rclass.attributes.each do |attr|
+          instance_variable_set("@attr_#{attr}", " #{attr}=\"")
+        end
+      end
+
       def open(attributes = nil)
-        @output << '<' << @tag
+        @output << @lt << @tag
         @builder.current = self
         attributes(attributes)
         self
@@ -84,7 +103,7 @@ module Hammer
       end
 
       def attribute(attribute, content)
-        @output << ' ' << attribute << '="' << CGI.escapeHTML(content) << '"'
+        @output << @space << attribute << @eql_quote << @builder.escape(content) << @quote
       end
 
       alias_method(:rclass, :class)
@@ -106,7 +125,7 @@ module Hammer
           next if instance_methods.include?(attr.to_sym)
           class_eval <<-RUBYCODE, __FILE__, __LINE__
             def #{attr}(content)
-              @output << ' #{attr}="' << CGI.escapeHTML(content.to_s) << '"'
+              @output << @attr_#{attr} << @builder.escape(content.to_s) << @quote
               self
             end
           RUBYCODE
@@ -128,10 +147,10 @@ module Hammer
     define_class :abstract_empty_tag, :abstract_tag do
       def flush
         unless @classes.empty?
-          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
           @classes.clear
         end
-        @output << ' />'
+        @output << @slash_gt
         nil
       end
     end
@@ -164,26 +183,26 @@ module Hammer
 
       def flush
         unless @classes.empty?
-          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
           @classes.clear
         end
-        @output << '>'
-        @output << CGI.escapeHTML(@content) if @content
-        @output << '</' << @stack.pop << '>'
+        @output << @gt
+        @output << @builder.escape(@content) if @content
+        @output << @slash_lt << @stack.pop << @gt
         @content = nil
       end
 
       def with
         unless @classes.empty?
-          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
           @classes.clear
         end
-        @output << '>'
+        @output << @gt
         @content = nil
         @builder.current = nil
         yield
         @builder.flush
-        @output << '</' << @stack.pop << '>'
+        @output << @slash_lt << @stack.pop << @gt
         nil
       end
 
@@ -200,7 +219,7 @@ module Hammer
           else
             class_eval <<-RUBYCODE, __FILE__, __LINE__
               def #{attr}(content, &block)
-                @output << ' #{attr}="' << CGI.escapeHTML(content.to_s) << '"'
+                @output << @attr_#{attr} << @builder.escape(content.to_s) << @quote
                 return with(&block) if block
                 self
               end
@@ -210,19 +229,18 @@ module Hammer
       end
     end
 
-    class_inheritable_array :tags, :instance_writer => false
+    class_inheritable_accessor :tags, :instance_writer => false
+    self.tags = {}
 
-    def self.define_tag_class(klass_name, a_superclass_name = nil, &definition)
-      define_class(klass_name, a_superclass_name, &definition)
+    def self.define_tag(tag)
       class_eval <<-RUBYCODE, __FILE__, __LINE__
-        def #{klass_name}(*args, &block)
+        def #{tag}(*args, &block)
           flush
-          @#{klass_name}.open(*args, &block)
+          @#{tag}.open(*args, &block)
         end
       RUBYCODE
-      self.tags = [klass_name]
+      self.tags[tag] = tag
     end
-
 
     attr_accessor :current
 
@@ -230,13 +248,20 @@ module Hammer
       @output = ""
       @stack = []
       @current = nil
-      tags.each do |tag|
-        instance_variable_set(:"@#{tag}", self.class.send("#{tag}_class", self.class).new(self))
+      tags.values.each do |klass|
+        instance_variable_set(:"@#{klass}", self.class.send("#{klass}_class", self.class).new(self))
       end
+
+      @comment_start = "<!--"
+      @comment_end = '-->'
+      @esc_amp = '&amp;'
+      @esc_quot = '&quot;'
+      @esc_lt = '&lt;'
+      @esc_gt = '&gt;'
     end
 
     def text(text)
-      @output << CGI.escapeHTML(text.to_s)
+      @output << escape(text.to_s)
     end
 
     alias :[] :text
@@ -246,11 +271,8 @@ module Hammer
     end
 
     def comment(comment)
-      @output << "<!--" << comment << '-->'
+      @output << @comment_start << comment << @comment_end
     end
-
-    #  <?xml version="1.0" encoding="UTF-8"?>
-    #  <!DOCTYPE html>
 
     def xml_version(version = '1.0', encoding = 'UTF-8')
       @output << "<?xml version=\"#{version}\" encoding=\"#{encoding}\"?>"
@@ -288,9 +310,20 @@ module Hammer
       @output
     end
 
+    def escape(string)
+      string.gsub("&\"<>") do |ch|
+        case ch
+        when '&' then @esc_amp
+        when '"' then @esc_quot
+        when '<' then @esc_lt
+        when '>' then @esc_gt
+        end
+      end
+    end
+
   end
 
-  class Builder < AbstractBuilder
+  module BuilderConstatns
 
     EXTRA_ATTRIBUTES = {
       "a" => ["href", "target", "ping", "rel", "media", "hreflang", "type"],
@@ -416,7 +449,7 @@ module Hammer
       'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
       'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
       'em',
-      'fieldset', 'figure', 'footer', 'form', 
+      'fieldset', 'figure', 'footer', 'form',
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i',
       'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li',
       'map', 'mark', 'meter',
@@ -432,26 +465,37 @@ module Hammer
       'var', 'video'
     ]
 
-    (DOUBLE_TAGS - ['html']).each do |tag|
-      define_tag_class tag, :abstract_double_tag do
+    EMPTY_TAGS = [
+      'area', 'base', 'br', 'col', 'embed',
+      'hr', 'img', 'input', 'link', 'meta', 'param'
+    ]
+
+  end
+
+  class Builder < AbstractBuilder
+
+    (BuilderConstatns::DOUBLE_TAGS - ['html']).each do |tag|
+      define_class tag, :abstract_double_tag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__
           def self.attributes
-            super + EXTRA_ATTRIBUTES['#{tag}'] 
+            super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
           end
         RUBYCODE
 
         define_attributes
       end
+
+      define_tag(tag)
     end
 
-    define_tag_class :html, :abstract_double_tag do
+    define_class :html, :abstract_double_tag do
       set_tag 'html'
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__
         def self.attributes
-          super + ['xmlns'] + EXTRA_ATTRIBUTES['html']
+          super + ['xmlns'] + BuilderConstatns::EXTRA_ATTRIBUTES['html']
         end
       RUBYCODE
 
@@ -465,30 +509,29 @@ module Hammer
       RUBYCODE
     end
 
-    EMPTY_TAGS = [
-      'area', 'base', 'br', 'col', 'embed', 
-      'hr', 'img', 'input', 'link', 'meta', 'param'
-    ]
+    define_tag('html')
 
-    EMPTY_TAGS.each do |tag|
-      define_tag_class tag, :abstract_empty_tag do
+    BuilderConstatns::EMPTY_TAGS.each do |tag|
+      define_class tag, :abstract_empty_tag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__
           def self.attributes
-            super + EXTRA_ATTRIBUTES['#{tag}']
+            super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
           end
         RUBYCODE
 
         define_attributes
       end
+
+      define_tag(tag)
     end
   end
 
   class FormatedBuilder < Builder
     redefine_class :abstract_tag do
       def open(attributes = nil)
-        @output << "\n" << '  ' * @stack.size << '<' << @tag
+        @output << @newline << @space2 * @stack.size << @lt << @tag
         @builder.current = self
         attributes(attributes)
         self
@@ -498,15 +541,15 @@ module Hammer
     redefine_class :abstract_double_tag do
       def with
         unless @classes.empty?
-          @output << ' class="' << CGI.escapeHTML(@classes.join(' ')) << '"'
+          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
           @classes.clear
         end
-        @output << '>'
+        @output << @gt
         @content = nil
         @builder.current = nil
         yield
         @builder.flush
-        @output << "\n" << '  ' * (@stack.size-1) << '</' << @stack.pop << '>'
+        @output << @newline << @space2 * (@stack.size-1) << @slash_lt << @stack.pop << @gt
         nil
       end
     end

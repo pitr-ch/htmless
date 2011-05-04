@@ -25,142 +25,13 @@ end
 #TIMES = 100000
 #TIMES =  75000
 TIMES =  50000
+#TIMES =  25000
+#TIMES =  10000
 #TIMES =   5000
 #TIMES =   1000
 #TIMES =    500
 #TIMES =    100
-#TIMES =      1
-
-
-
-#r = Hammer::Builder.new
-#r.go_in do
-#  div do
-#    div('a')[12]
-#    div[13]
-#  end
-#end
-#puts r.to_html
-
-#require 'active_support'
-#require 'action_view'
-#
-#html = Hammer::FormatedBuilder.new.go_in do
-#  extend ActionView::Helpers::NumberHelper
-#  div number_with_precision(Math::PI, :precision => 4)
-#end.to_html
-#puts html
-#
-#class MyBuilder < Hammer::FormatedBuilder
-#  include ActionView::Helpers::NumberHelper
-#end
-#
-#puts(MyBuilder.new.go_in do
-#  div number_with_precision(Math::PI, :precision => 4)
-#end.to_html)
-
-
-#class MyBuilder < Hammer::FormatedBuilder
-#  redefine_class :abstract_tag do
-#    def hide!
-#      self.class 'hidden'
-#    end
-#  end
-#
-#  define_tag_class :component, :div do
-#    class_eval <<-RUBYCODE, __FILE__, __LINE__
-#      def open(id, attributes = nil, &block)
-#        super(attributes, &nil).id(id).class('component')
-#        block ? with(&block) : self
-#      end
-#RUBYCODE
-#  end
-#end
-#
-#html = MyBuilder.new.go_in do
-#  div[:content].with do
-#    span.id('secret').class('left').hide!
-#    component('component-1') do
-#      strong 'something'
-#    end
-#  end
-#end.to_html
-#puts html
-#
-#exit
-
-
-#html = Hammer::FormatedBuilder.new.go_in do
-#  xhtml5!
-#  html do
-#    head { title 'a title' }
-#    body do
-#      div.id('menu').class('left') do
-#        ul do
-#          li 'home'
-#          li 'contacts', :class => 'active'
-#        end
-#      end
-#      div.id('content') do
-#        article.id 'article1' do
-#          h1 'header'
-#          p('some text').class('centered')
-#          div(:class => 'like').class('hide').with do
-#            a.href('http://www.facebook.com/') do
-#              text 'like on '
-#              strong 'Facebook'
-#            end
-#          end
-#        end
-#      end
-#    end
-#  end
-#end.to_html
-#puts html
-#
-#exit
-
-
-require 'ruby-prof'
-
-r = Hammer::Builder.new
-result = RubyProf.profile do  
-  4000.times do
-    r.go_in do
-      xhtml5!
-      html do
-        head { title 'a title' }
-        body do
-          div.id('menu').class('left') do
-            ul do
-              li 'home'
-              li 'contacts', :class => 'active'
-            end
-          end
-          div.id('content') do
-            article.id 'article1' do
-              h1 'header'
-              p('some text').class('centered')
-              div(:class => 'like').class('hide').with do
-                a.href('http://www.facebook.com/') do
-                  text 'like on '
-                  strong 'Facebook'
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-    r.reset
-  end
-  puts 'done'
-end
-
-printer = RubyProf::GraphHtmlPrinter.new(result)
-File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
-
-exit
+#TIMES =      2
 
 
 class AModel
@@ -246,7 +117,7 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts r.to_s if TIMES == 1
+      puts r.to_html if TIMES == 1
       r.reset
     end
   end
@@ -272,11 +143,11 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts r.to_s if TIMES == 1
+      puts r.to_html if TIMES == 1
       r.reset
     end
   end
-
+  
   TEMPLATE = <<TMP
 <html>
 <head></head>
@@ -348,7 +219,7 @@ TMP
   b.report('erector') do
     model = AModel.new 'a', 'b'
     w = AWidget.new :model => model
-    TIMES.times do      
+    TIMES.times do
       w.to_html
       puts w.to_html if TIMES == 1
     end
