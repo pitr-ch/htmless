@@ -22,10 +22,8 @@ class ::Class
   end
 end
 
-#TIMES = 100000
-#TIMES =  75000
-TIMES =  50000
-#TIMES =  25000
+#TIMES =  50000
+TIMES =  25000
 #TIMES =  10000
 #TIMES =   5000
 #TIMES =   1000
@@ -47,8 +45,8 @@ require 'tagz'
 require 'erector'
 
 Benchmark.bmbm(23) do |b|
-  b.report("render") do
-    model = AModel.new 'a', 'b'    
+  model = AModel.new 'a', 'b'
+  b.report("render") do        
     TIMES.times do
       r = Render::Builder.new
       r.html.with do
@@ -71,7 +69,6 @@ Benchmark.bmbm(23) do |b|
     end
   end
   b.report("render3") do
-    model = AModel.new 'a', 'b'
     TIMES.times do
       r = Render3::Builder.new
       r.go_in do 
@@ -95,11 +92,10 @@ Benchmark.bmbm(23) do |b|
       puts r.to_s if TIMES == 1
     end
   end
+  builder = Hammer::Builder.new
   b.report("hammer-builder") do
-    model = AModel.new 'a', 'b'
-    r = Hammer::Builder.new
     TIMES.times do      
-      r.go_in do
+      builder.go_in do
         html do
           head
           body do
@@ -117,15 +113,14 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts r.to_html if TIMES == 1
-      r.reset
+      puts builder.to_html if TIMES == 1
+      builder.reset
     end
   end
+  builder = Hammer::FormatedBuilder.new
   b.report("hammer-formated_builder") do
-    model = AModel.new 'a', 'b'
-    r = Hammer::FormatedBuilder.new
     TIMES.times do
-      r.go_in do
+      builder.go_in do
         html do
           head
           body do
@@ -143,8 +138,8 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts r.to_html if TIMES == 1
-      r.reset
+      puts builder.to_html if TIMES == 1
+      builder.reset
     end
   end
   
@@ -164,31 +159,26 @@ Benchmark.bmbm(23) do |b|
 TMP
 
   b.report('erubis') do
-    model = AModel.new 'a', 'b'
     TIMES.times do
       Erubis::Eruby.new(TEMPLATE).result(binding())
     end
     GC.start
   end
+  erub = Erubis::Eruby.new(TEMPLATE)
   b.report('erubis-cache') do
-    model = AModel.new 'a', 'b'
-    erub = Erubis::Eruby.new(TEMPLATE)
     TIMES.times do
       erub.result(binding())
     end
     GC.start
   end
   b.report('fasterubis') do
-    model = AModel.new 'a', 'b'
     TIMES.times do
       Erubis::FastEruby.new(TEMPLATE).result(binding())
     end
     GC.start
   end
-
+  erub = Erubis::FastEruby.new(TEMPLATE)
   b.report('fasterubis-cache') do
-    model = AModel.new 'a', 'b'
-    erub = Erubis::FastEruby.new(TEMPLATE)
     TIMES.times do
       erub.result(binding())
     end
@@ -216,19 +206,18 @@ TMP
     end
   end
 
+  w = AWidget.new :model => model
   b.report('erector') do
-    model = AModel.new 'a', 'b'
-    w = AWidget.new :model => model
     TIMES.times do
       w.to_html
       puts w.to_html if TIMES == 1
     end
   end
 
+  
   b.report('markaby') do
-    model = AModel.new 'a', 'b'
     TIMES.times do
-      r = Markaby::Builder.new(:model => model) do
+      mark = Markaby::Builder.new(:model => model) do
         html do
           head {}
           body do
@@ -246,8 +235,8 @@ TMP
           end
         end
       end
-      puts r.to_s if TIMES == 1
     end
+    puts mark.to_s if TIMES == 1
   end
 
   include Tagz

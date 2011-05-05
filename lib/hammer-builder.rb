@@ -5,15 +5,11 @@ require 'active_support/core_ext/string/inflections'
 module Hammer
   class AbstractBuilder
 
-
-    #  ATTRIBUTES = ["id", "class", "style", "title", "onclick", "ondblclick", "onmousedown", "onmouseup", "onmouseover",
-    #    "onmousemove", "onmouseout", "onkeypress", "onkeydown", "onkeyup", "accesskey", "tabindex",
-    #    "onfocus", "onblur", "align", "char", "charoff", "lang", "dir", "valign"] # "xml:lang"
-
     # << faster then +
     # yield faster then block.call
-    # accessing ivar is faster then accesing hash or constants
+    # accessing ivar is faster then accesing hash or constants or cvar
     # class_eval faster then define_method
+    # beware of strings in methods -> creates a lot of garbage
 
     # TODO documentation
     # TODO tests
@@ -47,9 +43,11 @@ module Hammer
       end
     end
 
+    MAX_LEVELS = 200
+
     define_class :abstract_tag do
       def self.set_tag(tag)
-        class_eval <<-RUBYCODE, __FILE__, __LINE__
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def set_tag
             @tag = '#{tag}'
           end
@@ -67,7 +65,7 @@ module Hammer
         @slash_lt = '</'
         @slash_gt = ' />'
         @space = ' '
-        @space2 = '  '
+        @spaces = Array.new(MAX_LEVELS) {|i| '  ' * i }
         @newline = "\n"
         @quote = '"'
         @eql = '='
@@ -103,7 +101,7 @@ module Hammer
       end
 
       def attribute(attribute, content)
-        @output << @space << attribute << @eql_quote << @builder.escape(content) << @quote
+        @output << @space << attribute << @eql_quote << CGI.escapeHTML(content) << @quote
       end
 
       alias_method(:rclass, :class)
@@ -123,9 +121,9 @@ module Hammer
       def self.define_attributes
         attributes.each do |attr|
           next if instance_methods.include?(attr.to_sym)
-          class_eval <<-RUBYCODE, __FILE__, __LINE__
+          class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
             def #{attr}(content)
-              @output << @attr_#{attr} << @builder.escape(content.to_s) << @quote
+              @output << @attr_#{attr} << CGI.escapeHTML(content.to_s) << @quote
               self
             end
           RUBYCODE
@@ -134,7 +132,7 @@ module Hammer
 
       define_attributes
 
-      class_eval <<-RUBYCODE, __FILE__, __LINE__
+      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def class(*classes)
           @classes.push(*classes)
           self
@@ -147,7 +145,7 @@ module Hammer
     define_class :abstract_empty_tag, :abstract_tag do
       def flush
         unless @classes.empty?
-          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
+          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
           @classes.clear
         end
         @output << @slash_gt
@@ -159,7 +157,7 @@ module Hammer
       # defined by class_eval because there is a super calling, causing error:
       #  super from singleton method that is defined to multiple classes is not supported;
       #  this will be fixed in 1.9.3 or later (NotImplementedError)
-      class_eval <<-RUBYCODE, __FILE__, __LINE__
+      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def initialize(builder)
           super
           @content = nil
@@ -183,18 +181,18 @@ module Hammer
 
       def flush
         unless @classes.empty?
-          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
+          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
           @classes.clear
         end
         @output << @gt
-        @output << @builder.escape(@content) if @content
+        @output << CGI.escapeHTML(@content) if @content
         @output << @slash_lt << @stack.pop << @gt
         @content = nil
       end
 
       def with
         unless @classes.empty?
-          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
+          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
           @classes.clear
         end
         @output << @gt
@@ -209,7 +207,7 @@ module Hammer
       def self.define_attributes
         attributes.each do |attr|
           if instance_methods.include?(attr.to_sym)
-            class_eval <<-RUBYCODE, __FILE__, __LINE__
+            class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(*args, &block)
                 super(*args, &nil)
                 return with(&block) if block
@@ -217,9 +215,9 @@ module Hammer
               end
             RUBYCODE
           else
-            class_eval <<-RUBYCODE, __FILE__, __LINE__
+            class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(content, &block)
-                @output << @attr_#{attr} << @builder.escape(content.to_s) << @quote
+                @output << @attr_#{attr} << CGI.escapeHTML(content.to_s) << @quote
                 return with(&block) if block
                 self
               end
@@ -233,7 +231,7 @@ module Hammer
     self.tags = {}
 
     def self.define_tag(tag)
-      class_eval <<-RUBYCODE, __FILE__, __LINE__
+      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def #{tag}(*args, &block)
           flush
           @#{tag}.open(*args, &block)
@@ -252,16 +250,12 @@ module Hammer
         instance_variable_set(:"@#{klass}", self.class.send("#{klass}_class", self.class).new(self))
       end
 
-      @comment_start = "<!--"
+      @comment_start = '<!--'
       @comment_end = '-->'
-      @esc_amp = '&amp;'
-      @esc_quot = '&quot;'
-      @esc_lt = '&lt;'
-      @esc_gt = '&gt;'
     end
 
     def text(text)
-      @output << escape(text.to_s)
+      @output << CGI.escapeHTML(text.to_s)
     end
 
     alias :[] :text
@@ -309,18 +303,6 @@ module Hammer
       flush
       @output
     end
-
-    def escape(string)
-      string.gsub("&\"<>") do |ch|
-        case ch
-        when '&' then @esc_amp
-        when '"' then @esc_quot
-        when '<' then @esc_lt
-        when '>' then @esc_gt
-        end
-      end
-    end
-
   end
 
   module BuilderConstatns
@@ -478,7 +460,7 @@ module Hammer
       define_class tag, :abstract_double_tag do
         set_tag tag
 
-        class_eval <<-RUBYCODE, __FILE__, __LINE__
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def self.attributes
             super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
           end
@@ -493,7 +475,7 @@ module Hammer
     define_class :html, :abstract_double_tag do
       set_tag 'html'
 
-      class_eval <<-RUBYCODE, __FILE__, __LINE__
+      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def self.attributes
           super + ['xmlns'] + BuilderConstatns::EXTRA_ATTRIBUTES['html']
         end
@@ -501,7 +483,7 @@ module Hammer
 
       define_attributes
 
-      class_eval <<-RUBYCODE, __FILE__, __LINE__
+      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def open(*args, &block)
           super(*args, &nil).xmlns('http://www.w3.org/1999/xhtml')
           block ? with(&block) : self
@@ -515,7 +497,7 @@ module Hammer
       define_class tag, :abstract_empty_tag do
         set_tag tag
 
-        class_eval <<-RUBYCODE, __FILE__, __LINE__
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def self.attributes
             super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
           end
@@ -531,7 +513,7 @@ module Hammer
   class FormatedBuilder < Builder
     redefine_class :abstract_tag do
       def open(attributes = nil)
-        @output << @newline << @space2 * @stack.size << @lt << @tag
+        @output << @newline << @spaces[@stack.size] << @lt << @tag
         @builder.current = self
         attributes(attributes)
         self
@@ -541,7 +523,7 @@ module Hammer
     redefine_class :abstract_double_tag do
       def with
         unless @classes.empty?
-          @output << @attr_class << @builder.escape(@classes.join(@space)) << @quote
+          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
           @classes.clear
         end
         @output << @gt
@@ -549,7 +531,7 @@ module Hammer
         @builder.current = nil
         yield
         @builder.flush
-        @output << @newline << @space2 * (@stack.size-1) << @slash_lt << @stack.pop << @gt
+        @output << @newline << @spaces[@stack.size-1] << @slash_lt << @stack.pop << @gt
         nil
       end
     end

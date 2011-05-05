@@ -96,44 +96,74 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #exit
 
 
-#require 'ruby-prof'
-#
-#r = Hammer::Builder.new
-#result = RubyProf.profile do
-#  4000.times do
-#    r.go_in do
-#      xhtml5!
-#      html do
-#        head { title 'a title' }
-#        body do
-#          div.id('menu').class('left') do
-#            ul do
-#              li 'home'
-#              li 'contacts', :class => 'active'
-#            end
-#          end
-#          div.id('content') do
-#            article.id 'article1' do
-#              h1 'header'
-#              p('some text').class('centered')
-#              div(:class => 'like').class('hide').with do
-#                a.href('http://www.facebook.com/') do
-#                  text 'like on '
-#                  strong 'Facebook'
-#                end
-#              end
-#            end
-#          end
-#        end
-#      end
-#    end
-#    r.reset
-#  end
-#  puts 'done'
-#end
-#
-#printer = RubyProf::GraphHtmlPrinter.new(result)
-#File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
+require 'ruby-prof'
+
+r = Hammer::Builder.new
+r.go_in do
+  xhtml5!
+  html do
+    head { title 'a title' }
+    body do
+      div.id('menu').class('left') do
+        ul do
+          li 'home'
+          li 'contacts', :class => 'active'
+        end
+      end
+      div.id('content') do
+        article.id 'article1' do
+          h1 'header'
+          p('some text').class('centered')
+          div(:class => 'like').class('hide').with do
+            a.href('http://www.facebook.com/') do
+              text 'like on '
+              strong 'Facebook'
+            end
+          end
+        end
+      end
+    end
+  end
+end
+r.reset
+    
+result = RubyProf.profile do
+  4000.times do
+    r.go_in do
+      xhtml5!
+      html do
+        head { title 'a title' }
+        body do
+          div.id('menu').class('left') do
+            ul do
+              li 'home'
+              li 'contacts', :class => 'active'
+            end
+          end
+          div.id('content') do
+            article.id 'article1' do
+              h1 'header'
+              p('some text').class('centered')
+              div(:class => 'like').class('hide').with do
+                a.href('http://www.facebook.com/') do
+                  text 'like on '
+                  strong 'Facebook'
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    r.reset
+  end
+  puts 'done'
+end
+
+printer = RubyProf::GraphHtmlPrinter.new(result)
+File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
+
+exit
 
 #ENV['CPUPROFILE_OBJECTS']=1
 #ENV['CPUPROFILE_FREQUENCY']='4000'
