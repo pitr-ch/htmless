@@ -2,7 +2,7 @@
 
 == Syntax
 
-Experimental html renderer with Markaby like syntax mixed with Wee::Brushes but faster
+Experimental fast xhtml builder with rich syntax:
 
     Hammer::FormatedBuilder.new.go_in do
       xhtml5!
@@ -123,14 +123,14 @@ and result is
 == Benchmark
 
                                 user     system      total        real
-  render                    4.270000   0.010000   4.280000 (  4.279950)
-  render3                   7.490000   0.010000   7.500000 (  7.491264)
-  HammerBuilder::Standard   7.690000   0.010000   7.700000 (  7.686486)
-  HammerBuilder::Formated   7.710000   0.010000   7.720000 (  7.721515)
-  erubis                   22.640000   0.100000  22.740000 ( 22.698484)
-  erubis-cache              4.570000   0.000000   4.570000 (  4.569209)
-  fasterubis               20.430000   0.090000  20.520000 ( 20.490567)
-  fasterubis-cache          4.550000   0.010000   4.560000 (  4.553019)
-  erector                  11.520000   0.000000  11.520000 ( 11.521942)
-  markaby                  35.580000   0.040000  35.620000 ( 35.570696)
-  tagz                     57.460000   0.070000  57.530000 ( 57.503336)
+  render                    5.930000   0.000000   5.930000 (  5.928717)
+  render3                   6.540000   0.010000   6.550000 (  6.540528)
+  HammerBuilder::Standard   6.720000   0.000000   6.720000 (  6.710063)
+  HammerBuilder::Formated   6.710000   0.000000   6.710000 (  6.715132)
+  erubis                   10.020000   0.030000  10.050000 ( 10.040430)
+  erubis-cache              6.130000   0.020000   6.150000 (  6.175427)
+  fasterubis               10.340000   0.000000  10.340000 ( 10.325469)
+  fasterubis-cache          6.130000   0.010000   6.140000 (  6.123693)
+  erector                  15.650000   0.000000  15.650000 ( 15.634845)
+  markaby                  22.670000   0.020000  22.690000 ( 22.693306)
+  tagz                     73.200000   0.140000  73.340000 ( 73.306450)

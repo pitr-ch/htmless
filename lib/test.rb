@@ -5,7 +5,6 @@ require "#{File.dirname(__FILE__)}/render.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
 require "#{File.dirname(__FILE__)}/hammer-builder.rb"
-require "#{File.dirname(__FILE__)}/hammer-builder_1.rb"
 
 
 
@@ -66,13 +65,13 @@ require "#{File.dirname(__FILE__)}/hammer-builder_1.rb"
 #exit
 
 
-#html = HammerBuilder::Formated.new.go_in do
+#b = HammerBuilder::Formated.get.go_in do
 #  html do
-#    div
+#    div object_id.to_s
 #    div { p 'a' }
 #  end
-#end.to_html
-#puts html
+#end
+#puts b.to_html
 #
 #exit
 

@@ -193,8 +193,49 @@ module HammerBuilder
     end
   end
 
+  module Pool
+    def self.included(base)
+      super
+      base.extend ClassMethods
+    end
+    
+    module ClassMethods
+      def get
+        mutex.synchronize do
+          if free_builders.empty?
+            new
+          else
+            free_builders.pop
+          end
+        end
+      end
+
+      def release(builder)
+        builder.reset
+        mutex.synchronize do
+          free_builders.push builder
+        end
+      end
+
+      private
+      
+      def mutex
+        @mutex ||= Mutex.new
+      end
+
+      def free_builders
+        @free_builders ||= []
+      end
+    end
+
+    def release!
+      self.class.release(self)
+    end
+  end
+
   class Abstract
     extend RedefinableClassTree
+    include Pool
 
     # << faster then +
     # yield faster then block.call
@@ -453,7 +494,13 @@ module HammerBuilder
 
     def to_html() # FIXME to_xhtml
       flush
-      @output
+      @output.clone
+    end
+
+    def to_html!
+      r = to_html
+      release!
+      r
     end
   end
 
