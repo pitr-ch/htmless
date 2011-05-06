@@ -202,12 +202,6 @@ module HammerBuilder
     # class_eval faster then define_method
     # beware of strings in methods -> creates a lot of garbage
 
-    # TODO documentation
-    # TODO tests
-    # TODO caching
-    # TODO pool of builders / synchronized; creating new builders is expensive
-
-
     define_class :abstract_tag do
       def self.set_tag(tag)
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
