@@ -5,6 +5,7 @@ require "#{File.dirname(__FILE__)}/render.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
 require "#{File.dirname(__FILE__)}/hammer-builder.rb"
+require "#{File.dirname(__FILE__)}/hammer-builder_1.rb"
 
 
 
@@ -65,70 +66,20 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #exit
 
 
-#html = Hammer::FastBuilder.new.go_in do
-#  xhtml5!
+#html = HammerBuilder::Formated.new.go_in do
 #  html do
-#    head { title 'a title' }
-#    body do
-#      div.id('menu').class('left') do
-#        ul do
-#          li 'home'
-#          li 'contacts', :class => 'active'
-#        end
-#      end
-#      div.id('content') do
-#        article.id 'article1' do
-#          h1 'header'
-#          p('some text').class('centered')
-#          div(:class => 'like').class('hide').with do
-#            a.href('http://www.facebook.com/') do
-#              text 'like on '
-#              strong 'Facebook'
-#            end
-#          end
-#        end
-#      end
-#    end
+#    div
+#    div { p 'a' }
 #  end
 #end.to_html
 #puts html
 #
 #exit
 
-
 require 'ruby-prof'
-
-r = Hammer::Builder.new
-r.go_in do
-  xhtml5!
-  html do
-    head { title 'a title' }
-    body do
-      div.id('menu').class('left') do
-        ul do
-          li 'home'
-          li 'contacts', :class => 'active'
-        end
-      end
-      div.id('content') do
-        article.id 'article1' do
-          h1 'header'
-          p('some text').class('centered')
-          div(:class => 'like').class('hide').with do
-            a.href('http://www.facebook.com/') do
-              text 'like on '
-              strong 'Facebook'
-            end
-          end
-        end
-      end
-    end
-  end
-end
-r.reset
-    
+r = HammerBuilder::Formated.new
 result = RubyProf.profile do
-  4000.times do
+  100.times do
     r.go_in do
       xhtml5!
       html do
@@ -172,7 +123,7 @@ require 'perftools'
 
 r = Hammer::Builder.new
 PerfTools::CpuProfiler.start("hammer-builder") do
-  100000.times do
+  1000000.times do
     r.go_in do
       xhtml5!
       html do

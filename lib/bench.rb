@@ -30,6 +30,8 @@ TIMES =  25000
 #TIMES =    500
 #TIMES =    100
 #TIMES =      2
+OTHER = true
+OTHER2 = true
 
 
 class AModel
@@ -92,33 +94,8 @@ Benchmark.bmbm(23) do |b|
       puts r.to_s if TIMES == 1
     end
   end
-  builder = Hammer::Builder.new
-  b.report("hammer-builder") do
-    TIMES.times do      
-      builder.go_in do
-        html do
-          head
-          body do
-            div :id => 'menu' do
-              ul do
-                10.times do
-                  li model.a
-                  li model.b
-                end
-              end
-            end
-            div['content'].with do
-              10.times { text 'asd asha sdha sdjhas ahs'*10 }
-            end
-          end
-        end
-      end
-      puts builder.to_html if TIMES == 1
-      builder.reset
-    end
-  end
-  builder = Hammer::FormatedBuilder.new
-  b.report("hammer-formated_builder") do
+  builder = HammerBuilder::Standard.new
+  b.report("HammerBuilder::Standard") do
     TIMES.times do
       builder.go_in do
         html do
@@ -142,8 +119,35 @@ Benchmark.bmbm(23) do |b|
       builder.reset
     end
   end
-  
-  TEMPLATE = <<TMP
+  builder = HammerBuilder::Formated.new
+  b.report("HammerBuilder::Formated") do
+    TIMES.times do
+      builder.go_in do
+        html do
+          head
+          body do
+            div :id => 'menu' do
+              ul do
+                10.times do
+                  li model.a
+                  li model.b
+                end
+              end
+            end
+            div['content'].with do
+              10.times { text 'asd asha sdha sdjhas ahs'*10 }
+            end
+          end
+        end
+      end
+      puts builder.to_html if TIMES == 1
+      builder.reset
+    end
+  end
+
+  if OTHER
+
+    TEMPLATE = <<TMP
 <html>
 <head></head>
 <body><div id="menu"><ul>
@@ -158,74 +162,43 @@ Benchmark.bmbm(23) do |b|
 </div></body></html>
 TMP
 
-  b.report('erubis') do
-    TIMES.times do
-      Erubis::Eruby.new(TEMPLATE).result(binding())
-    end
-    GC.start
-  end
-  erub = Erubis::Eruby.new(TEMPLATE)
-  b.report('erubis-cache') do
-    TIMES.times do
-      erub.result(binding())
-    end
-    GC.start
-  end
-  b.report('fasterubis') do
-    TIMES.times do
-      Erubis::FastEruby.new(TEMPLATE).result(binding())
-    end
-    GC.start
-  end
-  erub = Erubis::FastEruby.new(TEMPLATE)
-  b.report('fasterubis-cache') do
-    TIMES.times do
-      erub.result(binding())
-    end
-    GC.start
-  end
-
-  class AWidget < Erector::Widget
-    def content
-      html do
-        head {}
-        body do
-          div :id => 'menu' do
-            ul do
-              10.times do
-                li @model.a
-                li @model.b
-              end
-            end
-          end
-          div :id => 'content' do
-            10.times { text 'asd asha sdha sdjhas ahs'*10 }
-          end
-        end
+    b.report('erubis') do
+      TIMES.times do
+        Erubis::Eruby.new(TEMPLATE).result(binding())
       end
+      GC.start
     end
-  end
-
-  w = AWidget.new :model => model
-  b.report('erector') do
-    TIMES.times do
-      w.to_html
-      puts w.to_html if TIMES == 1
+    erub = Erubis::Eruby.new(TEMPLATE)
+    b.report('erubis-cache') do
+      TIMES.times do
+        erub.result(binding())
+      end
+      GC.start
     end
-  end
+    b.report('fasterubis') do
+      TIMES.times do
+        Erubis::FastEruby.new(TEMPLATE).result(binding())
+      end
+      GC.start
+    end
+    erub = Erubis::FastEruby.new(TEMPLATE)
+    b.report('fasterubis-cache') do
+      TIMES.times do
+        erub.result(binding())
+      end
+      GC.start
+    end
 
-  
-  b.report('markaby') do
-    TIMES.times do
-      mark = Markaby::Builder.new(:model => model) do
+    class AWidget < Erector::Widget
+      def content
         html do
           head {}
           body do
             div :id => 'menu' do
               ul do
                 10.times do
-                  li model.a
-                  li model.b
+                  li @model.a
+                  li @model.b
                 end
               end
             end
@@ -236,31 +209,65 @@ TMP
         end
       end
     end
-    puts mark.to_s if TIMES == 1
+
+    w = AWidget.new :model => model
+    b.report('erector') do
+      TIMES.times do
+        w.to_html
+        puts w.to_html if TIMES == 1
+      end
+    end
+
   end
-
-  include Tagz
-
-  b.report('tagz') do
-    model = AModel.new 'a', 'b'
-    TIMES.times do
-      r = html_ do
-        head_
-        body_ do
-          div_ :id => 'menu' do
-            ul_ do
-              10.times do
-                li_ model.a
-                li_ model.b
+  if OTHER2
+    
+    b.report('markaby') do
+      TIMES.times do
+        mark = Markaby::Builder.new(:model => model) do
+          html do
+            head {}
+            body do
+              div :id => 'menu' do
+                ul do
+                  10.times do
+                    li model.a
+                    li model.b
+                  end
+                end
+              end
+              div :id => 'content' do
+                10.times { text 'asd asha sdha sdjhas ahs'*10 }
               end
             end
           end
-          div_ :id => 'content' do
-            10.times { text_ 'asd asha sdha sdjhas ahs'*10 }
-          end
         end
       end
-      puts r.to_s if TIMES == 1
+      puts mark.to_s if TIMES == 1
+    end
+
+    include Tagz
+
+    b.report('tagz') do
+      model = AModel.new 'a', 'b'
+      TIMES.times do
+        r = html_ do
+          head_
+          body_ do
+            div_ :id => 'menu' do
+              ul_ do
+                10.times do
+                  li_ model.a
+                  li_ model.b
+                end
+              end
+            end
+            div_ :id => 'content' do
+              10.times { text_ 'asd asha sdha sdjhas ahs'*10 }
+            end
+          end
+        end
+        puts r.to_s if TIMES == 1
+      end
     end
   end
 end

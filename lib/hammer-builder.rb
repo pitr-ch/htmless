@@ -2,19 +2,168 @@ require 'cgi'
 require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/string/inflections'
 
-module Hammer
-  class AbstractBuilder
+module HammerBuilder
+  EXTRA_ATTRIBUTES = {
+    "a" => ["href", "target", "ping", "rel", "media", "hreflang", "type"],
+    "abbr" => [],
+    "address" => [],
+    "area" => ["alt", "coords", "shape", "href", "target", "ping", "rel", "media", "hreflang", "type"],
+    "article" => [],
+    "aside" => [],
+    "audio" => ["src", "preload", "autoplay", "mediagroup", "loop", "controls"],
+    "b" => [],
+    "base" => ["href", "target"],
+    "bdi" => [],
+    "bdo" => [],
+    "blockquote" => ["cite"],
+    "body" => ["onafterprint", "onbeforeprint", "onbeforeunload", "onblur", "onerror", "onfocus", "onhashchange",
+      "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate", "onredo", "onresize",
+      "onscroll", "onstorage", "onundo", "onunload"],
+    "br" => [],
+    "button" => ["autofocus", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate",
+      "formtarget", "name", "type", "value"],
+    "canvas" => ["width", "height"],
+    "caption" => [],
+    "cite" => [],
+    "code" => [],
+    "col" => ["span"],
+    "colgroup" => ["span"],
+    "command" => ["type", "label", "icon", "disabled", "checked", "radiogroup"],
+    "datalist" => ["option"],
+    "dd" => [],
+    "del" => ["cite", "datetime"],
+    "details" => ["open"],
+    "dfn" => [],
+    "div" => [],
+    "dl" => [],
+    "dt" => [],
+    "em" => [],
+    "embed" => ["src", "type", "width", "height"],
+    "fieldset" => ["disabled", "form", "name"],
+    "figcaption" => [],
+    "figure" => [],
+    "footer" => [],
+    "form" => ["action", "autocomplete", "enctype", "method", "name", "novalidate", "target"], # FIXME add "accept-charset"
+    "h1" => [],
+    "h2" => [],
+    "h3" => [],
+    "h4" => [],
+    "h5" => [],
+    "h6" => [],
+    "head" => [],
+    "header" => [],
+    "hgroup" => [],
+    "hr" => [],
+    "html" => ["manifest"],
+    "i" => [],
+    "iframe" => ["src", "srcdoc", "name", "sandbox", "seamless", "width", "height"],
+    "img" => ["alt", "src", "usemap", "ismap", "width", "height"],
+    "input" => ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction",
+      "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min",
+      "multiple", "name", "pattern", "placeholder", "readonly", "required", "size", "src", "step", "type", "value",
+      "width"],
+    "ins" => ["cite", "datetime"],
+    "kbd" => [],
+    "keygen" => ["autofocus", "challenge", "disabled", "form", "keytype", "name"],
+    "label" => ["form", "for"],
+    "legend" => [],
+    "li" => ["value"],
+    "link" => ["href", "rel", "media", "hreflang", "type", "sizes"],
+    "map" => ["name"],
+    "mark" => [],
+    "menu" => ["type", "label"],
+    "meta" => ["name", "content", "charset"], # FIXME add "http-equiv"
+    "meter" => ["value", "min", "max", "low", "high", "optimum", "form"],
+    "nav" => [],
+    "noscript" => [],
+    "object" => ["data", "type", "name", "usemap", "form", "width", "height"],
+    "ol" => ["reversed", "start"],
+    "optgroup" => ["disabled", "label"],
+    "option" => ["disabled", "label", "selected", "value"],
+    "output" => ["for", "form", "name"],
+    "p" => [],
+    "param" => ["name", "value"],
+    "pre" => [],
+    "progress" => ["value", "max", "form"],
+    "q" => ["cite"],
+    "rp" => [],
+    "rt" => [],
+    "ruby" => [],
+    "s" => [],
+    "samp" => [],
+    "script" => ["src", "async", "defer", "type", "charset"],
+    "section" => [],
+    "select" => ["autofocus", "disabled", "form", "multiple", "name", "required", "size"],
+    "small" => [],
+    "source" => ["src", "type", "media"],
+    "span" => [],
+    "strong" => [],
+    "style" => ["media", "type", "scoped"],
+    "sub" => [],
+    "summary" => [],
+    "sup" => [],
+    "table" => ["border"],
+    "tbody" => [],
+    "td" => ["colspan", "rowspan", "headers"],
+    "textarea" => ["autofocus", "cols", "disabled", "form", "maxlength", "name", "placeholder", "readonly",
+      "required", "rows", "wrap"],
+    "tfoot" => [],
+    "th" => ["colspan", "rowspan", "headers", "scope"],
+    "thead" => [],
+    "time" => ["datetime", "pubdate"],
+    "title" => [],
+    "tr" => [],
+    "track" => ["default", "kind", "label", "src", "srclang"],
+    "u" => [],
+    "ul" => [],
+    "var" => [],
+    "video" => ["src", "poster", "preload", "autoplay", "mediagroup", "loop", "controls", "width", "height"],
+    "wbr" => []
+  }
 
-    # << faster then +
-    # yield faster then block.call
-    # accessing ivar is faster then accesing hash or constants or cvar
-    # class_eval faster then define_method
-    # beware of strings in methods -> creates a lot of garbage
+  DOUBLE_TAGS = [
+    'a', 'abbr', 'address', 'article', 'aside', 'audio',
+    'b', 'bdo', 'blockquote', 'body', 'button',
+    'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
+    'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
+    'em',
+    'fieldset', 'figure', 'footer', 'form',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i',
+    'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li',
+    'map', 'mark', 'meter',
+    'nav', 'noscript',
+    'object', 'ol', 'optgroup', 'option',
+    'p', 'pre', 'progress',
+    'q', 'ruby', 'rt', 'rp', 's',
+    'samp', 'script', 'section', 'select', 'small', 'source', 'span',
+    'strong', 'style', 'sub', 'sup',
+    'table', 'tbody', 'td', 'textarea', 'tfoot',
+    'th', 'thead', 'time', 'title', 'tr',
+    'u', 'ul',
+    'var', 'video'
+  ]
 
-    # TODO documentation
-    # TODO tests
+  EMPTY_TAGS = [
+    'area', 'base', 'br', 'col', 'embed',
+    'hr', 'img', 'input', 'link', 'meta', 'param'
+  ]
 
-    def self.define_class(klass_name, superclass_name = nil, &definition)
+  LT = '<'
+  GT = '>'
+  SLASH_LT = '</'
+  SLASH_GT = ' />'
+  SPACE = ' '
+  MAX_LEVELS = 300
+  SPACES = Array.new(MAX_LEVELS) {|i| '  ' * i }
+  NEWLINE = "\n"
+  QUOTE = '"'
+  EQL = '='
+  EQL_QUOTE = EQL + QUOTE
+  COMMENT_START = '<!--'
+  COMMENT_END = '-->'
+
+  module RedefinableClassTree
+    def define_class(klass_name, superclass_name = nil, &definition)
       raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
 
       define_singleton_method "#{klass_name}_class" do |builder|
@@ -35,15 +184,29 @@ module Hammer
       end
     end
 
-    def self.redefine_class(klass_name, &definition)
+    def redefine_class(klass_name, &definition)
       raise "class: '#{klass_name}' not defined" unless respond_to? "#{klass_name}_class"
 
       define_singleton_method "#{klass_name}_class_definition" do |builder|
         Class.new(super(builder), &definition)
       end
     end
+  end
 
-    MAX_LEVELS = 200
+  class Abstract
+    extend RedefinableClassTree
+
+    # << faster then +
+    # yield faster then block.call
+    # accessing ivar and constant is faster then accesing hash or cvar
+    # class_eval faster then define_method
+    # beware of strings in methods -> creates a lot of garbage
+
+    # TODO documentation
+    # TODO tests
+    # TODO caching
+    # TODO pool of builders / synchronized; creating new builders is expensive
+
 
     define_class :abstract_tag do
       def self.set_tag(tag)
@@ -60,17 +223,6 @@ module Hammer
         @stack = builder.instance_eval { @stack }
         @classes = []
 
-        @lt = '<'
-        @gt = '>'
-        @slash_lt = '</'
-        @slash_gt = ' />'
-        @space = ' '
-        @spaces = Array.new(MAX_LEVELS) {|i| '  ' * i }
-        @newline = "\n"
-        @quote = '"'
-        @eql = '='
-        @eql_quote = @eql + @quote
-
         set_tag
         set_attributes
       end
@@ -81,14 +233,16 @@ module Hammer
 
       def set_attributes
         self.rclass.attributes.each do |attr|
-          instance_variable_set("@attr_#{attr}", " #{attr}=\"")
+          const = "attr_#{attr}".upcase
+          HammerBuilder.const_set const, " #{attr}=\"" unless HammerBuilder.const_defined?(const)
         end
       end
 
       def open(attributes = nil)
-        @output << @lt << @tag
+        @output << LT << @tag
         @builder.current = self
         attributes(attributes)
+        default
         self
       end
 
@@ -101,7 +255,7 @@ module Hammer
       end
 
       def attribute(attribute, content)
-        @output << @space << attribute << @eql_quote << CGI.escapeHTML(content) << @quote
+        @output << SPACE << attribute << EQL_QUOTE << CGI.escapeHTML(content) << QUOTE
       end
 
       alias_method(:rclass, :class)
@@ -123,7 +277,7 @@ module Hammer
           next if instance_methods.include?(attr.to_sym)
           class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
             def #{attr}(content)
-              @output << @attr_#{attr} << CGI.escapeHTML(content.to_s) << @quote
+              @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
               self
             end
           RUBYCODE
@@ -131,6 +285,7 @@ module Hammer
       end
 
       define_attributes
+      alias :[] :id
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def class(*classes)
@@ -139,16 +294,25 @@ module Hammer
         end
       RUBYCODE
 
-      alias :[] :id
+      protected
+
+      def default
+      end
+
+      private
+
+      def flush_classes
+        unless @classes.empty?
+          @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
+          @classes.clear
+        end
+      end
     end
 
     define_class :abstract_empty_tag, :abstract_tag do
       def flush
-        unless @classes.empty?
-          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
-          @classes.clear
-        end
-        @output << @slash_gt
+        flush_classes
+        @output << SLASH_GT
         nil
       end
     end
@@ -164,7 +328,7 @@ module Hammer
         end
 
         def open(content_or_attributes = nil, attributes = nil, &block)
-          if content_or_attributes.kind_of?(String)
+          if content_or_attributes.is_a?(String)
             @content = content_or_attributes
           else
             attributes = content_or_attributes
@@ -180,27 +344,24 @@ module Hammer
       RUBYCODE
 
       def flush
-        unless @classes.empty?
-          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
-          @classes.clear
-        end
-        @output << @gt
+        flush_classes
+        @output << GT
         @output << CGI.escapeHTML(@content) if @content
-        @output << @slash_lt << @stack.pop << @gt
+        @output << SLASH_LT << @stack.pop << GT
         @content = nil
       end
 
       def with
-        unless @classes.empty?
-          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
-          @classes.clear
-        end
-        @output << @gt
+        flush_classes
+        @output << GT
         @content = nil
         @builder.current = nil
-        yield
+        #        yield
+        if (content = yield).is_a?(String)
+          @output << CGI.escapeHTML(content)
+        end
         @builder.flush
-        @output << @slash_lt << @stack.pop << @gt
+        @output << SLASH_LT << @stack.pop << GT
         nil
       end
 
@@ -217,7 +378,7 @@ module Hammer
           else
             class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(content, &block)
-                @output << @attr_#{attr} << CGI.escapeHTML(content.to_s) << @quote
+                @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
                 return with(&block) if block
                 self
               end
@@ -249,9 +410,6 @@ module Hammer
       tags.values.each do |klass|
         instance_variable_set(:"@#{klass}", self.class.send("#{klass}_class", self.class).new(self))
       end
-
-      @comment_start = '<!--'
-      @comment_end = '-->'
     end
 
     def text(text)
@@ -265,7 +423,7 @@ module Hammer
     end
 
     def comment(comment)
-      @output << @comment_start << comment << @comment_end
+      @output << COMMENT_START << comment << COMMENT_END
     end
 
     def xml_version(version = '1.0', encoding = 'UTF-8')
@@ -299,170 +457,21 @@ module Hammer
       self
     end
 
-    def to_html()
+    def to_html() # FIXME to_xhtml
       flush
       @output
     end
   end
 
-  module BuilderConstatns
+  class Standard < Abstract
 
-    EXTRA_ATTRIBUTES = {
-      "a" => ["href", "target", "ping", "rel", "media", "hreflang", "type"],
-      "abbr" => [],
-      "address" => [],
-      "area" => ["alt", "coords", "shape", "href", "target", "ping", "rel", "media", "hreflang", "type"],
-      "article" => [],
-      "aside" => [],
-      "audio" => ["src", "preload", "autoplay", "mediagroup", "loop", "controls"],
-      "b" => [],
-      "base" => ["href", "target"],
-      "bdi" => [],
-      "bdo" => [],
-      "blockquote" => ["cite"],
-      "body" => ["onafterprint", "onbeforeprint", "onbeforeunload", "onblur", "onerror", "onfocus", "onhashchange",
-        "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate", "onredo", "onresize",
-        "onscroll", "onstorage", "onundo", "onunload"],
-      "br" => [],
-      "button" => ["autofocus", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate",
-        "formtarget", "name", "type", "value"],
-      "canvas" => ["width", "height"],
-      "caption" => [],
-      "cite" => [],
-      "code" => [],
-      "col" => ["span"],
-      "colgroup" => ["span"],
-      "command" => ["type", "label", "icon", "disabled", "checked", "radiogroup"],
-      "datalist" => ["option"],
-      "dd" => [],
-      "del" => ["cite", "datetime"],
-      "details" => ["open"],
-      "dfn" => [],
-      "div" => [],
-      "dl" => [],
-      "dt" => [],
-      "em" => [],
-      "embed" => ["src", "type", "width", "height"],
-      "fieldset" => ["disabled", "form", "name"],
-      "figcaption" => [],
-      "figure" => [],
-      "footer" => [],
-      "form" => ["action", "autocomplete", "enctype", "method", "name", "novalidate", "target"], # FIXME add "accept-charset"
-      "h1" => [],
-      "h2" => [],
-      "h3" => [],
-      "h4" => [],
-      "h5" => [],
-      "h6" => [],
-      "head" => [],
-      "header" => [],
-      "hgroup" => [],
-      "hr" => [],
-      "html" => ["manifest"],
-      "i" => [],
-      "iframe" => ["src", "srcdoc", "name", "sandbox", "seamless", "width", "height"],
-      "img" => ["alt", "src", "usemap", "ismap", "width", "height"],
-      "input" => ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction",
-        "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min",
-        "multiple", "name", "pattern", "placeholder", "readonly", "required", "size", "src", "step", "type", "value",
-        "width"],
-      "ins" => ["cite", "datetime"],
-      "kbd" => [],
-      "keygen" => ["autofocus", "challenge", "disabled", "form", "keytype", "name"],
-      "label" => ["form", "for"],
-      "legend" => [],
-      "li" => ["value"],
-      "link" => ["href", "rel", "media", "hreflang", "type", "sizes"],
-      "map" => ["name"],
-      "mark" => [],
-      "menu" => ["type", "label"],
-      "meta" => ["name", "content", "charset"], # FIXME add "http-equiv"
-      "meter" => ["value", "min", "max", "low", "high", "optimum", "form"],
-      "nav" => [],
-      "noscript" => [],
-      "object" => ["data", "type", "name", "usemap", "form", "width", "height"],
-      "ol" => ["reversed", "start"],
-      "optgroup" => ["disabled", "label"],
-      "option" => ["disabled", "label", "selected", "value"],
-      "output" => ["for", "form", "name"],
-      "p" => [],
-      "param" => ["name", "value"],
-      "pre" => [],
-      "progress" => ["value", "max", "form"],
-      "q" => ["cite"],
-      "rp" => [],
-      "rt" => [],
-      "ruby" => [],
-      "s" => [],
-      "samp" => [],
-      "script" => ["src", "async", "defer", "type", "charset"],
-      "section" => [],
-      "select" => ["autofocus", "disabled", "form", "multiple", "name", "required", "size"],
-      "small" => [],
-      "source" => ["src", "type", "media"],
-      "span" => [],
-      "strong" => [],
-      "style" => ["media", "type", "scoped"],
-      "sub" => [],
-      "summary" => [],
-      "sup" => [],
-      "table" => ["border"],
-      "tbody" => [],
-      "td" => ["colspan", "rowspan", "headers"],
-      "textarea" => ["autofocus", "cols", "disabled", "form", "maxlength", "name", "placeholder", "readonly",
-        "required", "rows", "wrap"],
-      "tfoot" => [],
-      "th" => ["colspan", "rowspan", "headers", "scope"],
-      "thead" => [],
-      "time" => ["datetime", "pubdate"],
-      "title" => [],
-      "tr" => [],
-      "track" => ["default", "kind", "label", "src", "srclang"],
-      "u" => [],
-      "ul" => [],
-      "var" => [],
-      "video" => ["src", "poster", "preload", "autoplay", "mediagroup", "loop", "controls", "width", "height"],
-      "wbr" => []
-    }
-
-    DOUBLE_TAGS = [
-      'a', 'abbr', 'address', 'article', 'aside', 'audio',
-      'b', 'bdo', 'blockquote', 'body', 'button',
-      'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
-      'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
-      'em',
-      'fieldset', 'figure', 'footer', 'form',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i',
-      'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li',
-      'map', 'mark', 'meter',
-      'nav', 'noscript',
-      'object', 'ol', 'optgroup', 'option',
-      'p', 'pre', 'progress',
-      'q', 'ruby', 'rt', 'rp', 's',
-      'samp', 'script', 'section', 'select', 'small', 'source', 'span',
-      'strong', 'style', 'sub', 'sup',
-      'table', 'tbody', 'td', 'textarea', 'tfoot',
-      'th', 'thead', 'time', 'title', 'tr',
-      'u', 'ul',
-      'var', 'video'
-    ]
-
-    EMPTY_TAGS = [
-      'area', 'base', 'br', 'col', 'embed',
-      'hr', 'img', 'input', 'link', 'meta', 'param'
-    ]
-
-  end
-
-  class Builder < AbstractBuilder
-
-    (BuilderConstatns::DOUBLE_TAGS - ['html']).each do |tag|
+    (DOUBLE_TAGS - ['html']).each do |tag|
       define_class tag, :abstract_double_tag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def self.attributes
-            super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
+            super + EXTRA_ATTRIBUTES['#{tag}']
           end
         RUBYCODE
 
@@ -477,29 +486,26 @@ module Hammer
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def self.attributes
-          super + ['xmlns'] + BuilderConstatns::EXTRA_ATTRIBUTES['html']
+          super + ['xmlns'] + EXTRA_ATTRIBUTES['html']
         end
       RUBYCODE
 
       define_attributes
 
-      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
-        def open(*args, &block)
-          super(*args, &nil).xmlns('http://www.w3.org/1999/xhtml')
-          block ? with(&block) : self
-        end
-      RUBYCODE
+      def default
+        xmlns('http://www.w3.org/1999/xhtml')
+      end
     end
 
     define_tag('html')
 
-    BuilderConstatns::EMPTY_TAGS.each do |tag|
+    EMPTY_TAGS.each do |tag|
       define_class tag, :abstract_empty_tag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def self.attributes
-            super + BuilderConstatns::EXTRA_ATTRIBUTES['#{tag}']
+            super + EXTRA_ATTRIBUTES['#{tag}']
           end
         RUBYCODE
 
@@ -510,28 +516,26 @@ module Hammer
     end
   end
 
-  class FormatedBuilder < Builder
+  class Formated < Standard
     redefine_class :abstract_tag do
       def open(attributes = nil)
-        @output << @newline << @spaces[@stack.size] << @lt << @tag
+        @output << NEWLINE << SPACES[@stack.size] << LT << @tag
         @builder.current = self
         attributes(attributes)
+        default
         self
       end
     end
 
     redefine_class :abstract_double_tag do
       def with
-        unless @classes.empty?
-          @output << @attr_class << CGI.escapeHTML(@classes.join(@space)) << @quote
-          @classes.clear
-        end
-        @output << @gt
+        flush_classes
+        @output << GT
         @content = nil
         @builder.current = nil
         yield
         @builder.flush
-        @output << @newline << @spaces[@stack.size-1] << @slash_lt << @stack.pop << @gt
+        @output << NEWLINE << SPACES[@stack.size-1] << SLASH_LT << @stack.pop << GT
         nil
       end
     end
