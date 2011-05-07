@@ -122,7 +122,7 @@ module HammerBuilder
   }
 
   DOUBLE_TAGS = [
-    'a', 'abbr', 'address', 'article', 'aside', 'audio',
+    'a', 'abbr',  'article', 'aside', 'audio', 'address', # FIXME inflection missing ss at the
     'b', 'bdo', 'blockquote', 'body', 'button',
     'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
     'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
@@ -133,7 +133,7 @@ module HammerBuilder
     'map', 'mark', 'meter',
     'nav', 'noscript',
     'object', 'ol', 'optgroup', 'option',
-    'p', 'pre', 'progress',
+    'p', 'pre', 'progress', # FIXME inflection missing ss at the
     'q', 'ruby', 'rt', 'rp', 's',
     'samp', 'script', 'section', 'select', 'small', 'source', 'span',
     'strong', 'style', 'sub', 'sup',
@@ -164,19 +164,22 @@ module HammerBuilder
 
   module RedefinableClassTree
     def define_class(klass_name, superclass_name = nil, &definition)
-      raise "class: '#{klass_name}' already defined" if  respond_to? "#{klass_name}_class"
+      klass_name = class_name(klass_name)
+      superclass_name = class_name(superclass_name) if superclass_name
 
-      define_singleton_method "#{klass_name}_class" do |builder|
-        builder.instance_variable_get("@#{klass_name}_class") || begin
-          klass = builder.send("#{klass_name}_class_definition", builder)
-          builder.const_set klass_name.to_s.classify, klass rescue nil # FIXME why 's'.to_s.classify => '' ?
-          builder.instance_variable_set("@#{klass_name}_class", klass)
+      raise "class: '#{klass_name}' already defined" if  respond_to? method_class(klass_name)
+
+      define_singleton_method method_class(klass_name) do |builder|
+        builder.instance_variable_get("@#{method_class(klass_name)}") || begin
+          klass = builder.send(method_class_definition(klass_name), builder)
+          builder.const_set klass_name, klass
+          builder.instance_variable_set("@#{method_class(klass_name)}", klass)
         end
       end
 
-      define_singleton_method "#{klass_name}_class_definition" do |builder|
+      define_singleton_method method_class_definition(klass_name) do |builder|
         superclass = if superclass_name
-          builder.send "#{superclass_name}_class", builder
+          builder.send method_class(superclass_name), builder
         else
           Object
         end
@@ -184,12 +187,26 @@ module HammerBuilder
       end
     end
 
-    def redefine_class(klass_name, &definition)
-      raise "class: '#{klass_name}' not defined" unless respond_to? "#{klass_name}_class"
+    def extend_class(klass_name, &definition)
+      raise "class: '#{klass_name}' not defined" unless respond_to? method_class(klass_name)
 
-      define_singleton_method "#{klass_name}_class_definition" do |builder|
+      define_singleton_method method_class_definition(klass_name) do |builder|
         Class.new(super(builder), &definition)
       end
+    end
+
+    private
+
+    def class_name(klass)
+      klass.to_s.camelize
+    end
+
+    def method_class(klass)
+      "#{klass.to_s.underscore}_class"
+    end
+
+    def method_class_definition(klass)
+      "#{method_class(klass)}_definition"
     end
   end
 
@@ -243,7 +260,7 @@ module HammerBuilder
     # class_eval faster then define_method
     # beware of strings in methods -> creates a lot of garbage
 
-    define_class :abstract_tag do
+    define_class :AbstractTag do
       def self.set_tag(tag)
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def set_tag
@@ -344,7 +361,7 @@ module HammerBuilder
       end
     end
 
-    define_class :abstract_empty_tag, :abstract_tag do
+    define_class :AbstractEmptyTag, :AbstractTag do
       def flush
         flush_classes
         @output << SLASH_GT
@@ -352,7 +369,7 @@ module HammerBuilder
       end
     end
 
-    define_class :abstract_double_tag, :abstract_tag do
+    define_class :AbstractDoubleTag, :AbstractTag do
       # defined by class_eval because there is a super calling, causing error:
       #  super from singleton method that is defined to multiple classes is not supported;
       #  this will be fixed in 1.9.3 or later (NotImplementedError)
@@ -362,12 +379,11 @@ module HammerBuilder
           @content = nil
         end
 
-        def open(content_or_attributes = nil, attributes = nil, &block)
-          if content_or_attributes.is_a?(String)
-            @content = content_or_attributes
-          else
-            attributes = content_or_attributes
+        def open(*args, &block)
+          attributes = if args.last.is_a?(Hash)
+            args.pop
           end
+          content args[0]
           super attributes
           @stack << @tag
           if block
@@ -384,6 +400,11 @@ module HammerBuilder
         @output << CGI.escapeHTML(@content) if @content
         @output << SLASH_LT << @stack.pop << GT
         @content = nil
+      end
+
+      def content(content)
+        @content = content.to_s
+        self
       end
 
       def with
@@ -507,7 +528,7 @@ module HammerBuilder
   class Standard < Abstract
 
     (DOUBLE_TAGS - ['html']).each do |tag|
-      define_class tag, :abstract_double_tag do
+      define_class tag.camelize , :AbstractDoubleTag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
@@ -522,7 +543,7 @@ module HammerBuilder
       define_tag(tag)
     end
 
-    define_class :html, :abstract_double_tag do
+    define_class :Html, :AbstractDoubleTag do
       set_tag 'html'
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
@@ -541,7 +562,7 @@ module HammerBuilder
     define_tag('html')
 
     EMPTY_TAGS.each do |tag|
-      define_class tag, :abstract_empty_tag do
+      define_class tag.camelize, :AbstractEmptyTag do
         set_tag tag
 
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
@@ -558,7 +579,7 @@ module HammerBuilder
   end
 
   class Formated < Standard
-    redefine_class :abstract_tag do
+    extend_class :AbstractTag do
       def open(attributes = nil)
         @output << NEWLINE << SPACES[@stack.size] << LT << @tag
         @builder.current = self
@@ -568,7 +589,7 @@ module HammerBuilder
       end
     end
 
-    redefine_class :abstract_double_tag do
+    extend_class :AbstractDoubleTag do
       def with
         flush_classes
         @output << GT

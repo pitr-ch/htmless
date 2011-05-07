@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comunity</title>
+  </head>
+  <body>
+    <div id="menu">
+      <ul class="menu">
+        <li>
+          <ul id="users" class="menu">
+            <% USERS.each do |user| %>
+              <li>
+                <a href="<%= "user/#{user.id}" %>"><%= user.login %></a>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+        <li>
+          <ul id="comments" class="menu">
+            <% COMMENTS.each do |comment| %>
+              <li>
+                <a href="<%= "comment/#{comment.id}" %>"><%= comment.subject %></a>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div class="list">
+        <ul>
+          <% USERS.each do |user| %>
+            <ul class="user" id="user-<%= user.id %>">
+              <li><%= user.id %></li>
+              <li><%= user.login %></li>
+              <li><%= user.password %></li>
+              <li><%= user.age %></li>
+            </ul>
+          <% end %>
+        </ul>
+      </div>
+      <div class="list">
+        <ul>
+          <% COMMENTS.each do |comment| %>
+            <ul class="comment" id="comment-<%= comment.id %>">
+              <li><%= comment.id %></li>
+              <li><%= comment.subject %></li>
+              <li><%= comment.content %></li>
+            </ul>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

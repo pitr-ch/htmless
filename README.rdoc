@@ -122,6 +122,8 @@ and result is
 
 == Benchmark
 
+=== Synthetic
+
                                 user     system      total        real
   render                    5.930000   0.000000   5.930000 (  5.928717)
   render3                   6.540000   0.010000   6.550000 (  6.540528)
@@ -134,3 +136,26 @@ and result is
   erector                  15.650000   0.000000  15.650000 ( 15.634845)
   markaby                  22.670000   0.020000  22.690000 ( 22.693306)
   tagz                     73.200000   0.140000  73.340000 ( 73.306450)
+
+=== In Rails 3
+
+  BenchTest#test_erubis_partials (4.06 sec warmup)
+             wall_time: 4.42 sec
+                memory: 0.00 KB
+               objects: 0
+               gc_runs: 15
+               gc_time: 0.57 ms
+  BenchTest#test_erubis_single (551 ms warmup)
+             wall_time: 539 ms
+                memory: 0.00 KB
+               objects: 0
+               gc_runs: 4
+               gc_time: 0.12 ms
+  BenchTest#test_hammer_builder (2.20 sec warmup)
+             wall_time: 753 ms
+                memory: 0.00 KB
+               objects: 0
+               gc_runs: 4
+               gc_time: 0.16 ms
+
+Single erubis template performs good but when partials is used performance is worse.

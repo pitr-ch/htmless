@@ -65,15 +65,18 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #exit
 
 
-#b = HammerBuilder::Formated.get.go_in do
-#  html do
-#    div object_id.to_s
-#    div { p 'a' }
-#  end
-#end
-#puts b.to_html
-#
-#exit
+b = HammerBuilder::Formated.get.go_in do
+  html do
+    div object_id.to_s
+    div object_id
+    div.content object_id
+    div { p 'a' }
+    div[:idcko]
+  end
+end
+puts b.to_html
+
+exit
 
 require 'ruby-prof'
 r = HammerBuilder::Formated.new
