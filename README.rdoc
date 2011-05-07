@@ -139,23 +139,23 @@ and result is
 
 === In Rails 3
 
-  BenchTest#test_erubis_partials (4.06 sec warmup)
-             wall_time: 4.42 sec
+  BenchTest#test_erubis_partials (3.29 sec warmup)
+             wall_time: 3.23 sec
                 memory: 0.00 KB
                objects: 0
                gc_runs: 15
-               gc_time: 0.57 ms
-  BenchTest#test_erubis_single (551 ms warmup)
-             wall_time: 539 ms
+               gc_time: 0.62 ms
+  BenchTest#test_erubis_single (740 ms warmup)
+             wall_time: 711 ms
                 memory: 0.00 KB
                objects: 0
                gc_runs: 4
-               gc_time: 0.12 ms
-  BenchTest#test_hammer_builder (2.20 sec warmup)
-             wall_time: 753 ms
+               gc_time: 0.15 ms
+  BenchTest#test_hammer_builder (3.14 sec warmup)
+             wall_time: 875 ms
                 memory: 0.00 KB
                objects: 0
-               gc_runs: 4
-               gc_time: 0.16 ms
+               gc_runs: 5
+               gc_time: 0.18 ms
 
 Single erubis template performs good but when partials are used performace goes down.

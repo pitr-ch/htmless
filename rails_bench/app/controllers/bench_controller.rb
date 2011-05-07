@@ -8,7 +8,13 @@ class BenchController < ApplicationController
   end
 
   def hammer_builder
-    tmp = lambda do
+    render :text => render_page(HammerBuilder::Standard.get).to_html!
+  end
+
+  private
+
+  def render_page(b)
+    b.go_in(self) do |controller|
       xhtml5!
       html do
         head { title 'Comunity' }
@@ -18,14 +24,14 @@ class BenchController < ApplicationController
               li do
                 ul.class('menu').id(:users) do
                   USERS.each do |user|
-                    li { a(user.login).href("user/#{user.id}") }
+                    user.menu self
                   end
                 end
               end
               li do
                 ul.class('menu').id(:comments) do
                   COMMENTS.each do |comment|
-                    li { a(comment.subject).href("comment/#{comment.id}") }
+                    comment.menu self
                   end
                 end
               end
@@ -35,23 +41,14 @@ class BenchController < ApplicationController
             div :class => 'list' do
               ul do
                 USERS.each do |user|
-                  ul.class('user').id("user-#{user.id}") do
-                    li user.id
-                    li user.login
-                    li user.password
-                    li user.age
-                  end
+                  user.detail self
                 end
               end
             end
             div :class => 'list' do
               ul do
                 COMMENTS.each do |comment|
-                  ul.class('comment').id("comment-#{comment.id}") do
-                    li comment.id
-                    li comment.subject
-                    li comment.content
-                  end
+                  comment.detail self
                 end
               end
             end
@@ -59,7 +56,6 @@ class BenchController < ApplicationController
         end
       end
     end
-    render :text => HammerBuilder::Standard.get.go_in(&tmp).to_html!
   end
 
 end

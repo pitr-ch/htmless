@@ -15,6 +15,4 @@ class BenchTest < ActionDispatch::PerformanceTest
   def test_hammer_builder
     TIMES.times { get '/bench/hammer_builder' }
   end
-
-
 end

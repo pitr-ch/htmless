@@ -2,7 +2,7 @@ RailsBench::Application.routes.draw do
   get "bench/erubis_partials"
   get "bench/erubis_single"
   get "bench/hammer_builder"
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
