@@ -158,4 +158,4 @@ and result is
                gc_runs: 4
                gc_time: 0.16 ms
 
-Single erubis template performs good but when partials is used performance is worse.
+Single erubis template performs good but when partials is used performace goes down.
