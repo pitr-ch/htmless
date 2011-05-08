@@ -1,0 +1,7 @@
+<li>
+  <ul class="comment" id="comment-${  @comment.id  }">
+    <li>${  @comment.id  }</li>
+    <li>${  @comment.subject  }</li>
+    <li>${  @comment.content  }</li>
+  </ul>
+</li>

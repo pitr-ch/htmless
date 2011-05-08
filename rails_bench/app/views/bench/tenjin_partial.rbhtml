@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comunity</title>
+  </head>
+  <body>
+    <div id="menu">
+      <ul class="menu">
+        <li>
+          <ul id="users" class="menu">
+            <?rb USERS.each do |user| ?>
+              <?rb import '_menu_user.rbhtml', true, :user => user ?>
+            <?rb end ?>
+          </ul>
+        </li>
+        <li>
+          <ul id="comments" class="menu">
+            <?rb COMMENTS.each do |comment| ?>
+              <?rb import '_menu_comment.rbhtml', true, :comment => comment ?>
+            <?rb end ?>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div class="list">
+        <ul>
+          <?rb USERS.each do |user| ?>
+            <?rb import '_user.rbhtml', true, :user => user ?>
+          <?rb end ?>
+        </ul>
+      </div>
+      <div class="list">
+        <ul>
+          <?rb COMMENTS.each do |comment| ?>
+            <?rb import '_comment.rbhtml', true, :comment => comment ?>
+          <?rb end ?>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

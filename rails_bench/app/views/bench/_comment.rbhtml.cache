@@ -1,0 +1,7 @@
+ _buf << %Q`<li>
+  <ul class="comment" id="comment-#{escape((  @comment.id  ).to_s)}">
+    <li>#{escape((  @comment.id  ).to_s)}</li>
+    <li>#{escape((  @comment.subject  ).to_s)}</li>
+    <li>#{escape((  @comment.content  ).to_s)}</li>
+  </ul>
+</li>`; 

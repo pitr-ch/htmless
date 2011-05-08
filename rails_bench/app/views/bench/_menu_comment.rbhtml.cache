@@ -1,0 +1,3 @@
+ _buf << %Q`<li>
+  <a href="#{escape((  'comment/' + @comment.id.to_s  ).to_s)}">#{escape((  @comment.subject  ).to_s)}</a>
+</li>`; 

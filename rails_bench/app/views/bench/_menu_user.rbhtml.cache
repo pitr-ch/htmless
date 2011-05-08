@@ -1,0 +1,3 @@
+ _buf << %Q`<li>
+  <a href="#{escape(( 'user/' + @user.id.to_s ).to_s)}">#{escape(( @user.login ).to_s)}</a>
+</li>`; 

@@ -1,3 +1,13 @@
+module Tenjin::ContextHelper
+  def import(template_name, _append_to_buf=true, context_update = {})
+    update(context_update)
+    _buf = self._buf
+    output = self._engine.render(template_name, context = self, layout=false)
+    _buf << output if _append_to_buf
+    return output
+  end
+end
+
 class BenchController < ApplicationController
   layout false
 
@@ -9,6 +19,16 @@ class BenchController < ApplicationController
 
   def hammer_builder
     render :text => render_page(HammerBuilder::Standard.get).to_html!
+  end
+
+  def tenjin_single
+    @tenjin_single ||= Tenjin::Engine.new(:path => ["#{Rails.root}/app/views/bench/"])
+    render :text => @tenjin_single.render('tenjin_single.rbhtml')
+  end
+
+  def tenjin_partial
+    @tenjin_partial ||= Tenjin::Engine.new(:path => ["#{Rails.root}/app/views/bench/"])
+    render :text => @tenjin_partial.render('tenjin_partial.rbhtml')
   end
 
   private

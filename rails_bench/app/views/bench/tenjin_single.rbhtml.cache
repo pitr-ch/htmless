@@ -1,0 +1,58 @@
+ _buf << %Q`<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comunity</title>
+  </head>
+  <body>
+    <div id="menu">
+      <ul class="menu">
+        <li>
+          <ul id="users" class="menu">\n`
+            USERS.each do |user|
+ _buf << %Q`              <li>
+                <a href="#{escape(( 'user/' + user.id.to_s ).to_s)}">#{escape(( user.login ).to_s)}</a>
+              </li>\n`
+            end
+ _buf << %Q`          </ul>
+        </li>
+        <li>
+          <ul id="comments" class="menu">\n`
+            COMMENTS.each do |comment|
+ _buf << %Q`              <li>
+                <a href="#{escape((  'comment/' + comment.id.to_s  ).to_s)}">#{escape((  comment.subject  ).to_s)}</a>
+              </li>\n`
+            end
+ _buf << %Q`          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div class="list">
+        <ul>\n`
+          USERS.each do |user|
+ _buf << %Q`            <li>
+              <ul class="user" id="user-#{escape((  user.id  ).to_s)}">
+                <li>#{escape((  user.id  ).to_s)}</li>
+                <li>#{escape((  user.login  ).to_s)}</li>
+                <li>#{escape((  user.password  ).to_s)}</li>
+                <li>#{escape((  user.age  ).to_s)}</li>
+              </ul>
+            </li>\n`
+          end
+ _buf << %Q`        </ul>
+      </div>
+      <div class="list">
+        <ul>\n`
+          COMMENTS.each do |comment|
+ _buf << %Q`            <li>
+              <ul class="comment" id="comment-#{escape((  comment.id  ).to_s)}">
+                <li>#{escape((  comment.id  ).to_s)}</li>
+                <li>#{escape((  comment.subject  ).to_s)}</li>
+                <li>#{escape((  comment.content  ).to_s)}</li>
+              </ul>
+            </li>\n`
+          end
+ _buf << %Q`        </ul>
+      </div>
+    </div>
+  </body>
+</html>`; 

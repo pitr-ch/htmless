@@ -15,4 +15,12 @@ class BenchTest < ActionDispatch::PerformanceTest
   def test_hammer_builder
     TIMES.times { get '/bench/hammer_builder' }
   end
+
+  def test_tenjin_single
+    TIMES.times { get '/bench/tenjin_single' }
+  end
+
+  def test_tenjin_partial
+    TIMES.times { get '/bench/tenjin_partial' }
+  end
 end

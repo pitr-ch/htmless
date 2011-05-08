@@ -1,0 +1,41 @@
+ _buf << %Q`<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comunity</title>
+  </head>
+  <body>
+    <div id="menu">
+      <ul class="menu">
+        <li>
+          <ul id="users" class="menu">\n`
+            USERS.each do |user|
+              import '_menu_user.rbhtml', true, :user => user
+            end
+ _buf << %Q`          </ul>
+        </li>
+        <li>
+          <ul id="comments" class="menu">\n`
+            COMMENTS.each do |comment|
+              import '_menu_comment.rbhtml', true, :comment => comment
+            end
+ _buf << %Q`          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div class="list">
+        <ul>\n`
+          USERS.each do |user|
+            import '_user.rbhtml', true, :user => user
+          end
+ _buf << %Q`        </ul>
+      </div>
+      <div class="list">
+        <ul>\n`
+          COMMENTS.each do |comment|
+            import '_comment.rbhtml', true, :comment => comment
+          end
+ _buf << %Q`        </ul>
+      </div>
+    </div>
+  </body>
+</html>`; 

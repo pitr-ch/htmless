@@ -1,0 +1,12 @@
+<html>
+<head></head>
+<body><div id="menu"><ul>
+<?rb 10.times do ?>
+<li>${ @model.a }</li><li>${ @model.b }</li>
+<?rb end ?>
+</ul></div>
+<div id="content">
+<?rb 10.times do ?>
+${ 'asd asha sdha sdjhas ahs'*10 }
+<?rb end ?>
+</div></body></html>

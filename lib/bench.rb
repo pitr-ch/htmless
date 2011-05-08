@@ -29,9 +29,10 @@ TIMES =  25000
 #TIMES =   1000
 #TIMES =    500
 #TIMES =    100
-#TIMES =      2
+#TIMES =      1
 BERECTOR = true
-BMARKABY = false
+BTENJIN = true
+BMARKABY = true
 BTAGZ = false
 
 
@@ -143,7 +144,7 @@ Benchmark.bmbm(23) do |b|
 
   require 'erubis'
 
-  TEMPLATE = <<TMP
+  ERB_TEMPLATE = <<TMP
 <html>
 <head></head>
 <body><div id="menu"><ul>
@@ -160,29 +161,47 @@ TMP
 
   b.report('erubis') do
     TIMES.times do
-      Erubis::Eruby.new(TEMPLATE).result(binding())
+      Erubis::Eruby.new(ERB_TEMPLATE).result(binding())
     end
-    GC.start
-  end
-  erub = Erubis::Eruby.new(TEMPLATE)
-  b.report('erubis-cache') do
+  end  
+  b.report('erubis-reuse') do
+    erub = Erubis::Eruby.new(ERB_TEMPLATE)
     TIMES.times do
       erub.result(binding())
     end
-    GC.start
   end
   b.report('fasterubis') do
     TIMES.times do
-      Erubis::FastEruby.new(TEMPLATE).result(binding())
+      Erubis::FastEruby.new(ERB_TEMPLATE).result(binding())
     end
-    GC.start
-  end
-  erub = Erubis::FastEruby.new(TEMPLATE)
-  b.report('fasterubis-cache') do
+  end  
+  b.report('fasterubis-reuse') do
+    erub = Erubis::FastEruby.new(ERB_TEMPLATE)
     TIMES.times do
       erub.result(binding())
     end
-    GC.start
+  end
+
+  if BTENJIN
+    require 'tenjin'
+
+    b.report('tenjin') do
+      tnj = nil
+      TIMES.times do
+        tnj = Tenjin::Template.new "#{File.dirname(__FILE__)}/tenjin.rbhtml"
+        tnj.render(:model => model)
+      end
+      puts tnj.render(:model => model) if TIMES == 1
+    end
+
+    b.report('tenjin-reuse') do
+      tnj = Tenjin::Template.new "#{File.dirname(__FILE__)}/tenjin.rbhtml"
+      TIMES.times do
+        tnj.render(:model => model)
+      end
+      puts tnj.render(:model => model) if TIMES == 1
+    end
+
   end
 
   if BERECTOR

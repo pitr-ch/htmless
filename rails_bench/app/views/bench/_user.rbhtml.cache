@@ -1,0 +1,8 @@
+ _buf << %Q`<li>
+  <ul class="user" id="user-#{escape((  @user.id  ).to_s)}">
+    <li>#{escape((  @user.id  ).to_s)}</li>
+    <li>#{escape((  @user.login  ).to_s)}</li>
+    <li>#{escape((  @user.password  ).to_s)}</li>
+    <li>#{escape((  @user.age  ).to_s)}</li>
+  </ul>
+</li>`; 

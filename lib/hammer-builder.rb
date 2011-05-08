@@ -581,7 +581,7 @@ module HammerBuilder
   class Formated < Standard
     extend_class :AbstractTag do
       def open(attributes = nil)
-        @output << NEWLINE << SPACES[@stack.size] << LT << @tag
+        @output << NEWLINE << SPACES.fetch(@stack.size, SPACE) << LT << @tag
         @builder.current = self
         attributes(attributes)
         default
@@ -597,7 +597,7 @@ module HammerBuilder
         @builder.current = nil
         yield
         @builder.flush
-        @output << NEWLINE << SPACES[@stack.size-1] << SLASH_LT << @stack.pop << GT
+        @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
         nil
       end
     end

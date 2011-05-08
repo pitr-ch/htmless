@@ -125,37 +125,57 @@ and result is
 === Synthetic
 
                                 user     system      total        real
-  render                    5.930000   0.000000   5.930000 (  5.928717)
-  render3                   6.540000   0.010000   6.550000 (  6.540528)
-  HammerBuilder::Standard   6.720000   0.000000   6.720000 (  6.710063)
-  HammerBuilder::Formated   6.710000   0.000000   6.710000 (  6.715132)
-  erubis                   10.020000   0.030000  10.050000 ( 10.040430)
-  erubis-cache              6.130000   0.020000   6.150000 (  6.175427)
-  fasterubis               10.340000   0.000000  10.340000 ( 10.325469)
-  fasterubis-cache          6.130000   0.010000   6.140000 (  6.123693)
-  erector                  15.650000   0.000000  15.650000 ( 15.634845)
-  markaby                  22.670000   0.020000  22.690000 ( 22.693306)
+  render                    5.010000   0.000000   5.010000 (  5.185034)
+  render3                   4.990000   0.020000   5.010000 (  5.037699)
+  HammerBuilder::Standard   5.620000   0.000000   5.620000 (  5.643001)
+  HammerBuilder::Formated   5.610000   0.010000   5.620000 (  5.623096)
+  erubis                    8.040000   0.010000   8.050000 (  8.139744)
+  erubis-reuse              4.970000   0.000000   4.970000 (  4.990626)
+  fasterubis                8.060000   0.030000   8.090000 (  8.096832)
+  fasterubis-reuse          4.930000   0.010000   4.940000 (  4.934972)
+  tenjin                   12.390000   0.270000  12.660000 ( 12.642816)
+  tenjin-reuse              3.540000   0.000000   3.540000 (  3.557388)
+  erector                  15.320000   0.010000  15.330000 ( 15.378344)
+  markaby                  20.750000   0.030000  20.780000 ( 21.371292)
   tagz                     73.200000   0.140000  73.340000 ( 73.306450)
 
 === In Rails 3
 
-  BenchTest#test_erubis_partials (3.29 sec warmup)
-             wall_time: 3.23 sec
+  BenchTest#test_erubis_partials (3.34 sec warmup)
+             wall_time: 3.56 sec
                 memory: 0.00 KB
                objects: 0
                gc_runs: 15
-               gc_time: 0.62 ms
-  BenchTest#test_erubis_single (740 ms warmup)
-             wall_time: 711 ms
+               gc_time: 0.53 ms
+  BenchTest#test_erubis_single (552 ms warmup)
+             wall_time: 544 ms
                 memory: 0.00 KB
                objects: 0
                gc_runs: 4
-               gc_time: 0.15 ms
-  BenchTest#test_hammer_builder (3.14 sec warmup)
-             wall_time: 875 ms
+               gc_time: 0.12 ms
+  BenchTest#test_hammer_builder (2.33 sec warmup)
+             wall_time: 847 ms
                 memory: 0.00 KB
                objects: 0
                gc_runs: 5
-               gc_time: 0.18 ms
+               gc_time: 0.17 ms
+  BenchTest#test_tenjin_partial (942 ms warmup)
+             wall_time: 1.21 sec
+                memory: 0.00 KB
+               objects: 0
+               gc_runs: 7
+               gc_time: 0.25 ms
+  BenchTest#test_tenjin_single (531 ms warmup)
+             wall_time: 532 ms
+                memory: 0.00 KB
+               objects: 0
+               gc_runs: 6
+               gc_time: 0.20 ms
 
-Single erubis template performs good but when partials are used performace goes down.
+=== Conclusion
+
+Template engines are faster than HammerBuilder when template does not content a lot of inserting or partials. On the
+other hand when partials are used, HammerBuilder beats down template engines. There is quite a overhead to render partials.
+So which one is better, is dependent on how much your rendering is fragmented / dynamic.
+
+To use Tenjin in Rails 3 a did some hacking.

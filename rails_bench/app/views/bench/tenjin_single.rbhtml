@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comunity</title>
+  </head>
+  <body>
+    <div id="menu">
+      <ul class="menu">
+        <li>
+          <ul id="users" class="menu">
+            <?rb USERS.each do |user| ?>
+              <li>
+                <a href="${ 'user/' + user.id.to_s }">${ user.login }</a>
+              </li>
+            <?rb end ?>
+          </ul>
+        </li>
+        <li>
+          <ul id="comments" class="menu">
+            <?rb COMMENTS.each do |comment| ?>
+              <li>
+                <a href="${  'comment/' + comment.id.to_s  }">${  comment.subject  }</a>
+              </li>
+            <?rb end ?>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div class="list">
+        <ul>
+          <?rb USERS.each do |user| ?>
+            <li>
+              <ul class="user" id="user-${  user.id  }">
+                <li>${  user.id  }</li>
+                <li>${  user.login  }</li>
+                <li>${  user.password  }</li>
+                <li>${  user.age  }</li>
+              </ul>
+            </li>
+          <?rb end ?>
+        </ul>
+      </div>
+      <div class="list">
+        <ul>
+          <?rb COMMENTS.each do |comment| ?>
+            <li>
+              <ul class="comment" id="comment-${  comment.id  }">
+                <li>${  comment.id  }</li>
+                <li>${  comment.subject  }</li>
+                <li>${  comment.content  }</li>
+              </ul>
+            </li>
+          <?rb end ?>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
