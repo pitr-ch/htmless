@@ -67,7 +67,8 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 
 b = HammerBuilder::Formated.get.go_in do
   html do
-    div object_id.to_s
+    meta.http_equiv 'asd'
+    div.data_id object_id
     div object_id
     div.content object_id
     div { p 'a' }

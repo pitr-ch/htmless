@@ -43,7 +43,7 @@ module HammerBuilder
     "figcaption" => [],
     "figure" => [],
     "footer" => [],
-    "form" => ["action", "autocomplete", "enctype", "method", "name", "novalidate", "target"], # FIXME add "accept-charset"
+    "form" => ["action", "autocomplete", "enctype", "method", "name", "novalidate", "target", 'accept_charset'], 
     "h1" => [],
     "h2" => [],
     "h3" => [],
@@ -72,7 +72,7 @@ module HammerBuilder
     "map" => ["name"],
     "mark" => [],
     "menu" => ["type", "label"],
-    "meta" => ["name", "content", "charset"], # FIXME add "http-equiv"
+    "meta" => ["name", "content", "charset", "http_equiv"],
     "meter" => ["value", "min", "max", "low", "high", "optimum", "form"],
     "nav" => [],
     "noscript" => [],
@@ -122,7 +122,7 @@ module HammerBuilder
   }
 
   DOUBLE_TAGS = [
-    'a', 'abbr',  'article', 'aside', 'audio', 'address', # FIXME inflection missing ss at the
+    'a', 'abbr',  'article', 'aside', 'audio', 'address', 
     'b', 'bdo', 'blockquote', 'body', 'button',
     'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
     'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
@@ -133,7 +133,7 @@ module HammerBuilder
     'map', 'mark', 'meter',
     'nav', 'noscript',
     'object', 'ol', 'optgroup', 'option',
-    'p', 'pre', 'progress', # FIXME inflection missing ss at the
+    'p', 'pre', 'progress',
     'q', 'ruby', 'rt', 'rp', 's',
     'samp', 'script', 'section', 'select', 'small', 'source', 'span',
     'strong', 'style', 'sub', 'sup',
@@ -261,33 +261,12 @@ module HammerBuilder
     # beware of strings in methods -> creates a lot of garbage
 
     define_class :AbstractTag do
-      def self.set_tag(tag)
-        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
-          def set_tag
-            @tag = '#{tag}'
-          end
-        RUBYCODE
-      end
-
       def initialize(builder)
         @builder = builder
         @output = builder.instance_eval { @output }
         @stack = builder.instance_eval { @stack }
         @classes = []
-
         set_tag
-        set_attributes
-      end
-
-      def set_tag
-        @tag = 'abstract'
-      end
-
-      def set_attributes
-        self.rclass.attributes.each do |attr|
-          const = "attr_#{attr}".upcase
-          HammerBuilder.const_set const, " #{attr}=\"" unless HammerBuilder.const_defined?(const)
-        end
       end
 
       def open(attributes = nil)
@@ -312,16 +291,32 @@ module HammerBuilder
 
       alias_method(:rclass, :class)
 
+      class_inheritable_array :_attributes, :instance_writer => false, :instance_reader => false
+
       def self.attributes
-        # global HTML5 attributes
-        [ 'accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang',
-          'spellcheck','style','tabindex','title','onabort','onblur','oncanplay','oncanplaythrough','onchange',
-          'onclick','oncontextmenu','oncuechange','ondblclick','ondrag','ondragend','ondragenter','ondragleave',
-          'ondragover','ondragstart','ondrop','ondurationchange','onemptied','onended','onerror','onfocus','oninput',
-          'oninvalid','onkeydown','onkeypress','onkeyup','onload','onloadeddata','onloadedmetadata','onloadstart',
-          'onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onmousewheel','onpause','onplay',
-          'onplaying','onprogress','onratechange','onreadystatechange','onreset','onscroll','onseeked','onseeking',
-          'onselect','onshow','onstalled','onsubmit','onsuspend','ontimeupdate','onvolumechange','onwaiting']
+        self._attributes
+      end
+      
+      def method_missing(method, *args, &block)
+        if method.to_s =~ /data_([a-z_]+)/
+          self.rclass.attributes = [method.to_s]
+          self.send method, *args, &block
+        else
+          super
+        end
+      end
+
+      protected
+
+      def self.set_tag(tag)
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+          def set_tag
+            @tag = '#{tag}'
+          end
+        RUBYCODE
+      end
+
+      def default
       end
 
       def self.define_attributes
@@ -334,9 +329,46 @@ module HammerBuilder
             end
           RUBYCODE
         end
+        define_attribute_constants
       end
 
-      define_attributes
+      def self.define_attribute_constants
+        attributes.each do |attr|
+          const = "attr_#{attr}".upcase
+          HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"" unless HammerBuilder.const_defined?(const)
+        end
+      end
+
+      def self.attributes=(attributes)
+        self._attributes = attributes
+        define_attributes
+      end
+
+      def flush_classes
+        unless @classes.empty?
+          @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
+          @classes.clear
+        end
+      end
+
+      def set_tag
+        @tag = 'abstract'
+      end
+
+      public
+
+      # global HTML5 attributes
+      self.attributes = [
+        'accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang',
+        'spellcheck','style','tabindex','title','onabort','onblur','oncanplay','oncanplaythrough','onchange',
+        'onclick','oncontextmenu','oncuechange','ondblclick','ondrag','ondragend','ondragenter','ondragleave',
+        'ondragover','ondragstart','ondrop','ondurationchange','onemptied','onended','onerror','onfocus','oninput',
+        'oninvalid','onkeydown','onkeypress','onkeyup','onload','onloadeddata','onloadedmetadata','onloadstart',
+        'onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onmousewheel','onpause','onplay',
+        'onplaying','onprogress','onratechange','onreadystatechange','onreset','onscroll','onseeked','onseeking',
+        'onselect','onshow','onstalled','onsubmit','onsuspend','ontimeupdate','onvolumechange','onwaiting'
+      ]
+
       alias :[] :id
 
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
@@ -345,20 +377,6 @@ module HammerBuilder
           self
         end
       RUBYCODE
-
-      protected
-
-      def default
-      end
-
-      private
-
-      def flush_classes
-        unless @classes.empty?
-          @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
-          @classes.clear
-        end
-      end
     end
 
     define_class :AbstractEmptyTag, :AbstractTag do
@@ -421,8 +439,11 @@ module HammerBuilder
         nil
       end
 
+      protected
+
       def self.define_attributes
         attributes.each do |attr|
+          next if instance_methods(false).include?(attr.to_sym)
           if instance_methods.include?(attr.to_sym)
             class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(*args, &block)
@@ -441,11 +462,14 @@ module HammerBuilder
             RUBYCODE
           end
         end
+        define_attribute_constants
       end
     end
 
     class_inheritable_accessor :tags, :instance_writer => false
     self.tags = {}
+
+    protected
 
     def self.define_tag(tag)
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
@@ -456,6 +480,8 @@ module HammerBuilder
       RUBYCODE
       self.tags[tag] = tag
     end
+
+    public
 
     attr_accessor :current
 
@@ -471,8 +497,6 @@ module HammerBuilder
     def text(text)
       @output << CGI.escapeHTML(text.to_s)
     end
-
-    alias :[] :text
 
     def raw(text)
       @output << text.to_s
@@ -493,13 +517,6 @@ module HammerBuilder
     def xhtml5!
       xml_version
       doctype
-    end
-
-    def flush
-      if @current
-        @current.flush
-        @current = nil
-      end
     end
 
     def reset
@@ -523,6 +540,13 @@ module HammerBuilder
       release!
       r
     end
+
+    def flush
+      if @current
+        @current.flush
+        @current = nil
+      end
+    end
   end
 
   class Standard < Abstract
@@ -530,14 +554,7 @@ module HammerBuilder
     (DOUBLE_TAGS - ['html']).each do |tag|
       define_class tag.camelize , :AbstractDoubleTag do
         set_tag tag
-
-        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
-          def self.attributes
-            super + EXTRA_ATTRIBUTES['#{tag}']
-          end
-        RUBYCODE
-
-        define_attributes
+        self.attributes = EXTRA_ATTRIBUTES[tag]
       end
 
       define_tag(tag)
@@ -545,14 +562,7 @@ module HammerBuilder
 
     define_class :Html, :AbstractDoubleTag do
       set_tag 'html'
-
-      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
-        def self.attributes
-          super + ['xmlns'] + EXTRA_ATTRIBUTES['html']
-        end
-      RUBYCODE
-
-      define_attributes
+      self.attributes = ['xmlns'] + EXTRA_ATTRIBUTES['html']
 
       def default
         xmlns('http://www.w3.org/1999/xhtml')
@@ -564,14 +574,7 @@ module HammerBuilder
     EMPTY_TAGS.each do |tag|
       define_class tag.camelize, :AbstractEmptyTag do
         set_tag tag
-
-        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
-          def self.attributes
-            super + EXTRA_ATTRIBUTES['#{tag}']
-          end
-        RUBYCODE
-
-        define_attributes
+        self.attributes = EXTRA_ATTRIBUTES[tag]
       end
 
       define_tag(tag)
