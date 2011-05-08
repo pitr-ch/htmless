@@ -530,13 +530,13 @@ module HammerBuilder
       self
     end
 
-    def to_html() # FIXME to_xhtml
+    def to_xhtml()
       flush
       @output.clone
     end
 
-    def to_html!
-      r = to_html
+    def to_xhtml!
+      r = to_xhtml
       release!
       r
     end

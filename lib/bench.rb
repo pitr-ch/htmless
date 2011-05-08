@@ -112,7 +112,7 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts builder.to_html if TIMES == 1
+      puts builder.to_xhtml if TIMES == 1
       builder.reset
     end
   end
@@ -137,7 +137,7 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts builder.to_html if TIMES == 1
+      puts builder.to_xhtml if TIMES == 1
       builder.reset
     end
   end
@@ -231,8 +231,8 @@ TMP
     w = AWidget.new :model => model
     b.report('erector') do
       TIMES.times do
-        w.to_html
-        puts w.to_html if TIMES == 1
+        w.to_xhtml
+        puts w.to_xhtml if TIMES == 1
       end
     end
 

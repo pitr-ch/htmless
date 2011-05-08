@@ -27,7 +27,7 @@ Experimental fast xhtml builder with rich syntax:
           end
         end
       end
-    end.to_html
+    end.to_xhtml
     #=>
     <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -64,7 +64,7 @@ You can mix it directly to Builder's instance
   Hammer::FormatedBuilder.new.go_in do
     extend ActionView::Helpers::NumberHelper
     div number_with_precision(Math::PI, :precision => 4)
-  end.to_html # => <div>3.1416</div>
+  end.to_xhtml # => <div>3.1416</div>
 
 or make your own Builder
 
@@ -77,7 +77,7 @@ or make your own Builder
 
   MyBuilder.new.go_in do
     div number_with_precision(Math::PI, :precision => 4)
-  end.to_html # => <div>3.1416</div>
+  end.to_xhtml # => <div>3.1416</div>
 
 == Extensibility
 
@@ -108,7 +108,7 @@ or make your own Builder
         strong 'something'
       end
     end
-  end.to_html
+  end.to_xhtml
 
 and result is
 

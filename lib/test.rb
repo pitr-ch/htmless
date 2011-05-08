@@ -15,7 +15,7 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #    div[13]
 #  end
 #end
-#puts r.to_html
+#puts r.to_xhtml
 
 #require 'active_support'
 #require 'action_view'
@@ -23,7 +23,7 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #html = Hammer::FormatedBuilder.new.go_in do
 #  extend ActionView::Helpers::NumberHelper
 #  div number_with_precision(Math::PI, :precision => 4)
-#end.to_html
+#end.to_xhtml
 #puts html
 #
 #class MyBuilder < Hammer::FormatedBuilder
@@ -32,7 +32,7 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #
 #puts(MyBuilder.new.go_in do
 #  div number_with_precision(Math::PI, :precision => 4)
-#end.to_html)
+#end.to_xhtml)
 
 
 #class MyBuilder < Hammer::FormatedBuilder
@@ -59,7 +59,7 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #      strong 'something'
 #    end
 #  end
-#end.to_html
+#end.to_xhtml
 #puts html
 #
 #exit
@@ -75,7 +75,7 @@ b = HammerBuilder::Formated.get.go_in do
     div[:idcko]
   end
 end
-puts b.to_html
+puts b.to_xhtml
 
 exit
 

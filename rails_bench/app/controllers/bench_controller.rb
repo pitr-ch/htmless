@@ -18,7 +18,7 @@ class BenchController < ApplicationController
   end
 
   def hammer_builder
-    render :text => render_page(HammerBuilder::Standard.get).to_html!
+    render :text => render_page(HammerBuilder::Standard.get).to_xhtml!
   end
 
   def tenjin_single
