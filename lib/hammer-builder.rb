@@ -161,6 +161,8 @@ module HammerBuilder
   EQL_QUOTE = EQL + QUOTE
   COMMENT_START = '<!--'
   COMMENT_END = '-->'
+  CDATA_START = '<![CDATA['
+  CDATA_END = ']]>'
 
   module Helper
     def self.included(base)
@@ -448,10 +450,10 @@ module HammerBuilder
         @output << GT
         @content = nil
         @builder.current = nil
-        #        yield
-        if (content = yield).is_a?(String)
-          @output << CGI.escapeHTML(content)
-        end
+        yield
+        #        if (content = yield).is_a?(String)
+        #          @output << CGI.escapeHTML(content)
+        #        end
         @builder.flush
         @output << SLASH_LT << @stack.pop << GT
         nil
@@ -521,7 +523,11 @@ module HammerBuilder
     end
 
     def comment(comment)
-      @output << COMMENT_START << comment << COMMENT_END
+      @output << COMMENT_START << comment.to_s << COMMENT_END
+    end
+
+    def cdata(content) # FIX to tag
+      @output << CDATA_START << content.to_s << CDATA_END
     end
 
     def xml_version(version = '1.0', encoding = 'UTF-8')
@@ -589,6 +595,25 @@ module HammerBuilder
 
     define_tag('html')
 
+    define_class :Js, :Script do
+      def default
+        type "text/javascript"
+      end
+
+      def flush # FIXME hacky ...
+        flush_classes
+        @output << GT
+        @builder.cdata @content if @content
+        @output << SLASH_LT << @stack.pop << GT
+        @content = nil
+      end
+
+      def with(&block)
+        raise 'unsupported'
+      end
+    end
+    define_tag('js')
+
     EMPTY_TAGS.each do |tag|
       define_class tag.camelize, :AbstractEmptyTag do
         set_tag tag
@@ -617,6 +642,9 @@ module HammerBuilder
         @content = nil
         @builder.current = nil
         yield
+        #        if (content = yield).is_a?(String)
+        #          @output << CGI.escapeHTML(content)
+        #        end
         @builder.flush
         @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
         nil
