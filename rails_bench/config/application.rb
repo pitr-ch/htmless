@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require "#{File.dirname(__FILE__)}/../../lib/hammer-builder.rb"
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -41,7 +42,6 @@ module RailsBench
 
     config.after_initialize do
       require 'data.rb'
-      require "#{File.dirname(__FILE__)}/../../lib/hammer-builder.rb"
     end
   end
 end

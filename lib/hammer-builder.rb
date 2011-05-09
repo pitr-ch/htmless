@@ -162,6 +162,21 @@ module HammerBuilder
   COMMENT_START = '<!--'
   COMMENT_END = '-->'
 
+  module Helper
+    def self.included(base)
+      super
+      base.extend ClassMethods
+    end
+
+    module ClassMethods
+      def builder(method, &build_block)
+        define_method(method) do |builder|
+          builder.go_in(self, &build_block)
+        end
+      end
+    end
+  end
+
   module RedefinableClassTree
     def define_class(klass_name, superclass_name = nil, &definition)
       klass_name = class_name(klass_name)
@@ -171,7 +186,7 @@ module HammerBuilder
 
       define_singleton_method method_class(klass_name) do |builder|
         builder.instance_variable_get("@#{method_class(klass_name)}") || begin
-          klass = builder.send(method_class_definition(klass_name), builder)
+          klass = builder.send(method_class_definition(klass_name), builder)          
           builder.const_set klass_name, klass
           builder.instance_variable_set("@#{method_class(klass_name)}", klass)
         end
@@ -485,7 +500,7 @@ module HammerBuilder
 
     attr_accessor :current
 
-    def initialize() # TODO tag classes
+    def initialize()
       @output = ""
       @stack = []
       @current = nil

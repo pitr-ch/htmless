@@ -64,6 +64,13 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #
 #exit
 
+b = HammerBuilder::Formated.get.go_in do
+  puts div.rclass
+  puts div.rclass.superclass
+  puts div.rclass.superclass.superclass
+  puts div.rclass.superclass.superclass.superclass
+end.release!
+
 
 b = HammerBuilder::Formated.get.go_in do
   html do
@@ -77,12 +84,12 @@ b = HammerBuilder::Formated.get.go_in do
 end
 puts b.to_xhtml
 
-exit
+#exit
 
 require 'ruby-prof'
 r = HammerBuilder::Formated.new
 result = RubyProf.profile do
-  100.times do
+  10.times do
     r.go_in do
       xhtml5!
       html do
