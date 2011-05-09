@@ -4,7 +4,7 @@ require "#{File.dirname(__FILE__)}/render.rb"
 #require "#{File.dirname(__FILE__)}/render_2.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
-require "#{File.dirname(__FILE__)}/hammer-builder.rb"
+require "#{File.dirname(__FILE__)}/hammer_builder.rb"
 
 
 
@@ -64,36 +64,41 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #
 #exit
 
-class MyBuilder < HammerBuilder::Formated
-  extend_class :AbstractDoubleTag do
-  end
-end
-
-b = MyBuilder.get.go_in do
-  puts div.rclass
-  puts div.rclass.superclass
-  puts div.rclass.superclass.superclass
-  puts div.rclass.superclass.superclass.superclass
-  puts div.rclass.superclass.superclass.superclass.superclass
-  puts div.rclass.superclass.superclass.superclass.superclass.superclass
-  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
-  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
-end.release!
+#class MyBuilder < HammerBuilder::Formated
+#  extend_class :AbstractDoubleTag do
+#  end
+#end
+#
+#b = MyBuilder.get.go_in do
+#  puts div.rclass
+#  puts div.rclass.superclass
+#  puts div.rclass.superclass.superclass
+#  puts div.rclass.superclass.superclass.superclass
+#  puts div.rclass.superclass.superclass.superclass.superclass
+#  puts div.rclass.superclass.superclass.superclass.superclass.superclass
+#  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
+#  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
+#end.release!
 
 
 b = HammerBuilder::Formated.get.go_in do
+  xhtml5!
   html do
-    meta.http_equiv 'asd'
-    div.data_id object_id
-    div object_id
-    div.content object_id
-    div { p 'a' }
-    div[:idcko]
+    head { title }
+    body do
+      #    meta.http_equiv 'asd'
+      div.data_id object_id
+      div object_id
+      div.content object_id
+      js "var = 'asd';\n var < 12"
+      div { p 'a' }
+      div[:idcko]
+    end
   end
 end
 puts b.to_xhtml
 
-#exit
+exit
 
 require 'ruby-prof'
 r = HammerBuilder::Formated.new
@@ -141,7 +146,7 @@ exit
 require 'perftools'
 
 r = Hammer::Builder.new
-PerfTools::CpuProfiler.start("hammer-builder") do
+PerfTools::CpuProfiler.start("hammer_builder") do
   1000000.times do
     r.go_in do
       xhtml5!

@@ -1,7 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require "#{File.dirname(__FILE__)}/../../lib/hammer-builder.rb"
+require "#{File.dirname(__FILE__)}/../../lib/hammer_builder.rb"
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.

@@ -3,7 +3,7 @@ require 'rails/performance_test_help'
 
 # Profiling results for each test method are written to tmp/performance.
 class BenchTest < ActionDispatch::PerformanceTest
-  TIMES = 100
+  TIMES = 1
   def test_erubis_partials
     TIMES.times { get '/bench/erubis_partials' }
   end

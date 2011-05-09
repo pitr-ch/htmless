@@ -1,6 +1,6 @@
-= hammer-render
+# hammer-render
 
-== Syntax
+## Syntax
 
 Experimental fast xhtml builder with rich syntax:
 
@@ -54,7 +54,7 @@ Experimental fast xhtml builder with rich syntax:
     </html>
 
 
-== Helpers
+## Helpers
 
 You can mix it directly to Builder's instance
 
@@ -79,7 +79,7 @@ or make your own Builder
     div number_with_precision(Math::PI, :precision => 4)
   end.to_xhtml # => <div>3.1416</div>
 
-== Extensibility
+## Extensibility
 
   class MyBuilder < Hammer::FormatedBuilder
 
@@ -120,9 +120,9 @@ and result is
   </div>
 
 
-== Benchmark
+## Benchmark
 
-=== Synthetic
+### Synthetic
 
                                 user     system      total        real
   render                    5.010000   0.000000   5.010000 (  5.185034)
@@ -139,7 +139,7 @@ and result is
   markaby                  20.750000   0.030000  20.780000 ( 21.371292)
   tagz                     73.200000   0.140000  73.340000 ( 73.306450)
 
-=== In Rails 3
+### In Rails 3
 
   BenchTest#test_erubis_partials (3.34 sec warmup)
              wall_time: 3.56 sec
@@ -172,7 +172,7 @@ and result is
                gc_runs: 6
                gc_time: 0.20 ms
 
-=== Conclusion
+### Conclusion
 
 Template engines are faster than HammerBuilder when template does not content a lot of inserting or partials. On the
 other hand when partials are used, HammerBuilder beats down template engines. There is quite a overhead to render partials.

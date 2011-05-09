@@ -4,7 +4,7 @@ require "#{File.dirname(__FILE__)}/render.rb"
 #require "#{File.dirname(__FILE__)}/render_2.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
-require "#{File.dirname(__FILE__)}/hammer-builder.rb"
+require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
 
 class ::Class
   def spy
@@ -231,8 +231,8 @@ TMP
     w = AWidget.new :model => model
     b.report('erector') do
       TIMES.times do
-        w.to_xhtml
-        puts w.to_xhtml if TIMES == 1
+        w.to_html
+        puts w.to_html if TIMES == 1
       end
     end
 
