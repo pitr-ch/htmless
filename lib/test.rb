@@ -64,11 +64,20 @@ require "#{File.dirname(__FILE__)}/hammer-builder.rb"
 #
 #exit
 
-b = HammerBuilder::Formated.get.go_in do
+class MyBuilder < HammerBuilder::Formated
+  extend_class :AbstractDoubleTag do
+  end
+end
+
+b = MyBuilder.get.go_in do
   puts div.rclass
   puts div.rclass.superclass
   puts div.rclass.superclass.superclass
   puts div.rclass.superclass.superclass.superclass
+  puts div.rclass.superclass.superclass.superclass.superclass
+  puts div.rclass.superclass.superclass.superclass.superclass.superclass
+  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
+  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
 end.release!
 
 

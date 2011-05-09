@@ -206,7 +206,10 @@ module HammerBuilder
       raise "class: '#{klass_name}' not defined" unless respond_to? method_class(klass_name)
 
       define_singleton_method method_class_definition(klass_name) do |builder|
-        Class.new(super(builder), &definition)
+        ancestor = super(builder)
+        count = 1; count += 1 while builder.const_defined? "#{klass_name}Super#{count}"
+        builder.const_set "#{klass_name}Super#{count}", ancestor
+        Class.new(ancestor, &definition)
       end
     end
 
