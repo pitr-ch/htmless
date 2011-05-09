@@ -2,11 +2,30 @@ require 'rubygems'
 require 'rake'
 
 begin
+  require 'yard'
+
+  options = %w[--protected --private --verbose --main=README.md]
+  output = "--output-dir=./yardoc/"
+  input = %w[./lib/**/*.rb - LICENSE README.md]
+  title = "--title=HammerBuilder"
+
+  YARD::Rake::YardocTask.new(:yard) do |yardoc|
+    yardoc.options.push(*options) << output << title
+    yardoc.files.push(*input)
+  end
+    
+rescue LoadError
+  task :yardoc do
+    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
+  end
+end
+
+begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "hammer_builder"
     gem.summary = %Q{fast ruby xhtml5 builder}
-#    gem.description = %Q{ruby component based state-full web framework}
+    #    gem.description = %Q{ruby component based state-full web framework}
     gem.email = "hammer.framework@gmail.com"
     gem.homepage = "https://github.com/ruby-hammer/hammer-builder"
     gem.authors = ["Petr Chalupa"]

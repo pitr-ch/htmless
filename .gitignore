@@ -1,2 +1,5 @@
 nbproject
 .rake_tasks~
+pkg
+.yardoc
+yardoc
