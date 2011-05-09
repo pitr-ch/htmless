@@ -526,7 +526,7 @@ module HammerBuilder
       @output << COMMENT_START << comment.to_s << COMMENT_END
     end
 
-    def cdata(content) # FIX to tag
+    def cdata(content)
       @output << CDATA_START << content.to_s << CDATA_END
     end
 
@@ -595,24 +595,9 @@ module HammerBuilder
 
     define_tag('html')
 
-    define_class :Js, :Script do
-      def default
-        type "text/javascript"
-      end
-
-      def flush # FIXME hacky ...
-        flush_classes
-        @output << GT
-        @builder.cdata @content if @content
-        @output << SLASH_LT << @stack.pop << GT
-        @content = nil
-      end
-
-      def with(&block)
-        raise 'unsupported'
-      end
+    def js(js , options = {})
+      script({:type => "text/javascript"}.merge(options)) { cdata js }
     end
-    define_tag('js')
 
     EMPTY_TAGS.each do |tag|
       define_class tag.camelize, :AbstractEmptyTag do
