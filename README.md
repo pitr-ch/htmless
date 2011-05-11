@@ -4,6 +4,7 @@
 is a xhtml5 builder written in Ruby. It does not introduce anything special, you just
 use Ruby to get your xhtml. [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
 has been written with three objectives:
+
 * Speed
 * Rich API
 * Extensibility
