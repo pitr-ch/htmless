@@ -41,7 +41,7 @@ module RailsBench
     config.filter_parameters += [:password]
 
     config.after_initialize do
-      require 'data.rb'
+      
     end
   end
 end

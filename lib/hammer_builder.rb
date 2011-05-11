@@ -120,6 +120,17 @@ module HammerBuilder
     "video" => ["src", "poster", "preload", "autoplay", "mediagroup", "loop", "controls", "width", "height"],
     "wbr" => []
   }
+  
+  GLOBAL_ATTRIBUTES = [
+    'accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang',
+    'spellcheck','style','tabindex','title','onabort','onblur','oncanplay','oncanplaythrough','onchange',
+    'onclick','oncontextmenu','oncuechange','ondblclick','ondrag','ondragend','ondragenter','ondragleave',
+    'ondragover','ondragstart','ondrop','ondurationchange','onemptied','onended','onerror','onfocus','oninput',
+    'oninvalid','onkeydown','onkeypress','onkeyup','onload','onloadeddata','onloadedmetadata','onloadstart',
+    'onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onmousewheel','onpause','onplay',
+    'onplaying','onprogress','onratechange','onreadystatechange','onreset','onscroll','onseeked','onseeking',
+    'onselect','onshow','onstalled','onsubmit','onsuspend','ontimeupdate','onvolumechange','onwaiting'
+  ]
 
   DOUBLE_TAGS = [
     'a', 'abbr',  'article', 'aside', 'audio', 'address', 
@@ -148,53 +159,74 @@ module HammerBuilder
     'hr', 'img', 'input', 'link', 'meta', 'param'
   ]
 
-  LT = '<'
-  GT = '>'
-  SLASH_LT = '</'
-  SLASH_GT = ' />'
-  SPACE = ' '
+  LT = '<'.freeze
+  GT = '>'.freeze
+  SLASH_LT = '</'.freeze
+  SLASH_GT = ' />'.freeze
+  SPACE = ' '.freeze
   MAX_LEVELS = 300
-  SPACES = Array.new(MAX_LEVELS) {|i| '  ' * i }
-  NEWLINE = "\n"
-  QUOTE = '"'
-  EQL = '='
+  SPACES = Array.new(MAX_LEVELS) {|i| ('  ' * i).freeze }
+  NEWLINE = "\n".freeze
+  QUOTE = '"'.freeze
+  EQL = '='.freeze
   EQL_QUOTE = EQL + QUOTE
-  COMMENT_START = '<!--'
-  COMMENT_END = '-->'
-  CDATA_START = '<![CDATA['
-  CDATA_END = ']]>'
+  COMMENT_START = '<!--'.freeze
+  COMMENT_END = '-->'.freeze
+  CDATA_START = '<![CDATA['.freeze
+  CDATA_END = ']]>'.freeze
 
   module Helper
     def self.included(base)
       super
       base.extend ClassMethods
+      base.class_inheritable_array :builder_methods, :instance_writer => false, :instance_reader => false
     end
 
     module ClassMethods
-      def builder(method, &build_block)
-        define_method(method) do |builder|
-          builder.go_in(self, &build_block)
+
+      # adds instance method to the class. Method accepts any instance of builder and returns it after rendering.
+      # @param [Symbol] method_name
+      # @yield [self] builder_block is evaluated inside builder and accepts instance of a rendered object as parameter
+      # @example
+      #   class User
+      #   # ...
+      #     include HammerBuilder::Helper
+      #
+      #     builder :menu do |user|
+      #       li user.name
+      #     end
+      #   end
+      #
+      #   User.new.menu(HammerBuilder::Standard.get).to_xhtml! #=> "<li>Name</li>"
+      def builder(method_name, &builder_block)
+        self.builder_methods = [method_name.to_sym]
+        define_method(method_name) do |builder, *args|
+          builder.go_in(self, *args, &builder_block)
         end
       end
     end
   end
 
   module RedefinableClassTree
-    def define_class(klass_name, superclass_name = nil, &definition)
-      klass_name = class_name(klass_name)
+    # defines new class
+    # @param [Symbol] class_name
+    # @param [Symbol] superclass_name e.g. :AbstractEmptyTag
+    # @yield definition block which is evaluated inside the new class, doing so defining the class's methods etc.
+    def define_class(class_name, superclass_name = nil, &definition)
+      class_name = class_name(class_name)
       superclass_name = class_name(superclass_name) if superclass_name
 
-      raise "class: '#{klass_name}' already defined" if  respond_to? method_class(klass_name)
+      raise "class: '#{class_name}' already defined" if  respond_to? method_class(class_name)
 
-      define_singleton_method method_class(klass_name) do |builder|
-        builder.instance_variable_get("@#{method_class(klass_name)}") || begin
-          klass = builder.send(method_class_definition(klass_name), builder)          
-          builder.const_set klass_name, klass
-          builder.instance_variable_set("@#{method_class(klass_name)}", klass)
+      define_singleton_method method_class(class_name) do |builder|
+        builder.instance_variable_get("@#{method_class(class_name)}") || begin
+          klass = builder.send(method_class_definition(class_name), builder)
+          builder.const_set class_name, klass
+          builder.instance_variable_set("@#{method_class(class_name)}", klass)
         end
       end
 
-      define_singleton_method method_class_definition(klass_name) do |builder|
+      define_singleton_method method_class_definition(class_name) do |builder|
         superclass = if superclass_name
           builder.send method_class(superclass_name), builder
         else
@@ -204,13 +236,16 @@ module HammerBuilder
       end
     end
 
-    def extend_class(klass_name, &definition)
-      raise "class: '#{klass_name}' not defined" unless respond_to? method_class(klass_name)
+    # extends existing class
+    # @param [Symbol] class_name
+    # @yield definition block which is evaluated inside the new class, doing so extending the class's methods etc.
+    def extend_class(class_name, &definition)
+      raise "class: '#{class_name}' not defined" unless respond_to? method_class(class_name)
 
-      define_singleton_method method_class_definition(klass_name) do |builder|
+      define_singleton_method method_class_definition(class_name) do |builder|
         ancestor = super(builder)
-        count = 1; count += 1 while builder.const_defined? "#{klass_name}Super#{count}"
-        builder.const_set "#{klass_name}Super#{count}", ancestor
+        count = 1; count += 1 while builder.const_defined? "#{class_name}Super#{count}"
+        builder.const_set "#{class_name}Super#{count}", ancestor
         Class.new(ancestor, &definition)
       end
     end
@@ -230,6 +265,7 @@ module HammerBuilder
     end
   end
 
+  # Creating builder instances is expensive, therefore you can use Pool to go around that
   module Pool
     def self.included(base)
       super
@@ -237,6 +273,9 @@ module HammerBuilder
     end
     
     module ClassMethods
+      # This the preferred way of getting new Builder. If you forget to release it, it does not matter -
+      # builder gets GCed after you lose reference
+      # @return [Standard, Formated] 
       def get
         mutex.synchronize do
           if free_builders.empty?
@@ -247,11 +286,19 @@ module HammerBuilder
         end
       end
 
+      # returns +builder+ back into pool *DONT* forget to lose the reference to the +builder+
+      # @param [Standard, Formated]
       def release(builder)
         builder.reset
         mutex.synchronize do
           free_builders.push builder
         end
+        nil
+      end
+
+      # @return [Fixnum] size of free builders
+      def pool_size
+        free_builders.size
       end
 
       private
@@ -265,11 +312,14 @@ module HammerBuilder
       end
     end
 
+    # instance version of ClassMethods.release
+    # @see ClassMethods.release
     def release!
       self.class.release(self)
     end
   end
 
+  # Abstract implementation of Builder
   class Abstract
     extend RedefinableClassTree
     include Pool
@@ -297,6 +347,8 @@ module HammerBuilder
         self
       end
 
+      # @example
+      # div.attributes :id => 'id' # => <div id="id"></div>
       def attributes(attrs)
         return self unless attrs
         attrs.each do |attr, value|
@@ -305,8 +357,10 @@ module HammerBuilder
         self
       end
 
+      # @example
+      # div.attribute :id, 'id' # => <div id="id"></div>
       def attribute(attribute, content)
-        @output << SPACE << attribute << EQL_QUOTE << CGI.escapeHTML(content) << QUOTE
+        @output << SPACE << attribute.to_s << EQL_QUOTE << CGI.escapeHTML(content.to_s) << QUOTE
       end
 
       alias_method(:rclass, :class)
@@ -316,7 +370,8 @@ module HammerBuilder
       def self.attributes
         self._attributes
       end
-      
+
+      # allows data-* attributes
       def method_missing(method, *args, &block)
         if method.to_s =~ /data_([a-z_]+)/
           self.rclass.attributes = [method.to_s]
@@ -328,17 +383,22 @@ module HammerBuilder
 
       protected
 
+      # sets the right tag in descendants
       def self.set_tag(tag)
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def set_tag
-            @tag = '#{tag}'
+            @tag = '#{tag}'.freeze
           end
         RUBYCODE
       end
 
+      # this method is called on each tag opening, useful for default attributes
+      # @example html tag uses this to add xmlns attr.
+      #   html # => <html xmlns="http://www.w3.org/1999/xhtml"></html>
       def default
       end
 
+      # defines dynamically methods for attributes
       def self.define_attributes
         attributes.each do |attr|
           next if instance_methods.include?(attr.to_sym)
@@ -352,18 +412,21 @@ module HammerBuilder
         define_attribute_constants
       end
 
+      # defines constant strings not to make garbage 
       def self.define_attribute_constants
         attributes.each do |attr|
           const = "attr_#{attr}".upcase
-          HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"" unless HammerBuilder.const_defined?(const)
+          HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze unless HammerBuilder.const_defined?(const)
         end
       end
 
+      # adds attribute to class, triggers dynamical creation of needed instance methods etc.
       def self.attributes=(attributes)
         self._attributes = attributes
         define_attributes
       end
 
+      # flushes classes to output
       def flush_classes
         unless @classes.empty?
           @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
@@ -378,16 +441,7 @@ module HammerBuilder
       public
 
       # global HTML5 attributes
-      self.attributes = [
-        'accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang',
-        'spellcheck','style','tabindex','title','onabort','onblur','oncanplay','oncanplaythrough','onchange',
-        'onclick','oncontextmenu','oncuechange','ondblclick','ondrag','ondragend','ondragenter','ondragleave',
-        'ondragover','ondragstart','ondrop','ondurationchange','onemptied','onended','onerror','onfocus','oninput',
-        'oninvalid','onkeydown','onkeypress','onkeyup','onload','onloadeddata','onloadedmetadata','onloadstart',
-        'onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onmousewheel','onpause','onplay',
-        'onplaying','onprogress','onratechange','onreadystatechange','onreset','onscroll','onseeked','onseeking',
-        'onselect','onshow','onstalled','onsubmit','onsuspend','ontimeupdate','onvolumechange','onwaiting'
-      ]
+      self.attributes = GLOBAL_ATTRIBUTES
 
       alias :[] :id
 
@@ -440,11 +494,13 @@ module HammerBuilder
         @content = nil
       end
 
+      # sets content of the double tag
       def content(content)
         @content = content.to_s
         self
       end
 
+      # renders content of the double tag with block
       def with
         flush_classes
         @output << GT
@@ -491,6 +547,7 @@ module HammerBuilder
 
     protected
 
+    # defines instance method for +tag+ in builder
     def self.define_tag(tag)
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def #{tag}(*args, &block)
@@ -509,56 +566,78 @@ module HammerBuilder
       @output = ""
       @stack = []
       @current = nil
+      # tag classes initialization
       tags.values.each do |klass|
         instance_variable_set(:"@#{klass}", self.class.send("#{klass}_class", self.class).new(self))
       end
     end
 
+    # escapes +text+ to output
     def text(text)
+      flush
       @output << CGI.escapeHTML(text.to_s)
     end
 
+    # unescaped +text+ to output
     def raw(text)
+      flush
       @output << text.to_s
     end
 
+    # inserts +comment+
     def comment(comment)
+      flush
       @output << COMMENT_START << comment.to_s << COMMENT_END
     end
 
+    # insersts CDATA with +content+
     def cdata(content)
+      flush
       @output << CDATA_START << content.to_s << CDATA_END
     end
 
     def xml_version(version = '1.0', encoding = 'UTF-8')
+      flush
       @output << "<?xml version=\"#{version}\" encoding=\"#{encoding}\"?>"
     end
 
     def doctype
+      flush
       @output << "<!DOCTYPE html>"
     end
 
+    # inserts xhtml5 header
     def xhtml5!
       xml_version
       doctype
     end
 
+    # resets the builder to the state after creation - much faster then creating a new one
     def reset
       flush
       @output.clear
       @stack.clear
+      self
     end
 
+    # enables you to evaluate +block+ inside the builder with +variables+
+    # @example
+    #  HammerBuilder::Formated.get.freeze.go_in('asd') do |string|
+    #    div string
+    #  end.to_html! #=> "<div>asd</div>"
+    #
     def go_in(*variables, &block)
       instance_exec *variables, &block
       self
     end
 
+    # @return [String] output
     def to_xhtml()
       flush
       @output.clone
     end
 
+    # @return [String] output and releases the builder to pool
     def to_xhtml!
       r = to_xhtml
       release!
@@ -573,6 +652,7 @@ module HammerBuilder
     end
   end
 
+  # Builder implementation without formating (one line)
   class Standard < Abstract
 
     (DOUBLE_TAGS - ['html']).each do |tag|
@@ -609,6 +689,8 @@ module HammerBuilder
     end
   end
 
+  # Builder implementation with formating (indented by '  ')
+  # Slow down is less then 1%
   class Formated < Standard
     extend_class :AbstractTag do
       def open(attributes = nil)
@@ -634,6 +716,10 @@ module HammerBuilder
         @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
         nil
       end
+    end
+
+    def comment(comment)
+      @output << NEWLINE << SPACES.fetch(@stack.size, SPACE) << COMMENT_START << comment.to_s << COMMENT_END
     end
   end
 end

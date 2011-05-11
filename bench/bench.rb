@@ -32,7 +32,7 @@ TIMES =  25000
 #TIMES =      1
 BERECTOR = true
 BTENJIN = true
-BMARKABY = true
+BMARKABY = false
 BTAGZ = false
 
 
@@ -90,9 +90,9 @@ Benchmark.bmbm(23) do |b|
       end
       puts r.to_s if TIMES == 1
     end
-  end
-  builder = HammerBuilder::Standard.get
+  end  
   b.report("HammerBuilder::Standard") do
+    builder = HammerBuilder::Standard.get
     TIMES.times do
       builder.go_in do
         html do
@@ -115,9 +115,10 @@ Benchmark.bmbm(23) do |b|
       puts builder.to_xhtml if TIMES == 1
       builder.reset
     end
-  end
-  builder = HammerBuilder::Formated.get
+    builder.release!
+  end  
   b.report("HammerBuilder::Formated") do
+    builder = HammerBuilder::Formated.get
     TIMES.times do
       builder.go_in do
         html do
@@ -140,6 +141,7 @@ Benchmark.bmbm(23) do |b|
       puts builder.to_xhtml if TIMES == 1
       builder.reset
     end
+    builder.release!
   end
 
   require 'erubis'

@@ -1,10 +1,4 @@
-require 'benchmark'
-require "#{File.dirname(__FILE__)}/render.rb"
-#require "#{File.dirname(__FILE__)}/render_1.rb"
-#require "#{File.dirname(__FILE__)}/render_2.rb"
-require "#{File.dirname(__FILE__)}/render_3.rb"
-require "#{File.dirname(__FILE__)}/render_4.rb"
-require "#{File.dirname(__FILE__)}/hammer_builder.rb"
+require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
 
 
 
@@ -79,6 +73,81 @@ require "#{File.dirname(__FILE__)}/hammer_builder.rb"
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
 #end.release!
+class User < Struct.new(:name, :login, :email)
+  include HammerBuilder::Helper
+
+  builder :detail do |user|
+    ul do
+      user.attribute self, :name
+      user.attribute self, :login
+      user.attribute self, :email
+    end
+  end
+
+  builder :attribute do |user, attribute|
+    li do
+      strong "#{attribute}: "
+      text user.send(attribute)
+    end
+  end
+end
+
+puts(HammerBuilder::Formated.get.go_in do
+  user = User.new("Peter", "peter", "peter@example.com")
+  user.detail self
+  p "builder methods are: #{User.builder_methods.join(',')}"
+end.to_xhtml!)
+
+exit
+
+class MyBuilder < HammerBuilder::Formated
+
+  # define new method to all tags
+  extend_class :AbstractTag do
+    def hide!
+      self.class 'hidden'
+    end
+  end
+
+  # add pseudo tag
+  define_class :Component, :Div do
+    class_eval <<-RUBYCODE, __FILE__, __LINE__
+      def open(id, attributes = nil, &block)
+        super(attributes, &nil).id(id).class('component')
+        block ? with(&block) : self
+      end
+    RUBYCODE
+  end
+  define_tag :component
+
+  # if the class is not needed same can be done this way
+  def simple_component(id, attributes = nil, &block)
+    div[id].attributes attributes, &block
+  end
+end
+
+o = MyBuilder.get.go_in do
+  div[:content].with do
+    span[:secret].class('left').hide!
+    component('component-1') do
+      strong 'something'
+    end
+    simple_component 'component-1'
+  end
+end.to_xhtml!
+
+puts o
+
+puts(HammerBuilder::Standard.get.go_in do
+  puts div.object_id
+  puts div.object_id
+end.to_xhtml!)
+
+puts(HammerBuilder::Standard.get.go_in do
+  a = div 'a'
+  div 'b'
+  a.class 'class'
+end.to_xhtml!)
 
 
 b = HammerBuilder::Formated.get.go_in do
@@ -86,8 +155,8 @@ b = HammerBuilder::Formated.get.go_in do
   html do
     head { title }
     body do
-      #    meta.http_equiv 'asd'
       div.data_id object_id
+      div(:id => 'a').id object_id
       div object_id
       div.content object_id
       js "var = 'asd';\n var < 12"
