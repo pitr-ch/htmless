@@ -359,7 +359,7 @@ module HammerBuilder
 
       # @example
       # div.attribute :id, 'id' # => <div id="id"></div>
-      def attribute(attribute, content)
+      def attribute(attribute, content) # TODO lose the method
         @output << SPACE << attribute.to_s << EQL_QUOTE << CGI.escapeHTML(content.to_s) << QUOTE
       end
 

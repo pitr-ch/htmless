@@ -16,6 +16,7 @@ has been written with three objectives:
 * Yardoc: [http://hammer.pitr.ch/hammer-builder/](http://hammer.pitr.ch/hammer-builder/)
 * Issues: [https://github.com/ruby-hammer/hammer-builder/issues](https://github.com/ruby-hammer/hammer-builder/issues)
 * Changelog: [http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html](http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html)
+* Gem: [https://rubygems.org/gems/hammer_builder](https://rubygems.org/gems/hammer_builder)
 
 ## Syntax
 

@@ -98,8 +98,6 @@ puts(HammerBuilder::Formated.get.go_in do
   p "builder methods are: #{User.builder_methods.join(',')}"
 end.to_xhtml!)
 
-exit
-
 class MyBuilder < HammerBuilder::Formated
 
   # define new method to all tags
@@ -122,7 +120,7 @@ class MyBuilder < HammerBuilder::Formated
 
   # if the class is not needed same can be done this way
   def simple_component(id, attributes = nil, &block)
-    div[id].attributes attributes, &block
+    div[id].class(:component).attributes attributes, &block
   end
 end
 
