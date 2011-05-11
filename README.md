@@ -1,7 +1,7 @@
 # HammerBuilder
 
 [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-is a xhtml5 builder written in Ruby. It does not introduce anything special, you just
+is a xhtml5 builder written in Ruby 1.9.2. It does not introduce anything special, you just
 use Ruby to get your xhtml. [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
 has been written with three objectives:
 
@@ -14,6 +14,8 @@ has been written with three objectives:
 * Introduction:
 [http://hammer.pitr.ch/2011/05/11/HammerBuilder-introduction/](http://hammer.pitr.ch/2011/05/11/HammerBuilder-introduction/)
 * Yardoc: [http://hammer.pitr.ch/hammer-builder/](http://hammer.pitr.ch/hammer-builder/)
+* Issues: [https://github.com/ruby-hammer/hammer-builder/issues](https://github.com/ruby-hammer/hammer-builder/issues)
+* Changelog: [http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html](http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html)
 
 ## Syntax
 
