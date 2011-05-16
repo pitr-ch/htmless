@@ -1,6 +1,7 @@
 require 'cgi'
 require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/string/inflections'
+require 'hammer_builder/dynamic_classes'
 
 module HammerBuilder
   EXTRA_ATTRIBUTES = {
@@ -133,7 +134,7 @@ module HammerBuilder
   ]
 
   DOUBLE_TAGS = [
-    'a', 'abbr',  'article', 'aside', 'audio', 'address', 
+    'a', 'abbr',  'article', 'aside', 'audio', 'address',
     'b', 'bdo', 'blockquote', 'body', 'button',
     'canvas', 'caption', 'cite', 'code', 'colgroup', 'command',
     'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt',
@@ -207,64 +208,6 @@ module HammerBuilder
     end
   end
 
-  module RedefinableClassTree
-    # defines new class
-    # @param [Symbol] class_name
-    # @param [Symbol] superclass_name e.g. :AbstractEmptyTag
-    # @yield definition block which is evaluated inside the new class, doing so defining the class's methods etc.
-    def define_class(class_name, superclass_name = nil, &definition)
-      class_name = class_name(class_name)
-      superclass_name = class_name(superclass_name) if superclass_name
-
-      raise "class: '#{class_name}' already defined" if  respond_to? method_class(class_name)
-
-      define_singleton_method method_class(class_name) do |builder|
-        builder.instance_variable_get("@#{method_class(class_name)}") || begin
-          klass = builder.send(method_class_definition(class_name), builder)
-          builder.const_set class_name, klass
-          builder.instance_variable_set("@#{method_class(class_name)}", klass)
-        end
-      end
-
-      define_singleton_method method_class_definition(class_name) do |builder|
-        superclass = if superclass_name
-          builder.send method_class(superclass_name), builder
-        else
-          Object
-        end
-        Class.new(superclass, &definition)
-      end
-    end
-
-    # extends existing class
-    # @param [Symbol] class_name
-    # @yield definition block which is evaluated inside the new class, doing so extending the class's methods etc.
-    def extend_class(class_name, &definition)
-      raise "class: '#{class_name}' not defined" unless respond_to? method_class(class_name)
-
-      define_singleton_method method_class_definition(class_name) do |builder|
-        ancestor = super(builder)
-        count = 1; count += 1 while builder.const_defined? "#{class_name}Super#{count}"
-        builder.const_set "#{class_name}Super#{count}", ancestor
-        Class.new(ancestor, &definition)
-      end
-    end
-
-    private
-
-    def class_name(klass)
-      klass.to_s.camelize
-    end
-
-    def method_class(klass)
-      "#{klass.to_s.underscore}_class"
-    end
-
-    def method_class_definition(klass)
-      "#{method_class(klass)}_definition"
-    end
-  end
-
   # Creating builder instances is expensive, therefore you can use Pool to go around that
   module Pool
     def self.included(base)
@@ -275,7 +218,7 @@ module HammerBuilder
     module ClassMethods
       # This the preferred way of getting new Builder. If you forget to release it, it does not matter -
       # builder gets GCed after you lose reference
-      # @return [Standard, Formated] 
+      # @return [Standard, Formated]
       def get
         mutex.synchronize do
           if free_builders.empty?
@@ -321,7 +264,7 @@ module HammerBuilder
 
   # Abstract implementation of Builder
   class Abstract
-    extend RedefinableClassTree
+    extend DynamicClasses
     include Pool
 
     # << faster then +
@@ -330,142 +273,146 @@ module HammerBuilder
     # class_eval faster then define_method
     # beware of strings in methods -> creates a lot of garbage
 
-    define_class :AbstractTag do
-      def initialize(builder)
-        @builder = builder
-        @output = builder.instance_eval { @output }
-        @stack = builder.instance_eval { @stack }
-        @classes = []
-        set_tag
-      end
+    dc do
 
-      def open(attributes = nil)
-        @output << LT << @tag
-        @builder.current = self
-        attributes(attributes)
-        default
-        self
-      end
-
-      # @example
-      # div.attributes :id => 'id' # => <div id="id"></div>
-      def attributes(attrs)
-        return self unless attrs
-        attrs.each do |attr, value|
-          __send__(attr, *value)
+      define :AbstractTag do
+        def initialize(builder)
+          @builder = builder
+          @output = builder.instance_eval { @output }
+          @stack = builder.instance_eval { @stack }
+          @classes = []
+          set_tag
         end
-        self
-      end
 
-      # @example
-      # div.attribute :id, 'id' # => <div id="id"></div>
-      def attribute(attribute, content) # TODO lose the method
-        @output << SPACE << attribute.to_s << EQL_QUOTE << CGI.escapeHTML(content.to_s) << QUOTE
-      end
-
-      alias_method(:rclass, :class)
-
-      class_inheritable_array :_attributes, :instance_writer => false, :instance_reader => false
-
-      def self.attributes
-        self._attributes
-      end
-
-      # allows data-* attributes
-      def method_missing(method, *args, &block)
-        if method.to_s =~ /data_([a-z_]+)/
-          self.rclass.attributes = [method.to_s]
-          self.send method, *args, &block
-        else
-          super
+        def open(attributes = nil)
+          @output << LT << @tag
+          @builder.current = self
+          attributes(attributes)
+          default
+          self
         end
-      end
 
-      protected
+        # @example
+        # div.attributes :id => 'id' # => <div id="id"></div>
+        def attributes(attrs)
+          return self unless attrs
+          attrs.each do |attr, value|
+            __send__(attr, *value)
+          end
+          self
+        end
 
-      # sets the right tag in descendants
-      def self.set_tag(tag)
+        # @example
+        #   div.attribute :id, 'id' # => <div id="id"></div>
+        # @deprecated Please use {#attributes} instead
+        def attribute(attribute, content) # TODO lose the method in 0.2
+          warn ("method #attribute is deprecated use #attributes instead, called from:#{caller[0]}" )
+          @output << SPACE << attribute.to_s << EQL_QUOTE << CGI.escapeHTML(content.to_s) << QUOTE
+        end
+
+        alias_method(:rclass, :class)
+
+        class_inheritable_array :_attributes, :instance_writer => false, :instance_reader => false
+
+        def self.attributes
+          self._attributes
+        end
+
         class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+        # allows data-* attributes
+        def method_missing(method, *args, &block)
+          if method.to_s =~ /data_([a-z_]+)/
+            self.rclass.attributes = [method.to_s]
+            self.send method, *args, &block
+          else
+            super
+          end
+        end
+        RUBYCODE
+
+        protected
+
+        # sets the right tag in descendants
+        def self.set_tag(tag)
+          class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
           def set_tag
             @tag = '#{tag}'.freeze
           end
-        RUBYCODE
-      end
+          RUBYCODE
+        end
 
-      # this method is called on each tag opening, useful for default attributes
-      # @example html tag uses this to add xmlns attr.
-      #   html # => <html xmlns="http://www.w3.org/1999/xhtml"></html>
-      def default
-      end
+        set_tag 'abstract'
 
-      # defines dynamically methods for attributes
-      def self.define_attributes
-        attributes.each do |attr|
-          next if instance_methods.include?(attr.to_sym)
-          class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+        # this method is called on each tag opening, useful for default attributes
+        # @example html tag uses this to add xmlns attr.
+        #   html # => <html xmlns="http://www.w3.org/1999/xhtml"></html>
+        def default
+        end
+
+        # defines dynamically methods for attributes
+        def self.define_attributes
+          attributes.each do |attr|
+            next if instance_methods.include?(attr.to_sym)
+            class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
             def #{attr}(content)
               @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
               self
             end
-          RUBYCODE
+            RUBYCODE
+          end
+          define_attribute_constants
         end
-        define_attribute_constants
-      end
 
-      # defines constant strings not to make garbage 
-      def self.define_attribute_constants
-        attributes.each do |attr|
-          const = "attr_#{attr}".upcase
-          HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze unless HammerBuilder.const_defined?(const)
+        # defines constant strings not to make garbage
+        def self.define_attribute_constants
+          attributes.each do |attr|
+            const = "attr_#{attr}".upcase
+            HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze unless HammerBuilder.const_defined?(const)
+          end
         end
-      end
 
-      # adds attribute to class, triggers dynamical creation of needed instance methods etc.
-      def self.attributes=(attributes)
-        self._attributes = attributes
-        define_attributes
-      end
-
-      # flushes classes to output
-      def flush_classes
-        unless @classes.empty?
-          @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
-          @classes.clear
+        # adds attribute to class, triggers dynamical creation of needed instance methods etc.
+        def self.attributes=(attributes)
+          self._attributes = attributes
+          define_attributes
         end
-      end
 
-      def set_tag
-        @tag = 'abstract'
-      end
+        # flushes classes to output
+        def flush_classes
+          unless @classes.empty?
+            @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
+            @classes.clear
+          end
+        end
 
-      public
+        public
 
-      # global HTML5 attributes
-      self.attributes = GLOBAL_ATTRIBUTES
+        # global HTML5 attributes
+        self.attributes = GLOBAL_ATTRIBUTES
 
-      alias :[] :id
+        alias :[] :id
 
-      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def class(*classes)
           @classes.push(*classes)
           self
         end
-      RUBYCODE
-    end
-
-    define_class :AbstractEmptyTag, :AbstractTag do
-      def flush
-        flush_classes
-        @output << SLASH_GT
-        nil
+        RUBYCODE
       end
-    end
 
-    define_class :AbstractDoubleTag, :AbstractTag do
-      # defined by class_eval because there is a super calling, causing error:
-      #  super from singleton method that is defined to multiple classes is not supported;
-      #  this will be fixed in 1.9.3 or later (NotImplementedError)
-      class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+      define :AbstractEmptyTag, :AbstractTag do
+        def flush
+          flush_classes
+          @output << SLASH_GT
+          nil
+        end
+      end
+
+      define :AbstractDoubleTag, :AbstractTag do
+        # defined by class_eval because there is a super calling, causing error:
+        #  super from singleton method that is defined to multiple classes is not supported;
+        #  this will be fixed in 1.9.3 or later (NotImplementedError)
+        class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def initialize(builder)
           super
           @content = nil
@@ -484,61 +431,62 @@ module HammerBuilder
             self
           end
         end
-      RUBYCODE
+        RUBYCODE
 
-      def flush
-        flush_classes
-        @output << GT
-        @output << CGI.escapeHTML(@content) if @content
-        @output << SLASH_LT << @stack.pop << GT
-        @content = nil
-      end
+        def flush
+          flush_classes
+          @output << GT
+          @output << CGI.escapeHTML(@content) if @content
+          @output << SLASH_LT << @stack.pop << GT
+          @content = nil
+        end
 
-      # sets content of the double tag
-      def content(content)
-        @content = content.to_s
-        self
-      end
+        # sets content of the double tag
+        def content(content)
+          @content = content.to_s
+          self
+        end
 
-      # renders content of the double tag with block
-      def with
-        flush_classes
-        @output << GT
-        @content = nil
-        @builder.current = nil
-        yield
-        #        if (content = yield).is_a?(String)
-        #          @output << CGI.escapeHTML(content)
-        #        end
-        @builder.flush
-        @output << SLASH_LT << @stack.pop << GT
-        nil
-      end
+        # renders content of the double tag with block
+        def with
+          flush_classes
+          @output << GT
+          @content = nil
+          @builder.current = nil
+          yield
+          #        if (content = yield).is_a?(String)
+          #          @output << CGI.escapeHTML(content)
+          #        end
+          @builder.flush
+          @output << SLASH_LT << @stack.pop << GT
+          nil
+        end
 
-      protected
+        protected
 
-      def self.define_attributes
-        attributes.each do |attr|
-          next if instance_methods(false).include?(attr.to_sym)
-          if instance_methods.include?(attr.to_sym)
-            class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+        def self.define_attributes
+          attributes.each do |attr|
+            next if instance_methods(false).include?(attr.to_sym)
+            if instance_methods.include?(attr.to_sym)
+              class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(*args, &block)
                 super(*args, &nil)
                 return with(&block) if block
                 self
               end
-            RUBYCODE
-          else
-            class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
+              RUBYCODE
+            else
+              class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
               def #{attr}(content, &block)
                 @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
                 return with(&block) if block
                 self
               end
-            RUBYCODE
+              RUBYCODE
+            end
           end
+          define_attribute_constants
         end
-        define_attribute_constants
       end
     end
 
@@ -549,6 +497,7 @@ module HammerBuilder
 
     # defines instance method for +tag+ in builder
     def self.define_tag(tag)
+      tag = tag.to_s
       class_eval <<-RUBYCODE, __FILE__, __LINE__ + 1
         def #{tag}(*args, &block)
           flush
@@ -568,7 +517,7 @@ module HammerBuilder
       @current = nil
       # tag classes initialization
       tags.values.each do |klass|
-        instance_variable_set(:"@#{klass}", self.class.send("#{klass}_class", self.class).new(self))
+        instance_variable_set(:"@#{klass}", self.class.dc[klass.camelize.to_sym].new(self))
       end
     end
 
@@ -631,6 +580,13 @@ module HammerBuilder
       self
     end
 
+    def set_variables(instance_variables)
+      instance_variables.each {|name,value| instance_variable_set("@#{name}", value) }
+      yield
+      instance_variables.each {|name,_| remove_instance_variable("@#{name}") }
+      self
+    end
+
     # @return [String] output
     def to_xhtml()
       flush
@@ -655,66 +611,86 @@ module HammerBuilder
   # Builder implementation without formating (one line)
   class Standard < Abstract
 
-    (DOUBLE_TAGS - ['html']).each do |tag|
-      define_class tag.camelize , :AbstractDoubleTag do
-        set_tag tag
-        self.attributes = EXTRA_ATTRIBUTES[tag]
+    dc do
+      (DOUBLE_TAGS - ['html']).each do |tag|
+        define tag.camelize.to_sym , :AbstractDoubleTag do
+          set_tag tag
+          self.attributes = EXTRA_ATTRIBUTES[tag]
+        end
+
+        base.define_tag(tag)
       end
 
-      define_tag(tag)
-    end
+      define :Html, :AbstractDoubleTag do
+        set_tag 'html'
+        self.attributes = ['xmlns'] + EXTRA_ATTRIBUTES['html']
 
-    define_class :Html, :AbstractDoubleTag do
-      set_tag 'html'
-      self.attributes = ['xmlns'] + EXTRA_ATTRIBUTES['html']
+        def default
+          xmlns('http://www.w3.org/1999/xhtml')
+        end
+      end
+      base.define_tag('html')
 
-      def default
-        xmlns('http://www.w3.org/1999/xhtml')
+      EMPTY_TAGS.each do |tag|
+        define tag.camelize.to_sym, :AbstractEmptyTag do
+          set_tag tag
+          self.attributes = EXTRA_ATTRIBUTES[tag]
+        end
+
+        base.define_tag(tag)
       end
     end
-
-    define_tag('html')
 
     def js(js , options = {})
+      flush
       script({:type => "text/javascript"}.merge(options)) { cdata js }
     end
 
-    EMPTY_TAGS.each do |tag|
-      define_class tag.camelize, :AbstractEmptyTag do
-        set_tag tag
-        self.attributes = EXTRA_ATTRIBUTES[tag]
+    def join(collection, glue, &it)
+      flush
+      glue_block = if glue.is_a? String
+        lambda { text glue }
+      else
+        glue
       end
-
-      define_tag(tag)
+      
+      collection.each_with_index do |obj, i|
+        glue_block.call() if i > 0
+        it.call(obj)        
+      end
     end
+
   end
 
   # Builder implementation with formating (indented by '  ')
   # Slow down is less then 1%
   class Formated < Standard
-    extend_class :AbstractTag do
-      def open(attributes = nil)
-        @output << NEWLINE << SPACES.fetch(@stack.size, SPACE) << LT << @tag
-        @builder.current = self
-        attributes(attributes)
-        default
-        self
-      end
-    end
 
-    extend_class :AbstractDoubleTag do
-      def with
-        flush_classes
-        @output << GT
-        @content = nil
-        @builder.current = nil
-        yield
-        #        if (content = yield).is_a?(String)
-        #          @output << CGI.escapeHTML(content)
-        #        end
-        @builder.flush
-        @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
-        nil
+    dc do
+      extend :AbstractTag do
+        def open(attributes = nil)
+          @output << NEWLINE << SPACES.fetch(@stack.size, SPACE) << LT << @tag
+          @builder.current = self
+          attributes(attributes)
+          default
+          self
+        end
+      end
+
+      extend :AbstractDoubleTag do
+        def with
+          flush_classes
+          @output << GT
+          @content = nil
+          @builder.current = nil
+          yield
+          #        if (content = yield).is_a?(String)
+          #          @output << CGI.escapeHTML(content)
+          #        end
+          @builder.flush
+          @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
+          nil
+        end
       end
     end
 

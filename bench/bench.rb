@@ -4,7 +4,9 @@ require "#{File.dirname(__FILE__)}/render.rb"
 #require "#{File.dirname(__FILE__)}/render_2.rb"
 require "#{File.dirname(__FILE__)}/render_3.rb"
 require "#{File.dirname(__FILE__)}/render_4.rb"
-require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
+
+$: << "#{File.dirname(__FILE__)}/../lib"
+require "hammer_builder.rb"
 
 class ::Class
   def spy

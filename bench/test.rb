@@ -1,15 +1,7 @@
-require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
+$: << "#{File.dirname(__FILE__)}/../lib"
+require "hammer_builder.rb"
 
 
-
-#r = Hammer::Builder.new
-#r.go_in do
-#  div do
-#    div('a')[12]
-#    div[13]
-#  end
-#end
-#puts r.to_xhtml
 
 #require 'active_support'
 #require 'action_view'
@@ -29,41 +21,14 @@ require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
 #end.to_xhtml)
 
 
-#class MyBuilder < Hammer::FormatedBuilder
-#  redefine_class :abstract_tag do
-#    def hide!
-#      self.class 'hidden'
+#class MyBuilder1 < HammerBuilder::Formated
+#  dynamic_classes do
+#    extend :AbstractDoubleTag do
 #    end
-#  end
-#
-#  define_tag_class :component, :div do
-#    class_eval <<-RUBYCODE, __FILE__, __LINE__
-#      def open(id, attributes = nil, &block)
-#        super(attributes, &nil).id(id).class('component')
-#        block ? with(&block) : self
-#      end
-#RUBYCODE
 #  end
 #end
 #
-#html = MyBuilder.new.go_in do
-#  div[:content].with do
-#    span.id('secret').class('left').hide!
-#    component('component-1') do
-#      strong 'something'
-#    end
-#  end
-#end.to_xhtml
-#puts html
-#
-#exit
-
-#class MyBuilder < HammerBuilder::Formated
-#  extend_class :AbstractDoubleTag do
-#  end
-#end
-#
-#b = MyBuilder.get.go_in do
+#b = MyBuilder1.get.go_in do
 #  puts div.rclass
 #  puts div.rclass.superclass
 #  puts div.rclass.superclass.superclass
@@ -72,81 +37,102 @@ require "#{File.dirname(__FILE__)}/../lib/hammer_builder.rb"
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
+#
+#  p.attribute 'a', 'v'
 #end.release!
-class User < Struct.new(:name, :login, :email)
+
+
+
+#class User < Struct.new(:name, :login, :email)
+#  include HammerBuilder::Helper
+#
+#  builder :detail do |user|
+#    ul do
+#      user.attribute self, :name
+#      user.attribute self, :login
+#      user.attribute self, :email
+#    end
+#  end
+#
+#  builder :attribute do |user, attribute|
+#    li do
+#      strong "#{attribute}: "
+#      text user.send(attribute)
+#    end
+#  end
+#end
+#
+#puts(HammerBuilder::Formated.get.go_in do
+#    user = User.new("Peter", "peter", "peter@example.com")
+#    user.detail self
+#    p "builder methods are: #{User.builder_methods.join(',')}"
+#  end.to_xhtml!)
+
+#class MyBuilder < HammerBuilder::Formated
+#  dynamic_classes do
+#    # define new method to all tags
+#    extend :AbstractTag do
+#      def hide!
+#        self.class 'hidden'
+#      end
+#    end
+#
+#    # add pseudo tag
+#    define :Component, :Div do
+#      class_eval <<-RUBYCODE, __FILE__, __LINE__
+#      def open(id, attributes = nil, &block)
+#        super(attributes, &nil).id(id).class('component')
+#        block ? with(&block) : self
+#      end
+#RUBYCODE
+#    end
+#    base.define_tag :component
+#  end
+#
+#  # if the class is not needed same can be done this way
+#  def simple_component(id, attributes = nil, &block)
+#    div[id].class(:component).attributes attributes, &block
+#  end
+#end
+
+#o = MyBuilder.get.go_in do
+#  div[:content].with do
+#    span[:secret].class('left').hide!
+#    component('component-1') do
+#      strong 'something'
+#    end
+#    simple_component 'component-1'
+#  end
+#end.to_xhtml!
+#
+#puts o
+
+#puts(HammerBuilder::Standard.get.go_in do
+#    puts div.object_id
+#    puts div.object_id
+#  end.to_xhtml!)
+#
+#puts(HammerBuilder::Standard.get.go_in do
+#    a = div 'a'
+#    div 'b'
+#    a.class 'class'
+#  end.to_xhtml!)
+
+class User
   include HammerBuilder::Helper
 
-  builder :detail do |user|
-    ul do
-      user.attribute self, :name
-      user.attribute self, :login
-      user.attribute self, :email
-    end
-  end
-
-  builder :attribute do |user, attribute|
-    li do
-      strong "#{attribute}: "
-      text user.send(attribute)
-    end
+  builder :menu do
+    div @user.object_id
   end
 end
 
-puts(HammerBuilder::Formated.get.go_in do
-  user = User.new("Peter", "peter", "peter@example.com")
-  user.detail self
-  p "builder methods are: #{User.builder_methods.join(',')}"
-end.to_xhtml!)
-
-class MyBuilder < HammerBuilder::Formated
-
-  # define new method to all tags
-  extend_class :AbstractTag do
-    def hide!
-      self.class 'hidden'
-    end
-  end
-
-  # add pseudo tag
-  define_class :Component, :Div do
-    class_eval <<-RUBYCODE, __FILE__, __LINE__
-      def open(id, attributes = nil, &block)
-        super(attributes, &nil).id(id).class('component')
-        block ? with(&block) : self
-      end
-    RUBYCODE
-  end
-  define_tag :component
-
-  # if the class is not needed same can be done this way
-  def simple_component(id, attributes = nil, &block)
-    div[id].class(:component).attributes attributes, &block
+b = HammerBuilder::Formated.get
+b.set_variables(:user => User.new) do
+  b.go_in do
+    @user.menu self
   end
 end
-
-o = MyBuilder.get.go_in do
-  div[:content].with do
-    span[:secret].class('left').hide!
-    component('component-1') do
-      strong 'something'
-    end
-    simple_component 'component-1'
-  end
-end.to_xhtml!
-
-puts o
-
-puts(HammerBuilder::Standard.get.go_in do
-  puts div.object_id
-  puts div.object_id
-end.to_xhtml!)
-
-puts(HammerBuilder::Standard.get.go_in do
-  a = div 'a'
-  div 'b'
-  a.class 'class'
-end.to_xhtml!)
-
+puts b.to_xhtml!
 
 b = HammerBuilder::Formated.get.go_in do
   xhtml5!
@@ -160,17 +146,28 @@ b = HammerBuilder::Formated.get.go_in do
       js "var = 'asd';\n var < 12"
       div { p 'a' }
       div[:idcko]
+      puts Object
+      puts Object.inspect
+      puts Object.new
+      puts Object.new.inspect
+      puts current
+      puts current.inspect
+
+      join [1,2.3,3], ', ' do |v|
+        text v
+      end
+
     end
   end
 end
 puts b.to_xhtml
 
-exit
+
 
 require 'ruby-prof'
-r = HammerBuilder::Formated.new
 result = RubyProf.profile do
-  10.times do
+  100.times do
+    r = HammerBuilder::Formated.get
     r.go_in do
       xhtml5!
       html do
@@ -197,13 +194,15 @@ result = RubyProf.profile do
         end
       end
     end
-    r.reset
+    r.to_xhtml!
   end
   puts 'done'
 end
 
 printer = RubyProf::GraphHtmlPrinter.new(result)
-File.open('report.html', 'w') { |report| printer.print(report, :min_percent=>0) }
+File.open("#{File.dirname(__FILE__)}/report.html", 'w') { |report| printer.print(report, :min_percent=>0) }
+printer = RubyProf::FlatPrinter.new(result)
+File.open("#{File.dirname(__FILE__)}/report.txt", 'w') { |report| printer.print(report, :min_percent=>0) }
 
 exit
 
