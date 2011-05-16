@@ -9,6 +9,7 @@ gem 'sqlite3'
 gem 'ruby-prof'
 gem 'test-unit'
 gem 'tenjin'
+gem 'hammer_builder'
 
 # Use unicorn as the web server
 # gem 'unicorn'
