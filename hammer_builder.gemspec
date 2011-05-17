@@ -5,20 +5,21 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hammer_builder}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Petr Chalupa"]
-  s.date = %q{2011-05-11}
+  s.date = %q{2011-05-17}
   s.description = %q{is a xhtml5 builder written in Ruby. It does not introduce anything special, you just
 use Ruby to get your xhtml. HammerBuilder has been written with three objectives: Speed, Rich API, Extensibility}
   s.email = %q{email@pitr.ch}
   s.extra_rdoc_files = [
-    "LICENSE",
+    "CHANGELOG.md",
     "README.md"
   ]
   s.files = [
-    "lib/hammer_builder.rb"
+    "lib/hammer_builder.rb",
+    "lib/hammer_builder/dynamic_classes.rb"
   ]
   s.homepage = %q{https://github.com/ruby-hammer/hammer-builder}
   s.licenses = ["MIT"]

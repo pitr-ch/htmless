@@ -44,7 +44,7 @@ use Ruby to get your xhtml. HammerBuilder has been written with three objectives
     gem.files = FileList['lib/**/*.rb'].to_a
 
     gem.test_files = FileList["spec/**/*.*"].to_a
-    #    gem.extra_rdoc_files = FileList["README.md"].to_a
+    gem.extra_rdoc_files = FileList["README.md","CHANGELOG.md"].to_a
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
