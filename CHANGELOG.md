@@ -1,16 +1,20 @@
 ## 0.1.2
+
 * 2011-05-17: Fixed gemspec and changelog fix #11 
 * 2011-05-16: Rails bench corrected 
+
 ## 0.1.1
 * 2011-05-16: Dynamic classes rewriten 
 * 2011-05-11: doc update 
 * 2011-05-11: doc update 
+
 ## 0.1.0
 * 2011-05-11: doc update 
 * 2011-05-11: doc update 
 * 2011-05-11: Specs, Yardoc, minor updates 
 * 2011-05-09: YARD added 
 * 2011-05-09: repository clean up 
+
 ## 0.0.0
 * 2011-05-09: better way for js #3 
 * 2011-05-09: cdata added 

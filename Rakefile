@@ -2,25 +2,6 @@ require 'rubygems'
 require 'rake'
 
 begin
-  require 'yard'
-
-  options = %w[--protected --private --verbose --main=README.md]
-  output = "--output-dir=./yardoc/"
-  input = %w[./lib/**/*.rb - LICENSE README.md CHANGELOG.md]
-  title = "--title=HammerBuilder"
-
-  YARD::Rake::YardocTask.new(:yard) do |yardoc|
-    yardoc.options.push(*options) << output << title
-    yardoc.files.push(*input)
-  end
-    
-rescue LoadError
-  task :yardoc do
-    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
-  end
-end
-
-begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "hammer_builder"
@@ -51,16 +32,5 @@ use Ruby to get your xhtml. HammerBuilder has been written with three objectives
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
-
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new
-
-  #  RSpec::Core::RakeTask.new(:rcov) do |spec|
-  #    spec.rcov = true
-  #  end
-rescue LoadError
-  puts "misiing rspec/core/rake_task"
 end
 

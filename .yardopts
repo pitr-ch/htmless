@@ -1,0 +1,12 @@
+--protected
+--private
+--verbose
+--main=README.md
+--output-dir=./yardoc/
+--title=HammerBuilder
+--template-path yard_template/
+--template ga
+./lib/**/*.rb -
+LICENSE
+README.md
+CHANGELOG.md
