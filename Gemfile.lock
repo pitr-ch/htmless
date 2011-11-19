@@ -1,0 +1,69 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.1.2)
+      multi_json (~> 1.0)
+    bluecloth (2.1.0)
+    builder (3.0.0)
+    diff-lcs (1.1.2)
+    erector (0.8.3)
+      rake
+      rake
+      treetop
+      treetop (>= 1.2.3)
+    erubis (2.7.0)
+    git (1.2.5)
+    i18n (0.6.0)
+    jeweler (1.6.4)
+      bundler (~> 1.0)
+      git (>= 1.2.5)
+      rake
+    markaby (0.7.1)
+      builder (>= 2.0.0)
+    multi_json (1.0.3)
+    nokogiri (1.5.0)
+    perftools.rb (0.5.6)
+    polyglot (0.3.2)
+    rake (0.9.2)
+    rspec (2.6.0)
+      rspec-core (~> 2.6.0)
+      rspec-expectations (~> 2.6.0)
+      rspec-mocks (~> 2.6.0)
+    rspec-core (2.6.4)
+    rspec-expectations (2.6.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.6.0)
+    ruby-prof (0.10.8)
+    simplecov (0.5.4)
+      multi_json (~> 1.0.3)
+      simplecov-html (~> 0.5.3)
+    simplecov-html (0.5.3)
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
+    tagz (9.0.0)
+    tenjin (0.6.1)
+    treetop (1.4.10)
+      polyglot
+      polyglot (>= 0.3.1)
+    yard (0.7.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport (~> 3.1)
+  bluecloth (~> 2.1)
+  erector
+  erubis
+  i18n
+  jeweler (~> 1.6)
+  markaby
+  nokogiri
+  perftools.rb
+  rspec (~> 2.6)
+  ruby-prof
+  simplecov
+  simplecov-rcov
+  tagz
+  tenjin
+  yard (~> 0.6)

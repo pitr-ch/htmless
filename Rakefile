@@ -14,7 +14,8 @@ use Ruby to get your xhtml. HammerBuilder has been written with three objectives
     gem.license = 'MIT'
 
     gem.requirements << 'Ruby 1.9.2'
-    gem.add_dependency 'activesupport', '~> 3.0.0'
+    gem.add_dependency 'activesupport', '~> 3.1'
+    gem.add_dependency 'i18n', '~> 0.6'
 
     gem.add_development_dependency "rspec", "~> 2.5.0"
     gem.add_development_dependency "yard", "~> 0.6"
@@ -22,7 +23,7 @@ use Ruby to get your xhtml. HammerBuilder has been written with three objectives
     gem.add_development_dependency "bluecloth", "~> 2.0"
     gem.add_development_dependency "jeweler", "~> 1.6"
 
-    gem.files = FileList['lib/**/*.rb'].to_a
+    gem.files = FileList['lib/hammer_builder.rb', 'lib/hammer_builder/*.rb'].to_a
 
     gem.test_files = FileList["spec/**/*.*"].to_a
     gem.extra_rdoc_files = FileList["README.md","CHANGELOG.md"].to_a

@@ -1,3 +1,5 @@
+require 'simplecov'
+
 require "#{File.dirname(__FILE__)}/../lib/hammer_builder"
 
 #RSpec.configure do |config|

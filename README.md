@@ -1,37 +1,33 @@
 # HammerBuilder
 
-[`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-is a xhtml5 builder written in and for Ruby 1.9.2. It does not introduce anything special, you just
-use Ruby to get your xhtml. [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-has been written with three objectives:
-
-* Speed
-* Rich API
-* Extensibility
+Fast Ruby xhtml5 renderer
 
 ## Links
 
-* Introduction:
-[http://hammer.pitr.ch/2011/05/11/HammerBuilder-introduction/](http://hammer.pitr.ch/2011/05/11/HammerBuilder-introduction/)
-* Yardoc: [http://hammer.pitr.ch/hammer-builder/](http://hammer.pitr.ch/hammer-builder/)
-* Issues: [https://github.com/ruby-hammer/hammer-builder/issues](https://github.com/ruby-hammer/hammer-builder/issues)
-* Changelog: [http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html](http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html)
-* Gem: [https://rubygems.org/gems/hammer_builder](https://rubygems.org/gems/hammer_builder)
+*   **Presentation**: <http://hammer.pitr.ch/hammer_builder/presentation/presentation.html>
+*   Gemcutter: <https://rubygems.org/gems/hammer_builder>
+*   Github: <https://github.com/ruby-hammer/hammer-builder>
+*   Yardoc: <http://rubydoc.info/github/ruby-hammer/hammer-builder/frames>
+*   Issues: <https://github.com/ruby-hammer/hammer-builder/issues>
+*   Changelog: <http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html>
+*   Gem: [https://rubygems.org/gems/hammer_builder](https://rubygems.org/gems/hammer_builder)
+
+*   Blog: <http://hammer.pitr.ch/>
 
 ## Syntax
 
-    HammerBuilder::Formated.get.go_in do
+    HammerBuilder::Formated.new.go_in do
       xhtml5!
       html do
         head { title 'a title' }
         body do
-          div.id('menu').class('left') do
+          div.menu!.left do
             ul do
               li 'home'
               li 'contacts', :class => 'active'
             end
           end
-          div.id('content') do
+          div.content! do
             article.id 'article1' do
               h1 'header'
               p('some text').class('centered')
@@ -75,20 +71,18 @@ has been written with three objectives:
 
 ### Synthetic
 
-                                  user     system      total        real
-    render                    4.380000   0.000000   4.380000 (  4.394127)
-    render3                   4.990000   0.000000   4.990000 (  5.017267)
-    HammerBuilder::Standard   5.590000   0.000000   5.590000 (  5.929775)
-    HammerBuilder::Formated   5.520000   0.000000   5.520000 (  5.511297)
-    erubis                    7.340000   0.000000   7.340000 (  7.345410)
-    erubis-reuse              4.670000   0.000000   4.670000 (  4.666334)
-    fasterubis                7.700000   0.000000   7.700000 (  7.689792)
-    fasterubis-reuse          4.650000   0.000000   4.650000 (  4.648017)
-    tenjin                   11.810000   0.280000  12.090000 ( 12.084124)
-    tenjin-reuse              3.170000   0.010000   3.180000 (  3.183110)
-    erector                  12.100000   0.000000  12.100000 ( 12.103520)
-    markaby                  20.750000   0.030000  20.780000 ( 21.371292)
-    tagz                     73.200000   0.140000  73.340000 ( 73.306450)
+                                   user     system      total        real
+    tenjin-reuse               2.040000   0.000000   2.040000 (  2.055140)
+    HammerBuilder::Standard    2.520000   0.000000   2.520000 (  2.519284)
+    fasterubis-reuse           2.580000   0.000000   2.580000 (  2.581407)
+    erubis-reuse               2.680000   0.000000   2.680000 (  2.690176)
+    HammerBuilder::Formatted   2.780000   0.000000   2.780000 (  2.794307)
+    erubis                     5.180000   0.000000   5.180000 (  5.183333)
+    fasterubis                 5.210000   0.000000   5.210000 (  5.219176)
+    tenjin                     7.650000   0.160000   7.810000 (  7.820490)
+    erector                    9.450000   0.010000   9.460000 (  9.471654)
+    markaby                   14.300000   0.000000  14.300000 ( 14.318844)
+    tagz                      33.430000   0.000000  33.430000 ( 33.483693)
 
 ### In Rails 3
 
@@ -122,13 +116,3 @@ has been written with three objectives:
                  objects: 0
                  gc_runs: 6
                  gc_time: 0.20 ms
-
-### Conclusion
-
-Template engines are slightly faster than [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-when template does not content a lot of inserting or partials.
-On the other hand when partials are used, [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-beats template engines.
-There is no overhead for partials in [`HammerBuilder`](https://github.com/ruby-hammer/hammer-builder)
-compared to using partials in template engine. The difference is significant for `Erubis`, `Tenjin` is
-not so bad, but I did not find any easy way to use `Tenjin` in Rails 3 (I did some hacking).

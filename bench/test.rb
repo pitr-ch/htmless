@@ -1,7 +1,7 @@
 $: << "#{File.dirname(__FILE__)}/../lib"
+
 require "hammer_builder.rb"
-
-
+pool = HammerBuilder::Pool.new HammerBuilder::Formatted
 
 #require 'active_support'
 #require 'action_view'
@@ -21,16 +21,17 @@ require "hammer_builder.rb"
 #end.to_xhtml)
 
 
-#class MyBuilder1 < HammerBuilder::Formated
+#class MyBuilder1 < HammerBuilder::Formatted
 #  dynamic_classes do
 #    extend :AbstractDoubleTag do
 #    end
 #  end
 #end
-#
+#HammerBuilder::Pool.new MyBuilder1
 #b = MyBuilder1.get.go_in do
 #  puts div.rclass
-#  puts div.rclass.superclass
+#  puts div.rclass.attributes.inspect
+#  puts meta.rclass.attributes.inspect
 #  puts div.rclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass.superclass
@@ -38,37 +39,38 @@ require "hammer_builder.rb"
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass
 #  puts div.rclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
 #
-#  p.attribute 'a', 'v'
-#end.release!
-
-
-
-#class User < Struct.new(:name, :login, :email)
-#  include HammerBuilder::Helper
+#end.release
 #
-#  builder :detail do |user|
-#    ul do
-#      user.attribute self, :name
-#      user.attribute self, :login
-#      user.attribute self, :email
-#    end
-#  end
 #
-#  builder :attribute do |user, attribute|
-#    li do
-#      strong "#{attribute}: "
-#      text user.send(attribute)
-#    end
-#  end
-#end
-#
-#puts(HammerBuilder::Formated.get.go_in do
-#    user = User.new("Peter", "peter", "peter@example.com")
-#    user.detail self
-#    p "builder methods are: #{User.builder_methods.join(',')}"
-#  end.to_xhtml!)
 
-#class MyBuilder < HammerBuilder::Formated
+class User < Struct.new(:name, :login, :email)
+  include HammerBuilder::Helper
+
+  builder :detail do |user|
+    ul do
+      render user, :attribute, :name
+      render user, :attribute, :login
+      render user, :attribute, :email
+    end
+  end
+
+  builder :attribute do |user, attribute|
+    li do
+      strong "#{attribute}: "
+      text user.send(attribute)
+    end
+  end
+end
+
+puts(pool.get.go_in do
+  user = User.new("Peter", "peter", "peter@example.com")
+  render user, :detail
+  p "builder methods are: #{User.builder_methods.join(',')}"
+end.to_xhtml!)
+
+#exit
+
+#class MyBuilder < HammerBuilder::Formatted
 #  dynamic_classes do
 #    # define new method to all tags
 #    extend :AbstractTag do
@@ -118,56 +120,70 @@ require "hammer_builder.rb"
 #    a.class 'class'
 #  end.to_xhtml!)
 
-class User
-  include HammerBuilder::Helper
+#class User
+#  include HammerBuilder::Helper
+#
+#  builder :menu do
+#    div @user.object_id
+#  end
+#end
+#
+#b = pool.get
+#b.set_variables(:user => User.new) do
+#  b.go_in do
+#    @user.menu self
+#  end
+#end
+#puts b.to_xhtml!
 
-  builder :menu do
-    div @user.object_id
-  end
-end
-
-b = HammerBuilder::Formated.get
-b.set_variables(:user => User.new) do
-  b.go_in do
-    @user.menu self
-  end
-end
-puts b.to_xhtml!
-
-b = HammerBuilder::Formated.get.go_in do
+b = pool.get.go_in do
   xhtml5!
   html do
-    head { title }
+    head do
+      title.idcko!
+      meta.name('asd').content('asd')
+      meta name: 'asd', content: nil
+    end
     body do
-      div.data_id object_id
-      div(:id => 'a').id object_id
-      div object_id
-      div.content object_id
-      js "var = 'asd';\n var < 12"
-      div { p 'a' }
-      div[:idcko]
-      puts Object
-      puts Object.inspect
-      puts Object.new
-      puts Object.new.inspect
-      puts current
-      puts current.inspect
+#      div.data_id object_id
+#      div(:id => 'a').id object_id
+#      div object_id
+#      div.content object_id
+#      js "var = 'asd';\n var < 12"
+#      div { p 'a' }
+#      div[:idcko]
+#      puts Object
+#      puts Object.inspect
+#      puts Object.new
+#      puts Object.new.inspect
+#      puts current
+#      puts current.inspect
 
-      join [1,2.3,3], ', ' do |v|
-        text v
-      end
+      join([1, 1.2], lambda { text ', ' }) { |o| text o } # => "1, 1.2"
+      join([1, 1.2], ', ') { |o| text o }                 # => "1, 1.2"
+      join([->{ text 1 }, 1.2], ', ') { |o| text o }      # => "1, 1.2"
 
+      div.menu!.left "asd"
+      div.menu! 'asd'
+      div.menu!.content "assd"
+
+      hr.id(:asd)
+      hr.idcko! #FIXME
+
+
+      js 'a_js_function();'
     end
   end
 end
 puts b.to_xhtml
 
-
+exit
 
 require 'ruby-prof'
+
 result = RubyProf.profile do
-  100.times do
-    r = HammerBuilder::Formated.get
+  10000.times do
+    r = HammerBuilder::Formatted.get!
     r.go_in do
       xhtml5!
       html do
@@ -204,16 +220,17 @@ File.open("#{File.dirname(__FILE__)}/report.html", 'w') { |report| printer.print
 printer = RubyProf::FlatPrinter.new(result)
 File.open("#{File.dirname(__FILE__)}/report.txt", 'w') { |report| printer.print(report, :min_percent=>0) }
 
-exit
 
 #ENV['CPUPROFILE_OBJECTS']=1
 #ENV['CPUPROFILE_FREQUENCY']='4000'
 
+exit
+
 require 'perftools'
 
-r = Hammer::Builder.new
+r = HammerBuilder::Formatted.new
 PerfTools::CpuProfiler.start("hammer_builder") do
-  1000000.times do
+  100000.times do
     r.go_in do
       xhtml5!
       html do

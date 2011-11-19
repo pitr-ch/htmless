@@ -3,3 +3,7 @@ nbproject
 pkg
 .yardoc
 yardoc
+.idea
+.project
+bin
+coverage
