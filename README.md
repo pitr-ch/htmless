@@ -11,7 +11,6 @@ Fast Ruby xhtml5 renderer
 *   Issues: <https://github.com/ruby-hammer/hammer-builder/issues>
 *   Changelog: <http://hammer.pitr.ch/hammer-builder/file.CHANGELOG.html>
 *   Gem: [https://rubygems.org/gems/hammer_builder](https://rubygems.org/gems/hammer_builder)
-
 *   Blog: <http://hammer.pitr.ch/>
 
 ## Syntax

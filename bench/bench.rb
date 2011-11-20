@@ -103,61 +103,6 @@ Benchmark.bmbm(23) do |b|
     builder.release
   end
 
-  b.report("HammerBuilder::Standard2") do
-    pool    = HammerBuilder::Pool.new HammerBuilder::Standard2
-    builder = pool.get
-    TIMES.times do
-      builder.go_in do
-        html do
-          head
-          body do
-            div :id => 'menu' do
-              ul do
-                10.times do
-                  li model.a
-                  li model.b
-                end
-              end
-            end
-            div['content'].with do
-              10.times { text 'asd asha sdha sdjhas ahs'*10 }
-            end
-          end
-        end
-      end
-      puts builder.to_xhtml if TIMES == 1
-      builder.reset
-    end
-    builder.release
-  end
-  b.report("HammerBuilder::Formatted2") do
-    pool    = HammerBuilder::Pool.new HammerBuilder::Formatted2
-    builder = pool.get
-    TIMES.times do
-      builder.go_in do
-        html do
-          head
-          body do
-            div :id => 'menu' do
-              ul do
-                10.times do
-                  li model.a
-                  li model.b
-                end
-              end
-            end
-            div['content'].with do
-              10.times { text 'asd asha sdha sdjhas ahs'*10 }
-            end
-          end
-        end
-      end
-      puts builder.to_xhtml if TIMES == 1
-      builder.reset
-    end
-    builder.release
-  end
-
   require 'erubis'
 
   ERB_TEMPLATE = <<TMP

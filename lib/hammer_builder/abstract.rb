@@ -12,6 +12,68 @@ module HammerBuilder
 
     dynamic_classes do
       define :AbstractTag do ###import
+
+        class_attribute :_attributes, :instance_writer => false, :instance_reader => false
+        self._attributes = []
+
+        # @return [Array<String>] array of available attributes for the tag
+        def self.attributes
+          self._attributes
+        end
+
+        protected
+
+        # sets the right tag in descendants
+        # @api private
+        def self.set_tag(tag)
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def set_tag
+              @tag = '#{tag}'.freeze
+            end
+          RUBY
+        end
+
+        set_tag 'abstract'
+
+        # defines dynamically methods for attributes
+        # @api private
+        def self.define_attributes
+          attributes.each do |attr|
+            next if instance_methods.include?(attr.to_sym)
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def #{attr}(content)
+                @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
+                self
+              end
+            RUBY
+          end
+          define_attribute_constants
+        end
+
+        # defines constant strings not to make garbage
+        # @api private
+        def self.define_attribute_constants
+          attributes.each do |attr|
+            const = "attr_#{attr}".upcase
+            unless HammerBuilder.const_defined?(const)
+              HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze # TODO define in attribute class
+            end
+          end
+        end
+
+        # adds attribute to class, triggers dynamical creation of needed instance methods etc.
+        # @param [Array<String>] attributes
+        # @api private
+        def self.add_attributes(attributes)
+          self._attributes += [*attributes]
+          define_attributes
+        end
+
+        # add global HTML5 attributes
+        self.add_attributes GLOBAL_ATTRIBUTES
+
+        public
+
         attr_reader :builder
 
         # @api private
@@ -48,17 +110,9 @@ module HammerBuilder
         # original Ruby method for class, class is used for html classes
         alias_method(:rclass, :class)
 
-        class_attribute :_attributes, :instance_writer => false, :instance_reader => false
-        self._attributes = []
-
-        # @return [Array<String>] array of available attributes for the tag
-        def self.attributes
-          self._attributes
-        end
-
-        ID_CLASS_REGEXP       = /^([\w]+)(!|)$/
-        DATA_ATTRIBUTE_REGEXP = /^data_([a-z_]+)$/
-        METHOD_MISSING_REGEXP = /#{DATA_ATTRIBUTE_REGEXP}|#{ID_CLASS_REGEXP}/
+        id_class       = /^([\w]+)(!|)$/
+        data_attribute = /^data_([a-z_]+)$/
+        METHOD_MISSING_REGEXP = /#{data_attribute}|#{id_class}/ unless defined? METHOD_MISSING_REGEXP
 
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           # allows data-* attributes and id, classes by method_missing
@@ -66,11 +120,10 @@ module HammerBuilder
             method = method.to_s
             if method =~ METHOD_MISSING_REGEXP
               if $1
-                self.rclass.attributes = [method]
-                self.send method, *args, &block
+                self.rclass.add_attributes method
+                self.send method, *args
               else
-                self.content(args[0]) if respond_to?(:content) && args[0]
-                self.__send__($3 == '!' ? :id : :class, $2, &block)
+                self.__send__($3 == '!' ? :id : :class, $2)
               end
             else
               super(method, *args, &block)
@@ -82,58 +135,19 @@ module HammerBuilder
           end
         RUBY
 
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def class(*classes)
+            @classes.push(*classes)
+            self
+          end
+        RUBY
+
         protected
-
-        # sets the right tag in descendants
-        # @api private
-        def self.set_tag(tag)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def set_tag
-              @tag = '#{tag}'.freeze
-            end
-          RUBY
-        end
-
-        set_tag 'abstract'
 
         # this method is called on each tag opening, useful for default attributes
         # @example html tag uses this to add xmlns attr.
         #   html # => <html xmlns="http://www.w3.org/1999/xhtml"></html>
         def default
-        end
-
-        # defines dynamically methods for attributes
-        # @api private
-        def self.define_attributes
-          attributes.each do |attr|
-            next if instance_methods.include?(attr.to_sym)
-            class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def #{attr}(content)
-                @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
-                self
-              end
-            RUBY
-          end
-          define_attribute_constants
-        end
-
-        # defines constant strings not to make garbage
-        # @api private
-        def self.define_attribute_constants
-          attributes.each do |attr|
-            const = "attr_#{attr}".upcase
-            unless HammerBuilder.const_defined?(const)
-              HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze # TODO define in attribute class
-            end
-          end
-        end
-
-        # adds attribute to class, triggers dynamical creation of needed instance methods etc.
-        # @param [Array<String>] attributes
-        # @api private
-        def self.attributes=(attributes)
-          self._attributes += attributes
-          define_attributes
         end
 
         # flushes classes to output
@@ -144,21 +158,6 @@ module HammerBuilder
             @classes.clear
           end
         end
-
-        public
-
-        # add global HTML5 attributes
-        self.attributes = GLOBAL_ATTRIBUTES
-
-        alias :[] :id
-
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def class(*classes)
-            @classes.push(*classes)
-            self
-          end
-        RUBY
-
       end ###import
 
       define :AbstractEmptyTag, :AbstractTag do ###import
@@ -184,6 +183,22 @@ module HammerBuilder
           def initialize(builder)
             super
             @content = nil
+          end
+
+          # allows data-* attributes and id, classes by method_missing
+          def method_missing(method, *args, &block)
+            method = method.to_s
+            if method =~ METHOD_MISSING_REGEXP
+              if $1
+                self.rclass.add_attributes method
+                self.send method, *args, &block
+              else
+                self.content(args[0]) if args[0]
+                self.__send__($3 == '!' ? :id : :class, $2, &block)
+              end
+            else
+              super(method, *args, &block)
+            end
           end
 
           # @api private

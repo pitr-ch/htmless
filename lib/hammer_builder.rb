@@ -30,5 +30,3 @@ module HammerBuilder
 
 end
 
-# TODO render as in http://zdrojak.root.cz/clanky/polyglot-aneb-webovym-koderem-pod-oboji/
-# TODO add capture

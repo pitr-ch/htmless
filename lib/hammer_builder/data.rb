@@ -154,4 +154,52 @@ module HammerBuilder
       'area', 'base', 'br', 'col', 'embed',
       'hr', 'img', 'input', 'link', 'meta', 'param'
   ]
+
+  BOOLEAN_ATTRIBUTES = {
+      'all'      => %w{hidden draggable iscontenteditable spellcheck},
+      'style'    => %w{scoped},
+      'script'   => %w{async defer},
+      'ol'       => %w{reversed},
+      'time'     => %w{pubdate},
+      'img'      => %w{ismap},
+      'iframe'   => %w{seamless},
+      'track'    => %w{default},
+      'audio'    => %w{autoplay loop controls},
+      'video'    => %w{autoplay loop controls},
+      'form'     => %w{novalidate},
+      'fieldset' => %w{disabled},
+      'input'    => %w{autofocus checked disabled formnovalidate multiple readonly
+                       required},
+      'button'   => %w{autofocus disabled},
+      'select'   => %w{autofocus disabled multiple required},
+      'optgroup' => %w{disabled},
+      'option'   => %w{disabled selected},
+      'textarea' => %w{autofocus disabled readonly required},
+      'keygen'   => %w{autofocus disabled},
+      'details'  => %w{open},
+      'command'  => %w{disabled checked}
+  }
+
+  ENUMERABLE_ATTRIBUTES = {
+      'all'      => [{ 'dir' => %w{ltr rtl auto} }],
+      'meta'     => [{ 'http-equiv' => %w{content-language content-type default-style refresh set-cookie} }],
+      'track'    => [{ 'kind' => %w{subtitles captions descriptions chapters metadata} }],
+      'video'    => [{ 'preload' => %w{none metadata auto} }],
+      'area'     => [{ 'shape' => %w{circle default poly rect} }],
+      'th'       => [{ 'scope' => %w{row col rowgroup colgroup auto} }],
+      'form'     => [{ 'autocomplete' => %w{on off} }], # ala boolean
+      'input'    => [{ 'type' => %w{hidden text search tel url email password datetime date month week time
+                                    datetime-local number range color checkbox radio file submit image reset button} },
+                     'autocomplete' => %w{on off}], # ommited for default?,
+      'button'   => [{ 'type' => %w{submit reset button} }],
+      'textarea' => [{ 'wrap' => %w{soft hard} }]
+      # TODO
+  }
+
+  #p BOOLEAN_ATTRIBUTES['all'] - GLOBAL_ATTRIBUTES
+  #p BOOLEAN_ATTRIBUTES.map { |tag, attrs|
+  #  { tag => attrs - GLOBAL_ATTRIBUTES - (EXTRA_ATTRIBUTES[tag] || []) }
+  #}
+
 end
+

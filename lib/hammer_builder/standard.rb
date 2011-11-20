@@ -7,7 +7,7 @@ module HammerBuilder
       (DOUBLE_TAGS - ['html']).each do |tag|
         define tag.camelize.to_sym, :AbstractDoubleTag do
           set_tag tag
-          self.attributes = EXTRA_ATTRIBUTES[tag]
+          self.add_attributes EXTRA_ATTRIBUTES[tag]
         end
 
         base.define_tag(tag)
@@ -15,7 +15,7 @@ module HammerBuilder
 
       define :Html, :AbstractDoubleTag do
         set_tag 'html'
-        self.attributes = ['xmlns'] + EXTRA_ATTRIBUTES['html']
+        self.add_attributes ['xmlns'] + EXTRA_ATTRIBUTES['html']
 
         def default
           xmlns('http://www.w3.org/1999/xhtml')
@@ -26,7 +26,7 @@ module HammerBuilder
       EMPTY_TAGS.each do |tag|
         define tag.camelize.to_sym, :AbstractEmptyTag do
           set_tag tag
-          self.attributes = EXTRA_ATTRIBUTES[tag]
+          self.add_attributes EXTRA_ATTRIBUTES[tag]
         end
 
         base.define_tag(tag)
