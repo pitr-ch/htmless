@@ -64,7 +64,7 @@ Benchmark.bmbm(23) do |b|
                 end
               end
             end
-            div['content'].with do
+            div.content! do
               10.times { text 'asd asha sdha sdjhas ahs'*10 }
             end
           end
@@ -91,7 +91,7 @@ Benchmark.bmbm(23) do |b|
                 end
               end
             end
-            div['content'].with do
+            div.content! do
               10.times { text 'asd asha sdha sdjhas ahs'*10 }
             end
           end

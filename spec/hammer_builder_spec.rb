@@ -148,10 +148,20 @@ describe HammerBuilder do
       builder.tags.each do |tag|
         builder.should be_respond_to(tag)
         tag_instance = builder.send(tag)
-        (HammerBuilder::GLOBAL_ATTRIBUTES + HammerBuilder::EXTRA_ATTRIBUTES[tag]).each do |attr|
+        (HammerBuilder::Data::HTML5.abstract_attributes.map(&:name) +
+            (HammerBuilder::Data::HTML5.single_tags + HammerBuilder::Data::HTML5.double_tags).
+                find { |t| t.name.to_s == tag }.attributes.map(&:name)).each do |attr|
           tag_instance.should be_respond_to(attr)
         end
       end
+    end
+
+    it "boolean attributes should render correctly" do
+      quick_render { input.readonly }.should == '<input readonly="readonly" />'
+      quick_render { option.selected { text 'asd' } }.should == '<option selected="selected">asd</option>'
+      quick_render { option.selected(true) }.should == '<option selected="selected"></option>'
+      quick_render { option.selected(1) }.should == '<option selected="selected"></option>'
+      quick_render { option.selected(false) }.should == '<option></option>'
     end
 
     it "should render correctly" do

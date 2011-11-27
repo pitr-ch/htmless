@@ -6,7 +6,7 @@ module HammerBuilder
     dynamic_classes do
       extend :AbstractTag do
         def open(attributes = nil)
-          @output << NEWLINE << SPACES.fetch(@stack.size, SPACE) << LT << @tag
+          @output << Strings::NEWLINE << Strings::SPACES.fetch(@stack.size, Strings::SPACE) << Strings::LT << @tag_name
           @builder.current = self
           attributes(attributes)
           default
@@ -17,7 +17,7 @@ module HammerBuilder
       extend :AbstractDoubleTag do
         def with
           flush_classes
-          @output << GT
+          @output << Strings::GT
           @content         = nil
           @builder.current = nil
           yield
@@ -25,7 +25,8 @@ module HammerBuilder
           #  @output << EscapeUtils.escape_html(content, false)
           #end
           @builder.flush
-          @output << NEWLINE << SPACES.fetch(@stack.size-1, SPACE) << SLASH_LT << @stack.pop << GT
+          @output << Strings::NEWLINE << Strings::SPACES.fetch(@stack.size-1, Strings::SPACE) << Strings::SLASH_LT <<
+              @stack.pop << Strings::GT
           nil
         end
       end
@@ -33,7 +34,8 @@ module HammerBuilder
 
     def comment(comment)
       flush
-      @_output << NEWLINE << SPACES.fetch(@_stack.size, SPACE) << COMMENT_START << comment.to_s << COMMENT_END
+      @_output << Strings::NEWLINE << Strings::SPACES.fetch(@_stack.size, Strings::SPACE) << Strings::COMMENT_START <<
+          comment.to_s << Strings::COMMENT_END
     end
   end
 end

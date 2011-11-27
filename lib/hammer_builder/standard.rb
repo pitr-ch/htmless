@@ -4,32 +4,40 @@ module HammerBuilder
   class Standard < Abstract
 
     dynamic_classes do
-      (DOUBLE_TAGS - ['html']).each do |tag|
-        define tag.camelize.to_sym, :AbstractDoubleTag do
-          set_tag tag
-          self.add_attributes EXTRA_ATTRIBUTES[tag]
-        end
-
-        base.define_tag(tag)
+      extend :AbstractTag do
+        # add global HTML5 attributes
+        self.add_attributes Data::HTML5.abstract_attributes
       end
 
+      Data::HTML5.double_tags.each do |tag|
+        next if tag.name == :html
+
+        define tag.name.to_s.camelize.to_sym, :AbstractDoubleTag do
+          set_tag tag.name
+          self.add_attributes tag.attributes
+        end
+
+        base.define_tag(tag.name)
+      end
+
+      html_tag = Data::HTML5.double_tags.find { |t| t.name == :html }
       define :Html, :AbstractDoubleTag do
-        set_tag 'html'
-        self.add_attributes ['xmlns'] + EXTRA_ATTRIBUTES['html']
+        set_tag html_tag.name
+        self.add_attributes [Data::Attribute.new(:xmlns, :string)] + html_tag.attributes
 
         def default
           xmlns('http://www.w3.org/1999/xhtml')
         end
       end
-      base.define_tag('html')
+      base.define_tag(html_tag.name)
 
-      EMPTY_TAGS.each do |tag|
-        define tag.camelize.to_sym, :AbstractEmptyTag do
-          set_tag tag
-          self.add_attributes EXTRA_ATTRIBUTES[tag]
+      Data::HTML5.single_tags.each do |tag|
+        define tag.name.to_s.camelize.to_sym, :AbstractEmptyTag do
+          set_tag tag.name
+          self.add_attributes tag.attributes
         end
 
-        base.define_tag(tag)
+        base.define_tag(tag.name)
       end
     end
 

@@ -18,59 +18,73 @@ module HammerBuilder
 
         # @return [Array<String>] array of available attributes for the tag
         def self.attributes
-          self._attributes
+          _attributes
+        end
+
+        # @return [String] tag's name
+        def self.tag_name
+          @tag || superclass.tag_name
         end
 
         protected
 
-        # sets the right tag in descendants
+        # sets the tag's name
         # @api private
         def self.set_tag(tag)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def set_tag
-              @tag = '#{tag}'.freeze
-            end
-          RUBY
+          @tag = tag.to_s.freeze
         end
 
         set_tag 'abstract'
 
         # defines dynamically methods for attributes
         # @api private
-        def self.define_attributes
-          attributes.each do |attr|
-            next if instance_methods.include?(attr.to_sym)
-            class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def #{attr}(content)
-                @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
-                self
-              end
-            RUBY
-          end
-          define_attribute_constants
+        def self.define_attribute_methods
+          attributes.each { |attr| define_attribute_method(attr) }
         end
 
-        # defines constant strings not to make garbage
+        def self.inherited(base)
+          base.define_attribute_methods
+        end
+
+        # defines dynamically method for +attribute+
+        # @param [Data::Attribute] attribute
         # @api private
-        def self.define_attribute_constants
-          attributes.each do |attr|
-            const = "attr_#{attr}".upcase
-            unless HammerBuilder.const_defined?(const)
-              HammerBuilder.const_set const, " #{attr.gsub('_', '-')}=\"".freeze # TODO define in attribute class
+        def self.define_attribute_method(attribute)
+          return if instance_methods.include?(attribute.name)
+          name              = attribute.name.to_s
+          content_rendering = attribute_content_rendering(attribute)
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}(content#{' = true' if attribute.type == :boolean})
+              #{content_rendering}
+              self
             end
+          RUBY
+        end
+
+        # @api private
+        # @param [Data::Attribute] attribute
+        # @returns Ruby code as string
+        def self.attribute_content_rendering(attribute)
+          name = attribute.name.to_s
+          case attribute.type
+            when :string
+              Strings.add "attr_#{name}", " #{name.gsub('_', '-')}=\""
+              "@output << Strings::ATTR_#{name.upcase} << CGI.escapeHTML(content.to_s) << Strings::QUOTE"
+            when :boolean
+              Strings.add "attr_#{name}", " #{name.gsub('_', '-')}=\"#{name}\""
+              "@output << Strings::ATTR_#{name.upcase} if content"
           end
         end
 
         # adds attribute to class, triggers dynamical creation of needed instance methods etc.
-        # @param [Array<String>] attributes
+        # @param [Array<Data::Attribute>] attributes
         # @api private
         def self.add_attributes(attributes)
-          self._attributes += [*attributes]
-          define_attributes
+          attributes = [attributes] unless attributes.is_a? Array
+          raise ArgumentError, attributes.inspect unless attributes.all? { |v| v.is_a? Data::Attribute }
+          self.send :_attributes=, _attributes + attributes
+          define_attribute_methods
         end
-
-        # add global HTML5 attributes
-        self.add_attributes GLOBAL_ATTRIBUTES
 
         public
 
@@ -78,16 +92,16 @@ module HammerBuilder
 
         # @api private
         def initialize(builder)
-          @builder = builder
-          @output  = builder.instance_eval { @_output }
-          @stack   = builder.instance_eval { @_stack }
-          @classes = []
-          set_tag
+          @builder  = builder
+          @output   = builder.instance_eval { @_output }
+          @stack    = builder.instance_eval { @_stack }
+          @classes  = []
+          @tag_name = self.rclass.tag_name
         end
 
         # @api private
         def open(attributes = nil)
-          @output << LT << @tag
+          @output << Strings::LT << @tag_name
           @builder.current = self
           attributes(attributes)
           default
@@ -120,7 +134,7 @@ module HammerBuilder
             method = method.to_s
             if method =~ METHOD_MISSING_REGEXP
               if $1
-                self.rclass.add_attributes method
+                self.rclass.add_attributes Data::Attribute.new(method, :string)
                 self.send method, *args
               else
                 self.__send__($3 == '!' ? :id : :class, $2)
@@ -135,6 +149,7 @@ module HammerBuilder
           end
         RUBY
 
+        Strings.add "attr_class", " class=\""
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def class(*classes)
             @classes.push(*classes)
@@ -154,7 +169,7 @@ module HammerBuilder
         # @api private
         def flush_classes
           unless @classes.empty?
-            @output << ATTR_CLASS << CGI.escapeHTML(@classes.join(SPACE)) << QUOTE
+            @output << Strings::ATTR_CLASS << CGI.escapeHTML(@classes.join(Strings::SPACE)) << Strings::QUOTE
             @classes.clear
           end
         end
@@ -167,7 +182,7 @@ module HammerBuilder
         # closes the tag
         def flush
           flush_classes
-          @output << SLASH_GT
+          @output << Strings::SLASH_GT
           nil
         end
       end ###import
@@ -190,7 +205,7 @@ module HammerBuilder
             method = method.to_s
             if method =~ METHOD_MISSING_REGEXP
               if $1
-                self.rclass.add_attributes method
+                self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
                 self.send method, *args, &block
               else
                 self.content(args[0]) if args[0]
@@ -208,7 +223,7 @@ module HammerBuilder
             end
             content args[0]
             super attributes
-            @stack << @tag
+            @stack << @tag_name
             if block
               with &block
             else
@@ -221,9 +236,9 @@ module HammerBuilder
         # closes the tag
         def flush
           flush_classes
-          @output << GT
+          @output << Strings::GT
           @output << CGI.escapeHTML(@content) if @content
-          @output << SLASH_LT << @stack.pop << GT
+          @output << Strings::SLASH_LT << @stack.pop << Strings::GT
           @content = nil
         end
 
@@ -246,7 +261,7 @@ module HammerBuilder
         #   end # => <div id="id">content</div>
         def with
           flush_classes
-          @output << GT
+          @output << Strings::GT
           @content         = nil
           @builder.current = nil
           yield
@@ -254,35 +269,35 @@ module HammerBuilder
           #  @output << EscapeUtils.escape_html(content)
           #end
           @builder.flush
-          @output << SLASH_LT << @stack.pop << GT
+          @output << Strings::SLASH_LT << @stack.pop << Strings::GT
           nil
         end
 
         protected
 
         # @api private
-        def self.define_attributes
-          attributes.each do |attr|
-            next if instance_methods(false).include?(attr.to_sym)
-            if instance_methods.include?(attr.to_sym)
-              class_eval <<-RUBY, __FILE__, __LINE__ + 1
-                def #{attr}(*args, &block)
-                  super(*args, &nil)
-                  return with(&block) if block
-                  self
-                end
-              RUBY
-            else
-              class_eval <<-RUBY, __FILE__, __LINE__ + 1
-                def #{attr}(content, &block)
-                  @output << ATTR_#{attr.upcase} << CGI.escapeHTML(content.to_s) << QUOTE
-                  return with(&block) if block
-                  self
-                end
-              RUBY
-            end
+        def self.define_attribute_method(attribute)
+          return if instance_methods(false).include?(attribute.name)
+          name = attribute.name.to_s
+
+          if instance_methods.include?(attribute.name)
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def #{name}(*args, &block)
+                super(*args, &nil)
+                return with(&block) if block
+                self
+              end
+            RUBY
+          else
+            content_rendering = attribute_content_rendering(attribute)
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def #{name}(content#{' = true' if attribute.type == :boolean}, &block)
+                #{content_rendering}
+                return with(&block) if block
+                self
+              end
+            RUBY
           end
-          define_attribute_constants
         end
       end ###import
     end
@@ -306,10 +321,12 @@ module HammerBuilder
 
     public
 
+
     # current tag being builded
     attr_accessor :_current
-    alias :current :_current
-    alias :current= :_current=
+    alias_method :current, :_current
+    alias_method :current=, :_current=
+
 
     # creates a new builder
     # This is quite expensive, HammerBuilder::Pool should be used
@@ -338,13 +355,13 @@ module HammerBuilder
     # inserts +comment+
     def comment(comment)
       flush
-      @_output << COMMENT_START << comment.to_s << COMMENT_END
+      @_output << Strings::COMMENT_START << comment.to_s << Strings::COMMENT_END
     end
 
     # insersts CDATA with +content+
     def cdata(content)
       flush
-      @_output << CDATA_START << content.to_s << CDATA_END
+      @_output << Strings::CDATA_START << content.to_s << Strings::CDATA_END
     end
 
     # renders xml version
