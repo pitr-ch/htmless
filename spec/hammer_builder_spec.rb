@@ -125,6 +125,9 @@ describe HammerBuilder do
       quick_render { hr.id 'an_id' }.should == '<hr id="an_id" />'
       quick_render { hr.an_id! }.should == '<hr id="an_id" />'
       quick_render { hr :id => 'an_id' }.should == '<hr id="an_id" />'
+
+      quick_render { hr.id 'an', 'id', nil, false }.should == '<hr id="an_id" />'
+      quick_render { div.id 'an', 'id', nil, false }.should == '<div id="an_id"></div>'
     end
 
     it 'should render #class' do
@@ -138,10 +141,41 @@ describe HammerBuilder do
       quick_render { div.an_class.another_class }.should == '<div class="an_class another_class"></div>'
       quick_render { div.class 'an_class', 'another_class' }.should == '<div class="an_class another_class"></div>'
       quick_render { div :class => ['an_class', 'another_class'] }.should == '<div class="an_class another_class"></div>'
+      quick_render { div.class(false, nil, 'an_class', true && 'another_class') }.should ==
+          '<div class="an_class another_class"></div>'
+    end
+
+    it '#[]' do
+      obj = Object.new
+      quick_render { div[obj] }.should == %Q(<div id="object_#{obj.object_id}" class="object"></div>)
+
+      obj = Object.new.extend(Module.new do
+        def hammer_builder_ref_class
+          "a"
+        end
+
+        def hammer_builder_ref_id
+          'b'
+        end
+      end)
+      quick_render { div[obj] }.should == %Q(<div id="a_b" class="a"></div>)
+
+      obj = Object.new.extend(Module.new do
+        def id; "an_id"; end
+      end)
+      quick_render { div[obj] }.should == %Q(<div id="object_an_id" class="object"></div>)
     end
 
     it "#data-.*" do
       quick_render { div('a').data_secret("I won't tell.") }.should == '<div data-secret="I won\'t tell.">a</div>'
+    end
+
+    it '#data' do
+      quick_render { hr.data(:secret => true) }.should == '<hr data-secret="true" />'
+      quick_render { div('a', :data => { :secret => "I won't tell." }) }.should ==
+          '<div data-secret="I won\'t tell.">a</div>'
+      quick_render { div('a').data(:secret => "I won't tell.") { text 'a' } }.should ==
+          '<div data-secret="I won\'t tell.">a</div>'
     end
 
     it 'tags should have all the attributes' do

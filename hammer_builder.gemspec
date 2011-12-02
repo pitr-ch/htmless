@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Petr Chalupa"]
-  s.date = "2011-11-19"
+  s.date = "2011-12-02"
   s.description = "is a xhtml5 builder written in Ruby. It does not introduce anything special, you just\nuse Ruby to get your xhtml. HammerBuilder has been written with three objectives: Speed, Rich API, Extensibility"
   s.email = "email@pitr.ch"
   s.extra_rdoc_files = [
@@ -19,13 +19,19 @@ Gem::Specification.new do |s|
   s.files = [
     "lib/hammer_builder.rb",
     "lib/hammer_builder/abstract.rb",
+    "lib/hammer_builder/abstract/abstract_double_tag.rb",
+    "lib/hammer_builder/abstract/abstract_single_tag.rb",
+    "lib/hammer_builder/abstract/abstract_tag.rb",
     "lib/hammer_builder/data.rb",
+    "lib/hammer_builder/data/html5.rb",
     "lib/hammer_builder/doc.rb",
     "lib/hammer_builder/dynamic_classes.rb",
     "lib/hammer_builder/formatted.rb",
     "lib/hammer_builder/helper.rb",
     "lib/hammer_builder/pool.rb",
-    "lib/hammer_builder/standard.rb"
+    "lib/hammer_builder/rails.rb",
+    "lib/hammer_builder/standard.rb",
+    "lib/hammer_builder/strings.rb"
   ]
   s.homepage = "https://github.com/ruby-hammer/hammer-builder"
   s.licenses = ["MIT"]

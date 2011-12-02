@@ -1,3 +1,5 @@
+require 'hammer_builder/abstract'
+
 module HammerBuilder
 
   # Builder implementation without formating (one line output)
@@ -32,7 +34,7 @@ module HammerBuilder
       base.define_tag(html_tag.name)
 
       Data::HTML5.single_tags.each do |tag|
-        define tag.name.to_s.camelize.to_sym, :AbstractEmptyTag do
+        define tag.name.to_s.camelize.to_sym, :AbstractSingleTag do
           set_tag tag.name
           self.add_attributes tag.attributes
         end

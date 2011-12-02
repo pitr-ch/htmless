@@ -23,7 +23,7 @@ use Ruby to get your xhtml. HammerBuilder has been written with three objectives
     gem.add_development_dependency "bluecloth", "~> 2.0"
     gem.add_development_dependency "jeweler", "~> 1.6"
 
-    gem.files = FileList['lib/hammer_builder.rb', 'lib/hammer_builder/*.rb'].to_a
+    gem.files = FileList['lib/hammer_builder.rb', 'lib/hammer_builder/**/*.rb'].to_a
 
     gem.test_files = FileList["spec/**/*.*"].to_a
     gem.extra_rdoc_files = FileList["README.md","CHANGELOG.md"].to_a

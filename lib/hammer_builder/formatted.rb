@@ -1,3 +1,5 @@
+require 'hammer_builder/standard'
+
 module HammerBuilder
   # Builder implementation with formatting (indented by '  ')
   # Slow down is less then 1%

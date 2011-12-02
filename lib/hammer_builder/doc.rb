@@ -148,7 +148,7 @@ module HammerBuilder
         RUBY
 
           end
-    class AbstractEmptyTag < AbstractTag
+    class AbstractSingleTag < AbstractTag
 
         nil
 

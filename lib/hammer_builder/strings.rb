@@ -13,6 +13,7 @@ module HammerBuilder
     add :gt, '>'
     add :slash_lt, '</'
     add :slash_gt, ' />'
+    add :underscore, '_'
     add :space, ' '
     add :max_levels, 300
     add :spaces, Array.new(MAX_LEVELS) { |i| ('  ' * i).freeze }
