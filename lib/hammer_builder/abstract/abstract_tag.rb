@@ -98,6 +98,15 @@ module HammerBuilder
           self
         end
 
+        # it renders attribute using defined attribute method or by rendering attribute directly
+        # @param [String, Symbol] name
+        # @param [#to_s] value
+        def attribute(name, value)
+          return __send__(name, value) if respond_to?(name)
+          @output << Strings::SPACE << name.to_s << Strings::EQL_QUOTE << CGI.escapeHTML(value.to_s) << Strings::QUOTE
+          self
+        end
+
         # @example
         #   div.attributes :id => 'id' # => <div id="id"></div>
         #   div :id => 'id', :class => %w{left right} # => <div id="id" class="left right"></div>
@@ -138,9 +147,9 @@ module HammerBuilder
             end
           end
 
-          def respond_to?(symbol, include_private = false)
-            symbol.to_s =~ METHOD_MISSING_REGEXP || super(symbol, include_private)
-          end
+          #def respond_to?(symbol, include_private = false)
+          #  symbol.to_s =~ METHOD_MISSING_REGEXP || super(symbol, include_private)
+          #end
         RUBY
 
         # TODO update presentation

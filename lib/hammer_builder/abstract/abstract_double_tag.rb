@@ -89,17 +89,23 @@ module HammerBuilder
         end
 
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-      def object(obj, &block)
-        super(obj, &nil)
-        return with(&block) if block
-        self
-      end
+          def object(obj, &block)
+            super(obj, &nil)
+            return with(&block) if block
+            self
+          end
 
-      def data(hash, &block)
-        super(hash, &nil)
-        return with(&block) if block
-        self
-      end
+          def data(hash, &block)
+            super(hash, &nil)
+            return with(&block) if block
+            self
+          end
+
+          def attribute(name, value, &block)
+            super(name, value, &nil)
+            return with(&block) if block
+            self
+          end
         RUBY
 
         protected

@@ -88,26 +88,11 @@ module HammerBuilder
       @_output << Strings::CDATA_START << content.to_s << Strings::CDATA_END
     end
 
-    # renders xml version
-    # @example
-    #   xml_version # => <?xml version="1.0" encoding="UTF-8"?>
-    def xml_version(version = '1.0', encoding = 'UTF-8')
-      flush
-      @_output << "<?xml version=\"#{version}\" encoding=\"#{encoding}\"?>\n"
-    end
-
     # renders html5 doc type
     # @example
     #   doctype # => <!DOCTYPE html>
     def doctype
-      flush
-      @_output << "<!DOCTYPE html>\n"
-    end
-
-    # inserts xhtml5 header
-    def xhtml5!
-      xml_version
-      doctype
+      raw "<!DOCTYPE html>\n"
     end
 
     # resets the builder to the state after creation - much faster then creating a new one

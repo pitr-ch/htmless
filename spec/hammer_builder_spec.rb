@@ -145,6 +145,11 @@ describe HammerBuilder do
           '<div class="an_class another_class"></div>'
     end
 
+    it "#attribute" do
+      quick_render { div.attribute 'xml:ns', 'gibris' }.should == '<div xml:ns="gibris"></div>'
+      quick_render { div.attribute(:class, 'a') { text 'asd' } }.should == '<div class="a">asd</div>'
+    end
+
     it '#[]' do
       obj = Object.new
       quick_render { div[obj] }.should == %Q(<div id="object_#{obj.object_id}" class="object"></div>)
@@ -161,7 +166,9 @@ describe HammerBuilder do
       quick_render { div[obj] }.should == %Q(<div id="a_b" class="a"></div>)
 
       obj = Object.new.extend(Module.new do
-        def id; "an_id"; end
+        def id;
+          "an_id";
+        end
       end)
       quick_render { div[obj] }.should == %Q(<div id="object_an_id" class="object"></div>)
     end
@@ -200,7 +207,7 @@ describe HammerBuilder do
 
     it "should render correctly" do
       quick_render do
-        xhtml5!
+        doctype
         html do
           head do
             title.an_id! 'a_title'
@@ -222,8 +229,7 @@ describe HammerBuilder do
           end
           comment 'asd'
         end
-      end.should == '<?xml version="1.0" encoding="UTF-8"?>' + "\n" +
-          '<!DOCTYPE html>' + "\n" +
+      end.should == '<!DOCTYPE html>' + "\n" +
           '<html xmlns="http://www.w3.org/1999/xhtml"><head><title id="an_id">a_title</title><meta charset="utf-8" />'+
           '</head><body id="content">asd<div class="left">asd<hr /></div><br /><div class="left"><hr />'+
           '<script type="text/javascript">asd</script><script type="text/javascript"><![CDATA[asd]]></script>'+

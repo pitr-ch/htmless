@@ -25,10 +25,10 @@ module HammerBuilder
       html_tag = Data::HTML5.double_tags.find { |t| t.name == :html }
       define :Html, :AbstractDoubleTag do
         set_tag html_tag.name
-        self.add_attributes [Data::Attribute.new(:xmlns, :string)] + html_tag.attributes
+        self.add_attributes html_tag.attributes
 
         def default
-          xmlns('http://www.w3.org/1999/xhtml')
+          attribute :xmlns ,'http://www.w3.org/1999/xhtml'
         end
       end
       base.define_tag(html_tag.name)
