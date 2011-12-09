@@ -172,7 +172,6 @@ module HammerBuilder
       script({ :type => "text/javascript" }.merge(options)) { use_cdata ? cdata(js) : text(js) }
     end
 
-    # TODO update presentation
     # joins and renders +collection+ with +glue+
     # @param [Array<Proc, Object>] collection of objects or lambdas
     # @param [Proc, String] glue can be String which is rendered with #text or block to render

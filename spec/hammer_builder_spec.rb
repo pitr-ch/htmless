@@ -154,15 +154,16 @@ describe HammerBuilder do
       obj = Object.new
       quick_render { div[obj] }.should == %Q(<div id="object_#{obj.object_id}" class="object"></div>)
 
-      obj = Object.new.extend(Module.new do
-        def hammer_builder_ref_class
+      class AnObject
+        def self.hammer_builder_ref
           "a"
         end
 
-        def hammer_builder_ref_id
+        def hammer_builder_ref
           'b'
         end
-      end)
+      end
+      obj = AnObject.new
       quick_render { div[obj] }.should == %Q(<div id="a_b" class="a"></div>)
 
       obj = Object.new.extend(Module.new do

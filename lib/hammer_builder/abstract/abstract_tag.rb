@@ -152,7 +152,6 @@ module HammerBuilder
           #end
         RUBY
 
-        # TODO update presentation
         Strings.add "attr_class", " class=\""
         # adds classes to the tag by joining +classes+ with ' ' and skipping non-true classes
         # @param [Array<#to_s>] classes
@@ -163,7 +162,6 @@ module HammerBuilder
           self
         end
 
-        # TODO update presentation
         Strings.add "attr_id", " id=\""
         # adds id to the tag by joining +values+ with '_'
         # @param [Array<#to_s>] values
@@ -175,25 +173,24 @@ module HammerBuilder
           self
         end
 
-        # TODO update presentation
         # adds id and class to a tag by an object
         # @param [Object] obj
-        # To determine the class it looks for #hammer_builder_ref_class or
-        # it uses obj.class.to_s.underscore.tr('/', '-').
+        # To determine the class it looks for .hammer_builder_ref or
+        # it uses class.to_s.underscore.tr('/', '-').
         # To determine id it combines class and an id of the +obj+.
-        # It looks for #hammer_builder_ref_id or #id or #object_id.
+        # It looks for #hammer_builder_ref or #id or #object_id.
         # @example
         #   div[AUser.new].with { text 'a' } # => <div id="a_user_1" class="a_user">a</div>
         def object(obj)
-          klass = if obj.respond_to? :hammer_builder_ref_class
-            obj.hammer_builder_ref_class
+          klass = if obj.class.respond_to? :hammer_builder_ref
+            obj.class.hammer_builder_ref
           else
             ActiveSupport::Inflector.underscore(obj.class.to_s).tr('/', '-')
           end
 
           id = case
-            when obj.respond_to?(:hammer_builder_ref_id)
-              obj.hammer_builder_ref_id
+            when obj.respond_to?(:hammer_builder_ref)
+              obj.hammer_builder_ref
             when obj.respond_to?(:id)
               obj.id.to_s
             else
@@ -226,7 +223,6 @@ module HammerBuilder
         # @api private
         def flush_classes
           unless @classes.empty?
-            # FIND will be loop faster than join?
             @output << Strings::ATTR_CLASS << CGI.escapeHTML(@classes.join(Strings::SPACE)) << Strings::QUOTE
             @classes.clear
           end
