@@ -9,7 +9,7 @@ pool = HammerBuilder::Pool.new HammerBuilder::Formatted
 #html = Hammer::FormatedBuilder.new.go_in do
 #  extend ActionView::Helpers::NumberHelper
 #  div number_with_precision(Math::PI, :precision => 4)
-#end.to_xhtml
+#end.to_html
 #puts html
 #
 #class MyBuilder < Hammer::FormatedBuilder
@@ -18,7 +18,7 @@ pool = HammerBuilder::Pool.new HammerBuilder::Formatted
 #
 #puts(MyBuilder.new.go_in do
 #  div number_with_precision(Math::PI, :precision => 4)
-#end.to_xhtml)
+#end.to_html)
 
 
 #class MyBuilder1 < HammerBuilder::Formatted
@@ -66,7 +66,7 @@ puts(pool.get.go_in do
   user = User.new("Peter", "peter", "peter@example.com")
   render user, :detail
   p "builder methods are: #{User.builder_methods.join(',')}"
-end.to_xhtml!)
+end.to_html!)
 
 #exit
 
@@ -105,20 +105,20 @@ end.to_xhtml!)
 #    end
 #    simple_component 'component-1'
 #  end
-#end.to_xhtml!
+#end.to_html!
 #
 #puts o
 
 #puts(HammerBuilder::Standard.get.go_in do
 #    puts div.object_id
 #    puts div.object_id
-#  end.to_xhtml!)
+#  end.to_html!)
 #
 #puts(HammerBuilder::Standard.get.go_in do
 #    a = div 'a'
 #    div 'b'
 #    a.class 'class'
-#  end.to_xhtml!)
+#  end.to_html!)
 
 #class User
 #  include HammerBuilder::Helper
@@ -134,7 +134,7 @@ end.to_xhtml!)
 #    @user.menu self
 #  end
 #end
-#puts b.to_xhtml!
+#puts b.to_html!
 
 b = pool.get.go_in do
   xhtml5!
@@ -175,7 +175,7 @@ b = pool.get.go_in do
     end
   end
 end
-puts b.to_xhtml
+puts b.to_html
 
 exit
 
@@ -210,7 +210,7 @@ result = RubyProf.profile do
         end
       end
     end
-    r.to_xhtml!
+    r.to_html!
   end
   puts 'done'
 end

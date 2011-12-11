@@ -1,7 +1,7 @@
 module HammerBuilder
   class Abstract
     dynamic_classes do
-      define :AbstractTag do ###import
+      def_class :AbstractTag do ###import
 
         class_attribute :_attributes, :instance_writer => false, :instance_reader => false
         self._attributes = []
@@ -181,7 +181,7 @@ module HammerBuilder
         # It looks for #hammer_builder_ref or #id or #object_id.
         # @example
         #   div[AUser.new].with { text 'a' } # => <div id="a_user_1" class="a_user">a</div>
-        def object(obj)
+        def mimic(obj)
           klass = if obj.class.respond_to? :hammer_builder_ref
             obj.class.hammer_builder_ref
           else
@@ -200,7 +200,7 @@ module HammerBuilder
           self.class(klass).id(klass, id)
         end
 
-        alias_method :[], :object
+        alias_method :[], :mimic
 
         # renders data-* attributes by +hash+
         # @param [Hash] hash

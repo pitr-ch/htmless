@@ -14,10 +14,10 @@ module HammerBuilder
       end
 
       # @return [String] output and releases the builder to pool
-      def to_xhtml!
-        r = to_xhtml
+      def to_html!
+        to_html
+      ensure
         release
-        r
       end
     end
 

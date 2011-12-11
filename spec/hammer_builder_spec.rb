@@ -6,7 +6,7 @@ describe HammerBuilder do
     it "should return instance into pool" do
       pool.get.release
       pool.size.should == 1
-      pool.get.to_xhtml!
+      pool.get.to_html!
       pool.size.should == 1
     end
   end
@@ -25,10 +25,14 @@ describe HammerBuilder do
     let(:pool) { HammerBuilder::Pool.new HammerBuilder::Standard }
 
     class User
-      include HammerBuilder::Helper
+      extend HammerBuilder::Helper
 
       builder :detail do |_, arg|
         div arg
+      end
+
+      def detail2(b, arg)
+        b.div { b.text arg }
       end
     end
 
@@ -37,26 +41,24 @@ describe HammerBuilder do
       it "should render correctly" do
         pool.get.dive(User.new) do |user|
           render user, :detail, 'content'
-        end.to_xhtml!.should == "<div>content</div>"
+          render user, :detail2, 'content'
+        end.to_html!.should == "<div>content</div><div>content</div>"
       end
     end
 
-    describe '.builder_methods' do
-      it { User.builder_methods.should include(:detail) }
-    end
   end
 
   describe HammerBuilder::DynamicClasses do
     class Parent
       extend HammerBuilder::DynamicClasses
       dc do
-        define :LeftEye do
+        def_class :LeftEye do
           def to_s;
             'left eye';
           end
         end
 
-        define :RightEye, :LeftEye do
+        def_class :RightEye, :LeftEye do
           class_eval <<-RUBYCODE, __FILE__, __LINE__+1
             def to_s; 'next to ' + super; end
           RUBYCODE
@@ -69,7 +71,7 @@ describe HammerBuilder do
 
     class AMutant < Parent
       dc do
-        extend :LeftEye do
+        extend_class :LeftEye do
           def to_s;
             'laser ' + super;
           end
@@ -104,7 +106,7 @@ describe HammerBuilder do
     let(:builder) { pool.get }
 
     def quick_render &block
-      builder.dive(&block).to_xhtml!
+      builder.dive(&block).to_html!
     end
 
     it 'should render #content' do
@@ -122,6 +124,7 @@ describe HammerBuilder do
       quick_render { div.an_id! 'content' }.should == '<div id="an_id">content</div>'
       quick_render { div.an_id! }.should == '<div id="an_id"></div>'
       quick_render { div :id => 12 }.should == '<div id="12"></div>'
+      quick_render { div 'asd', :id => 12 }.should == '<div id="12">asd</div>'
       quick_render { hr.id 'an_id' }.should == '<hr id="an_id" />'
       quick_render { hr.an_id! }.should == '<hr id="an_id" />'
       quick_render { hr :id => 'an_id' }.should == '<hr id="an_id" />'
@@ -131,16 +134,20 @@ describe HammerBuilder do
     end
 
     it 'should render #class' do
+      #noinspection RubyArgCount
       quick_render { div.class 'an_class' }.should == '<div class="an_class"></div>'
       quick_render { div.an_class }.should == '<div class="an_class"></div>'
       quick_render { div :class => 'an_class' }.should == '<div class="an_class"></div>'
+      #noinspection RubyArgCount
       quick_render { hr.class 'an_class' }.should == '<hr class="an_class" />'
       quick_render { hr.an_class }.should == '<hr class="an_class" />'
       quick_render { hr :class => 'an_class' }.should == '<hr class="an_class" />'
 
       quick_render { div.an_class.another_class }.should == '<div class="an_class another_class"></div>'
+      #noinspection RubyArgCount
       quick_render { div.class 'an_class', 'another_class' }.should == '<div class="an_class another_class"></div>'
       quick_render { div :class => ['an_class', 'another_class'] }.should == '<div class="an_class another_class"></div>'
+      #noinspection RubyArgCount
       quick_render { div.class(false, nil, 'an_class', true && 'another_class') }.should ==
           '<div class="an_class another_class"></div>'
     end
@@ -172,6 +179,7 @@ describe HammerBuilder do
         end
       end)
       quick_render { div[obj] }.should == %Q(<div id="object_an_id" class="object"></div>)
+      quick_render { div.mimic(obj) { text 'a' } }.should == %Q(<div id="object_an_id" class="object">a</div>)
     end
 
     it "#data-.*" do
@@ -208,7 +216,7 @@ describe HammerBuilder do
 
     it "should render correctly" do
       quick_render do
-        doctype
+        html5
         html do
           head do
             title.an_id! 'a_title'
@@ -216,7 +224,7 @@ describe HammerBuilder do
           end
           body.id 'content' do
             text 'asd'
-            div.left do
+            div.left.style nil do
               raw 'asd'
               hr
             end
@@ -232,7 +240,7 @@ describe HammerBuilder do
         end
       end.should == '<!DOCTYPE html>' + "\n" +
           '<html xmlns="http://www.w3.org/1999/xhtml"><head><title id="an_id">a_title</title><meta charset="utf-8" />'+
-          '</head><body id="content">asd<div class="left">asd<hr /></div><br /><div class="left"><hr />'+
+          '</head><body id="content">asd<div style="" class="left">asd<hr /></div><br /><div class="left"><hr />'+
           '<script type="text/javascript">asd</script><script type="text/javascript"><![CDATA[asd]]></script>'+
           '</div><!--asd--></body><!--asd--></html>'
     end
@@ -240,7 +248,7 @@ describe HammerBuilder do
     it "#set variables" do
       r = builder.set_variables(:a => 'a') do |b|
         b.dive { p @a }
-      end.to_xhtml!
+      end.to_html!
 
       r.should == '<p>a</p>'
       builder.instance_variable_get(:@a).should be_nil
@@ -259,7 +267,7 @@ describe HammerBuilder do
     let(:builder) { pool.get }
 
     def quick_render &block
-      builder.dive(&block).to_xhtml!
+      builder.dive(&block).to_html!
     end
 
     it "should be formatted" do

@@ -6,7 +6,7 @@ module HammerBuilder
   class Standard < Abstract
 
     dynamic_classes do
-      extend :AbstractTag do
+      extend_class :AbstractTag do
         # add global HTML5 attributes
         self.add_attributes Data::HTML5.abstract_attributes
       end
@@ -14,7 +14,7 @@ module HammerBuilder
       Data::HTML5.double_tags.each do |tag|
         next if tag.name == :html
 
-        define tag.name.to_s.camelize.to_sym, :AbstractDoubleTag do
+        def_class tag.name.to_s.camelize.to_sym, :AbstractDoubleTag do
           set_tag tag.name
           self.add_attributes tag.attributes
         end
@@ -23,7 +23,7 @@ module HammerBuilder
       end
 
       html_tag = Data::HTML5.double_tags.find { |t| t.name == :html }
-      define :Html, :AbstractDoubleTag do
+      def_class :Html, :AbstractDoubleTag do
         set_tag html_tag.name
         self.add_attributes html_tag.attributes
 
@@ -34,7 +34,7 @@ module HammerBuilder
       base.define_tag(html_tag.name)
 
       Data::HTML5.single_tags.each do |tag|
-        define tag.name.to_s.camelize.to_sym, :AbstractSingleTag do
+        def_class tag.name.to_s.camelize.to_sym, :AbstractSingleTag do
           set_tag tag.name
           self.add_attributes tag.attributes
         end

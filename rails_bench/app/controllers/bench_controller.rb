@@ -2,7 +2,7 @@ OBJECTS_COUNT = 50
 
 User = Struct.new(:id, :login, :password, :age)
 class User
-  include HammerBuilder::Helper
+  extend HammerBuilder::Helper
 
   builder :menu do |user|
     li { a(user.login).href("user/#{user.id}") }
@@ -26,7 +26,7 @@ end
 
 Comment = Struct.new(:id, :subject, :content)
 class Comment
-  include HammerBuilder::Helper
+  extend HammerBuilder::Helper
 
   builder :menu do |comment|
     li { a(comment.subject).href("comment/#{comment.id}") }
@@ -76,12 +76,12 @@ class BenchController < ApplicationController
   end
 
   def hammer_builder
-    render :text => builder_page(HammerBuilder::Standard.get).to_xhtml!
+    render :text => builder_page(HammerBuilder::Standard.get).to_html!
   end
 
   private
 
-  include HammerBuilder::Helper
+  extend HammerBuilder::Helper
 
   builder :builder_page do |_|
     xhtml5!

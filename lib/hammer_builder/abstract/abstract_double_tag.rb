@@ -2,49 +2,49 @@ module HammerBuilder
   class Abstract
     dynamic_classes do
 
-      define :AbstractDoubleTag, :AbstractTag do ###import
+      def_class :AbstractDoubleTag, :AbstractTag do ###import
         nil
 
         # defined by class_eval because there is a error cased by super
         # super from singleton method that is defined to multiple classes is not supported;
         # this will be fixed in 1.9.3 or later (NotImplementedError)
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-      # @api private
-      def initialize(builder)
-        super
-        @content = nil
-      end
-
-      # allows data-* attributes and id, classes by method_missing
-      def method_missing(method, *args, &block)
-        method = method.to_s
-        if method =~ METHOD_MISSING_REGEXP
-          if $1
-            self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
-            self.send method, *args, &block
-          else
-            self.content(args[0]) if args[0]
-            self.__send__($3 == '!' ? :id : :class, $2, &block)
+          # @api private
+          def initialize(builder)
+            super
+            @content = nil
           end
-        else
-          super(method, *args, &block)
-        end
-      end
 
-      # @api private
-      def open(*args, &block)
-        attributes = if args.last.is_a?(Hash)
-          args.pop
-        end
-        content args[0]
-        super attributes
-        @stack << @tag_name
-        if block
-          with &block
-        else
-          self
-        end
-      end
+          # allows data-* attributes and id, classes by method_missing
+          def method_missing(method, *args, &block)
+            method = method.to_s
+            if method =~ METHOD_MISSING_REGEXP
+              if $1
+                self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
+                self.send method, *args, &block
+              else
+                self.content(args[0]) if args[0]
+                self.__send__($3 == '!' ? :id : :class, $2, &block)
+              end
+            else
+              super(method, *args, &block)
+            end
+          end
+
+          # @api private
+          def open(*args, &block)
+            attributes = if args.last.is_a?(Hash)
+              args.pop
+            end
+            content args[0]
+            super attributes
+            @stack << @tag_name
+            if block
+              with &block
+            else
+              self
+            end
+          end
         RUBY
 
         # @api private
@@ -88,8 +88,10 @@ module HammerBuilder
           nil
         end
 
+        alias_method :w, :with
+
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def object(obj, &block)
+          def mimic(obj, &block)
             super(obj, &nil)
             return with(&block) if block
             self
@@ -103,6 +105,12 @@ module HammerBuilder
 
           def attribute(name, value, &block)
             super(name, value, &nil)
+            return with(&block) if block
+            self
+          end
+
+          def attributes(attrs, &block)
+            super(attrs, &nil)
             return with(&block) if block
             self
           end

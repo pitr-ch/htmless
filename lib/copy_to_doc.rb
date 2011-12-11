@@ -14,10 +14,12 @@ File.open "#{root}/hammer_builder/doc.rb", 'w' do |out|
            "#{root}/hammer_builder/abstract/abstract_double_tag.rb"]
   files.each do |file_path|
     source = File.open(file_path, 'r') { |f| f.read }
-    source.scan(/define\s+(:\w+)(|,\s*(:\w+))\s+do\s+###import(([^#]|#[^#]|##[^#])*)end\s+###import/m) do |match|
+    source.scan(/def_class\s+(:\w+)(|,\s*(:\w+))\s+do\s+###import(([^#]|#[^#]|##[^#])*)end\s+###import/m) do |match|
       klass   = match[0][1..-1]
       parent  = match[2] ? match[2][1..-1] : nil
       content = match[3]
+
+      #content = content.lines.delete_if { |l| l =~ /\#\#\# remove/ }.join("\n")
 
       out << "    class #{klass}"
       out << " < #{parent}" if parent

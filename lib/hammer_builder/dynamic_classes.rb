@@ -6,13 +6,13 @@ module HammerBuilder
 #
 #   class A
 #     extend DynamicClasses
-#     dc do
-#       define :A do
+#     dynamic_classes do
+#       def_class :A do
 #         def to_s
 #           'a'
 #         end
 #       end
-#       define :B, :A do
+#       def_class :B, :A do
 #         class_eval <<-RUBYCODE, __FILE__, __LINE__+1
 #           def to_s
 #             super + 'b'
@@ -26,8 +26,8 @@ module HammerBuilder
 #   end
 #
 #   class C < A
-#     dc do
-#       extend :A do
+#     dynamic_classes do
+#       extend_class :A do
 #         def to_s
 #           'aa'
 #         end
@@ -95,7 +95,7 @@ module HammerBuilder
       # when Class then this class is used
       # when nil then Object is used
       # @yield definition block is evaluated inside the class defining it
-      def define(name, superclass_or_name = nil, &definition)
+      def def_class(name, superclass_or_name = nil, &definition)
         raise ArgumentError, "name is not a Symbol" unless name.is_a?(Symbol)
         unless superclass_or_name.is_a?(Symbol) || superclass_or_name.is_a?(Class) || superclass_or_name.nil?
           raise ArgumentError, "superclass_or_name is not a Symbol, Class or nil"
@@ -105,12 +105,10 @@ module HammerBuilder
         @class_definitions[name] = ClassDefinition.new(name, base, superclass_or_name, definition)
       end
 
-      alias_method :rextend, :extend
-
       # extends already defined class by adding a child,
       # @param [Symbol] name
       # @yield definition block is evaluated inside the class extending it
-      def extend(name, &definition)
+      def extend_class(name, &definition)
         raise ArgumentError, "name is not a Symbol" unless name.is_a?(Symbol)
         raise ArgumentError, "definition is nil" unless definition
         raise ArgumentError, "Class #{name} not defined" unless class_definition(name)

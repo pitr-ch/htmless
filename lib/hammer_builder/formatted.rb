@@ -6,7 +6,7 @@ module HammerBuilder
   class Formatted < Standard
 
     dynamic_classes do
-      extend :AbstractTag do
+      extend_class :AbstractTag do
         def open(attributes = nil)
           @output << Strings::NEWLINE << Strings::SPACES.fetch(@stack.size, Strings::SPACE) << Strings::LT << @tag_name
           @builder.current = self
@@ -16,7 +16,7 @@ module HammerBuilder
         end
       end
 
-      extend :AbstractDoubleTag do
+      extend_class :AbstractDoubleTag do
         def with
           flush_classes
           @output << Strings::GT

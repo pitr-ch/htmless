@@ -4,7 +4,7 @@ warn '"hammer_builder/rails" is very early experiment'
 
 module HammerBuilder::Rails
   class AbstractBuilder
-    include HammerBuilder::Helper
+    extend HammerBuilder::Helper
 
     attr_reader :controller
 
@@ -28,7 +28,7 @@ module HammerBuilder::Rails
 
     render(
         :text   => $hammer_builder_pool.get.
-            go_in { render obj, "#{options[:method] || options[:template]}" }.to_xhtml!,
+            go_in { render obj, "#{options[:method] || options[:template]}" }.to_html!,
         :layout => true)
   end
 

@@ -1,7 +1,7 @@
 module HammerBuilder
   class Abstract
     dynamic_classes do
-      define :AbstractSingleTag, :AbstractTag do ###import
+      def_class :AbstractSingleTag, :AbstractTag do ###import
         nil
 
         # @api private

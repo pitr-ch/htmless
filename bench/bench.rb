@@ -70,7 +70,7 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts builder.to_xhtml if TIMES == 1
+      puts builder.to_html if TIMES == 1
       builder.reset
     end
     builder.release
@@ -97,7 +97,7 @@ Benchmark.bmbm(23) do |b|
           end
         end
       end
-      puts builder.to_xhtml if TIMES == 1
+      puts builder.to_html if TIMES == 1
       builder.reset
     end
     builder.release

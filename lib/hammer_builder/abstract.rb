@@ -90,8 +90,8 @@ module HammerBuilder
 
     # renders html5 doc type
     # @example
-    #   doctype # => <!DOCTYPE html>
-    def doctype
+    #   html5 # => <!DOCTYPE html>
+    def html5
       raw "<!DOCTYPE html>\n"
     end
 
@@ -110,7 +110,7 @@ module HammerBuilder
     #  @_output.clear
     #  @_stack.clear
     #  yield
-    #  to_xhtml
+    #  to_html
     #ensure
     #  @_output.replace _output
     #  @_stack.replace _stack
@@ -140,7 +140,7 @@ module HammerBuilder
     end
 
     # @return [String] output
-    def to_xhtml()
+    def to_html()
       flush
       @_output.clone
     end
@@ -162,6 +162,8 @@ module HammerBuilder
     def render(object, method, *args, &block)
       object.__send__ method, self, *args, &block
     end
+
+    alias_method :r, :render
 
     # renders js
     # @option options [Boolean] :cdata (false) should cdata be used?
