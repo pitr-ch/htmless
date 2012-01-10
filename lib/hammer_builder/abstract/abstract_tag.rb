@@ -177,8 +177,7 @@ module HammerBuilder
         # @param [Object] obj
         # To determine the class it looks for .hammer_builder_ref or
         # it uses class.to_s.underscore.tr('/', '-').
-        # To determine id it combines class and an id of the +obj+.
-        # It looks for #hammer_builder_ref or #id or #object_id.
+        # To determine id it looks for #hammer_builder_ref or it takse class and #id or #object_id.
         # @example
         #   div[AUser.new].with { text 'a' } # => <div id="a_user_1" class="a_user">a</div>
         def mimic(obj)
@@ -192,12 +191,12 @@ module HammerBuilder
             when obj.respond_to?(:hammer_builder_ref)
               obj.hammer_builder_ref
             when obj.respond_to?(:id)
-              obj.id.to_s
+              [klass, obj.id]
             else
-              obj.object_id
+              [klass, obj.object_id]
           end
           #noinspection RubyArgCount
-          self.class(klass).id(klass, id)
+          self.class(klass).id(id)
         end
 
         alias_method :[], :mimic

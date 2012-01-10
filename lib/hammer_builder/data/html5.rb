@@ -147,7 +147,7 @@ module HammerBuilder
     }
 
     attribute_type = lambda do |tag, attr|
-      if boolean_attributes[tag] && boolean_attributes[tag].include?(attr)
+      if boolean_attributes[:all].include?(attr) || (boolean_attributes[tag] && boolean_attributes[tag].include?(attr))
         :boolean
       else
         :string
@@ -155,7 +155,7 @@ module HammerBuilder
     end
 
     HTML5 = OpenStruct.new(
-        :abstract_attributes => global_attributes.map { |attr| Attribute.new(attr.to_sym, :string) },
+        :abstract_attributes => global_attributes.map { |attr| Attribute.new(attr.to_sym, attribute_type[name, attr]) },
 
         :single_tags         => single_tags.map(&:to_sym).map do |name|
           Tag.new(name,

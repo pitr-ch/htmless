@@ -171,7 +171,7 @@ describe HammerBuilder do
         end
       end
       obj = AnObject.new
-      quick_render { div[obj] }.should == %Q(<div id="a_b" class="a"></div>)
+      quick_render { div[obj] }.should == %Q(<div id="b" class="a"></div>)
 
       obj = Object.new.extend(Module.new do
         def id;
@@ -212,6 +212,7 @@ describe HammerBuilder do
       quick_render { option.selected(true) }.should == '<option selected="selected"></option>'
       quick_render { option.selected(1) }.should == '<option selected="selected"></option>'
       quick_render { option.selected(false) }.should == '<option></option>'
+      quick_render { div.hidden('asd') }.should == '<div hidden="hidden"></div>'
     end
 
     it "should render correctly" do

@@ -191,7 +191,7 @@ module HammerBuilder
     def dynamic_classes(&definition)
       if definition
         @dynamic_classes.instance_eval &definition
-#      @dynamic_classes.load!
+        # @dynamic_classes.load!
         nil
       else
         @dynamic_classes

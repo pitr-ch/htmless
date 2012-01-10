@@ -161,6 +161,7 @@ module HammerBuilder
     # @yield block passed to rendering method
     def render(object, method, *args, &block)
       object.__send__ method, self, *args, &block
+      self
     end
 
     alias_method :r, :render
