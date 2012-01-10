@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Petr Chalupa"]
   s.date = "2012-01-10"
-  s.description = "is a xhtml5 builder written in Ruby. It does not introduce anything special, you just\nuse Ruby to get your xhtml. HammerBuilder has been written with three objectives: Speed, Rich API, Extensibility"
+  s.description = "Fast extensible ruby html5 builder"
   s.email = "email@pitr.ch"
   s.extra_rdoc_files = [
     "CHANGELOG.md",
@@ -36,9 +36,9 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/ruby-hammer/hammer-builder"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.requirements = ["Ruby 1.9.2"]
+  s.requirements = ["Ruby 1.9"]
   s.rubygems_version = "1.8.10"
-  s.summary = "fast ruby xhtml5 builder"
+  s.summary = "Fast extensible ruby html5 builder"
   s.test_files = ["spec/hammer_builder_spec.rb", "spec/spec_helper.rb"]
 
   if s.respond_to? :specification_version then
@@ -47,10 +47,10 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activesupport>, ["~> 3.1"])
       s.add_runtime_dependency(%q<i18n>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.6"])
-      s.add_development_dependency(%q<yard>, ["~> 0.6"])
-      s.add_development_dependency(%q<bluecloth>, ["~> 2.1"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.6"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<yard>, [">= 0"])
+      s.add_development_dependency(%q<bluecloth>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<ruby-prof>, [">= 0"])
       s.add_development_dependency(%q<perftools.rb>, [">= 0"])
       s.add_development_dependency(%q<nokogiri>, [">= 0"])
@@ -70,10 +70,10 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<activesupport>, ["~> 3.1"])
       s.add_dependency(%q<i18n>, [">= 0"])
-      s.add_dependency(%q<rspec>, ["~> 2.6"])
-      s.add_dependency(%q<yard>, ["~> 0.6"])
-      s.add_dependency(%q<bluecloth>, ["~> 2.1"])
-      s.add_dependency(%q<jeweler>, ["~> 1.6"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<yard>, [">= 0"])
+      s.add_dependency(%q<bluecloth>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<ruby-prof>, [">= 0"])
       s.add_dependency(%q<perftools.rb>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
@@ -94,10 +94,10 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<activesupport>, ["~> 3.1"])
     s.add_dependency(%q<i18n>, [">= 0"])
-    s.add_dependency(%q<rspec>, ["~> 2.6"])
-    s.add_dependency(%q<yard>, ["~> 0.6"])
-    s.add_dependency(%q<bluecloth>, ["~> 2.1"])
-    s.add_dependency(%q<jeweler>, ["~> 1.6"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<yard>, [">= 0"])
+    s.add_dependency(%q<bluecloth>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<ruby-prof>, [">= 0"])
     s.add_dependency(%q<perftools.rb>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
