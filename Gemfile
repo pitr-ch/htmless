@@ -4,10 +4,10 @@ gem 'activesupport', '~> 3.1'
 gem 'i18n'
 
 group :development do
-  gem "rspec", "~> 2.6"
-  gem "yard", "~> 0.6"
-  gem "bluecloth", "~> 2.1"
-  gem "jeweler", "~> 1.6"
+  gem "rspec"
+  gem "yard"
+  gem "bluecloth"
+  gem "jeweler"
   gem "ruby-prof"
   gem "perftools.rb"
   gem "nokogiri"
