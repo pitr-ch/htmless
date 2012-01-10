@@ -177,7 +177,7 @@ module HammerBuilder
         # @param [Object] obj
         # To determine the class it looks for .hammer_builder_ref or
         # it uses class.to_s.underscore.tr('/', '-').
-        # To determine id it looks for #hammer_builder_ref or it takse class and #id or #object_id.
+        # To determine id it looks for #hammer_builder_ref or it takes class and #id or #object_id.
         # @example
         #   div[AUser.new].with { text 'a' } # => <div id="a_user_1" class="a_user">a</div>
         def mimic(obj)

@@ -5,15 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "hammer_builder"
-    gem.summary = %Q{fast ruby xhtml5 builder}
-    gem.description = %Q{is a xhtml5 builder written in Ruby. It does not introduce anything special, you just
-use Ruby to get your xhtml. HammerBuilder has been written with three objectives: Speed, Rich API, Extensibility}
+    gem.summary = %Q{Fast extensible ruby html5 builder}
+    gem.description = %Q{Fast extensible ruby html5 builder}
     gem.email = "email@pitr.ch"
     gem.homepage = "https://github.com/ruby-hammer/hammer-builder"
     gem.authors = ["Petr Chalupa"]
     gem.license = 'MIT'
 
-    gem.requirements << 'Ruby 1.9.2'
+    gem.requirements << 'Ruby 1.9'
     gem.add_dependency 'activesupport', '~> 3.1'
     gem.add_dependency 'i18n', '~> 0.6'
 
