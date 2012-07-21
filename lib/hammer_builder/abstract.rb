@@ -3,7 +3,7 @@ require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/string/inflections'
 
 require 'hammer_builder/dynamic_classes'
-require 'hammer_builder/strings'
+require 'hammer_builder/strings_injector'
 require 'hammer_builder/data'
 require 'hammer_builder/data/html5'
 require "hammer_builder/pool"
@@ -18,6 +18,26 @@ module HammerBuilder
     require "hammer_builder/abstract/abstract_tag"
     require "hammer_builder/abstract/abstract_single_tag"
     require "hammer_builder/abstract/abstract_double_tag"
+
+    def self.strings_injector
+      @strings_injector ||= StringsInjector.new do
+        add :lt, '<'
+        add :gt, '>'
+        add :slash_lt, '</'
+        add :slash_gt, ' />'
+        add :underscore, '_'
+        add :space, ' '
+        add :spaces, Array.new(300) { |i| ('  ' * i).freeze }
+        add :newline, "\n"
+        add :quote, '"'
+        add :eql, '='
+        add :eql_quote, self[:eql] + self[:quote]
+        add :comment_start, '<!--'
+        add :comment_end, '-->'
+        add :cdata_start, '<![CDATA['
+        add :cdata_end, ']]>'
+      end
+    end
 
     # << faster then +
     # yield faster then block.call
@@ -58,6 +78,9 @@ module HammerBuilder
       @_output  = ""
       @_stack   = []
       @_current = nil
+
+      self.class.strings_injector.inject_to self
+
       # tag classes initialization
       tags.each do |klass|
         instance_variable_set(:"@_#{klass}", self.class.dynamic_classes[klass.camelize.to_sym].new(self))
@@ -79,13 +102,13 @@ module HammerBuilder
     # inserts +comment+
     def comment(comment)
       flush
-      @_output << Strings::COMMENT_START << comment.to_s << Strings::COMMENT_END
+      @_output << @_str_comment_start << comment.to_s << @_str_comment_end
     end
 
     # insersts CDATA with +content+
     def cdata(content)
       flush
-      @_output << Strings::CDATA_START << content.to_s << Strings::CDATA_END
+      @_output << @_str_cdata_start << content.to_s << @_str_cdata_end
     end
 
     # renders html5 doc type
@@ -186,13 +209,13 @@ module HammerBuilder
     def join(collection, glue = nil, &it)
       # TODO as helper? two block method call #join(collection, &item).with(&glue)
       glue_block = case glue
-        when String
-          lambda { text glue }
-        when Proc
-          glue
-        else
-          lambda { }
-      end
+                     when String
+                       lambda { text glue }
+                     when Proc
+                       glue
+                     else
+                       lambda { }
+                   end
 
       collection.each_with_index do |obj, i|
         glue_block.call() if i > 0

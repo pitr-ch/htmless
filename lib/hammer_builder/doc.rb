@@ -3,6 +3,10 @@ module HammerBuilder
     class AbstractTag
 
 
+      def self.strings_injector
+        dynamic_class_base.strings_injector
+      end
+
       class_attribute :_attributes, :instance_writer => false, :instance_reader => false
       self._attributes = []
 
@@ -58,11 +62,11 @@ module HammerBuilder
         name = attribute.name.to_s
         case attribute.type
           when :string
-            Strings.add "attr_#{name}", " #{name.gsub('_', '-')}=\""
-            "@output << Strings::ATTR_#{name.upcase} << CGI.escapeHTML(content.to_s) << Strings::QUOTE"
+            strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{@_str_quote}"
+            "@output << @_str_attr_#{name} << CGI.escapeHTML(content.to_s) << @_str_quote"
           when :boolean
-            Strings.add "attr_#{name}", " #{name.gsub('_', '-')}=\"#{name}\""
-            "@output << Strings::ATTR_#{name.upcase} if content"
+            strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{@_str_quote}#{name}#{@_str_quote}"
+            "@output << @_str_attr_#{name} if content"
         end
       end
 
@@ -87,11 +91,13 @@ module HammerBuilder
         @stack    = builder.instance_eval { @_stack }
         @classes  = []
         @tag_name = self.rclass.tag_name
+
+        self.rclass.strings_injector.inject_to self
       end
 
       # @api private
       def open(attributes = nil)
-        @output << Strings::LT << @tag_name
+        @output << @_str_lt << @tag_name
         @builder.current = self
         attributes(attributes)
         default
@@ -103,7 +109,7 @@ module HammerBuilder
       # @param [#to_s] value
       def attribute(name, value)
         return __send__(name, value) if respond_to?(name)
-        @output << Strings::SPACE << name.to_s << Strings::EQL_QUOTE << CGI.escapeHTML(value.to_s) << Strings::QUOTE
+        @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(value.to_s) << @_str_quote
         self
       end
 
@@ -131,28 +137,26 @@ module HammerBuilder
       data_attribute = /^data_([a-z_]+)$/
       METHOD_MISSING_REGEXP = /#{data_attribute}|#{id_class}/ unless defined? METHOD_MISSING_REGEXP
 
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          # allows data-* attributes and id, classes by method_missing
-          def method_missing(method, *args, &block)
-            method = method.to_s
-            if method =~ METHOD_MISSING_REGEXP
-              if $1
-                self.rclass.add_attributes Data::Attribute.new(method, :string)
-                self.send method, *args
-              else
-                self.__send__($3 == '!' ? :id : :class, $2)
-              end
-            else
-              super(method, *args, &block)
-            end
+      # allows data-* attributes and id, classes by method_missing
+      def method_missing(method, *args, &block)
+        method = method.to_s
+        if method =~ METHOD_MISSING_REGEXP
+          if $1
+            self.rclass.add_attributes Data::Attribute.new(method, :string)
+            self.send method, *args
+          else
+            self.__send__($3 == '!' ? :id : :class, $2)
           end
+        else
+          super(method, *args, &block)
+        end
+      end
 
-          #def respond_to?(symbol, include_private = false)
-          #  symbol.to_s =~ METHOD_MISSING_REGEXP || super(symbol, include_private)
-          #end
-      RUBY
+      #def respond_to?(symbol, include_private = false)
+      #  symbol.to_s =~ METHOD_MISSING_REGEXP || super(symbol, include_private)
+      #end
 
-      Strings.add "attr_class", " class=\""
+      strings_injector.add "attr_class", " class=#{strings_injector[:quote]}"
       # adds classes to the tag by joining +classes+ with ' ' and skipping non-true classes
       # @param [Array<#to_s>] classes
       # @example
@@ -162,14 +166,13 @@ module HammerBuilder
         self
       end
 
-      Strings.add "attr_id", " id=\""
+      strings_injector.add "attr_id", " id=#{strings_injector[:quote]}"
       # adds id to the tag by joining +values+ with '_'
       # @param [Array<#to_s>] values
       # @example
       #   id('user', 12) #=> id="user_15"
       def id(*values)
-        @output << Strings::ATTR_ID << CGI.escapeHTML(values.select { |v| v }.join(Strings::UNDERSCORE)) <<
-            Strings::QUOTE
+        @output << @_str_attr_id << CGI.escapeHTML(values.select { |v| v }.join(@_str_underscore)) << @_str_quote
         self
       end
 
@@ -222,7 +225,7 @@ module HammerBuilder
       # @api private
       def flush_classes
         unless @classes.empty?
-          @output << Strings::ATTR_CLASS << CGI.escapeHTML(@classes.join(Strings::SPACE)) << Strings::QUOTE
+          @output << @_str_attr_class << CGI.escapeHTML(@classes.join(@_str_space)) << @_str_quote
           @classes.clear
         end
       end
@@ -235,7 +238,7 @@ module HammerBuilder
       # closes the tag
       def flush
         flush_classes
-        @output << Strings::SLASH_GT
+        @output << @_str_slash_gt
         nil
       end
     end
@@ -243,55 +246,50 @@ module HammerBuilder
 
       nil
 
-      # defined by class_eval because there is a error cased by super
-      # super from singleton method that is defined to multiple classes is not supported;
-      # this will be fixed in 1.9.3 or later (NotImplementedError)
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          # @api private
-          def initialize(builder)
-            super
-            @content = nil
-          end
+      # @api private
+      def initialize(builder)
+        super
+        @content = nil
+      end
 
-          # allows data-* attributes and id, classes by method_missing
-          def method_missing(method, *args, &block)
-            method = method.to_s
-            if method =~ METHOD_MISSING_REGEXP
-              if $1
-                self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
-                self.send method, *args, &block
-              else
-                self.content(args[0]) if args[0]
-                self.__send__($3 == '!' ? :id : :class, $2, &block)
-              end
-            else
-              super(method, *args, &block)
-            end
+      # allows data-* attributes and id, classes by method_missing
+      def method_missing(method, *args, &block)
+        method = method.to_s
+        if method =~ METHOD_MISSING_REGEXP
+          if $1
+            self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
+            self.send method, *args, &block
+          else
+            self.content(args[0]) if args[0]
+            self.__send__($3 == '!' ? :id : :class, $2, &block)
           end
+        else
+          super(method, *args, &block)
+        end
+      end
 
-          # @api private
-          def open(*args, &block)
-            attributes = if args.last.is_a?(Hash)
-              args.pop
-            end
-            content args[0]
-            super attributes
-            @stack << @tag_name
-            if block
-              with &block
-            else
-              self
-            end
-          end
-      RUBY
+      # @api private
+      def open(*args, &block)
+        attributes = if args.last.is_a?(Hash)
+                       args.pop
+                     end
+        content args[0]
+        super attributes
+        @stack << @tag_name
+        if block
+          with &block
+        else
+          self
+        end
+      end
 
       # @api private
       # closes the tag
       def flush
         flush_classes
-        @output << Strings::GT
+        @output << @_str_gt
         @output << CGI.escapeHTML(@content) if @content
-        @output << Strings::SLASH_LT << @stack.pop << Strings::GT
+        @output << @_str_slash_lt << @stack.pop << @_str_gt
         @content = nil
       end
 
@@ -314,7 +312,7 @@ module HammerBuilder
       #   end # => <div id="id">content</div>
       def with
         flush_classes
-        @output << Strings::GT
+        @output << @_str_gt
         @content         = nil
         @builder.current = nil
         yield
@@ -322,37 +320,35 @@ module HammerBuilder
         #  @output << EscapeUtils.escape_html(content)
         #end
         @builder.flush
-        @output << Strings::SLASH_LT << @stack.pop << Strings::GT
+        @output << @_str_slash_lt << @stack.pop << @_str_gt
         nil
       end
 
       alias_method :w, :with
 
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def mimic(obj, &block)
-            super(obj, &nil)
-            return with(&block) if block
-            self
-          end
+      def mimic(obj, &block)
+        super(obj, &nil)
+        return with(&block) if block
+        self
+      end
 
-          def data(hash, &block)
-            super(hash, &nil)
-            return with(&block) if block
-            self
-          end
+      def data(hash, &block)
+        super(hash, &nil)
+        return with(&block) if block
+        self
+      end
 
-          def attribute(name, value, &block)
-            super(name, value, &nil)
-            return with(&block) if block
-            self
-          end
+      def attribute(name, value, &block)
+        super(name, value, &nil)
+        return with(&block) if block
+        self
+      end
 
-          def attributes(attrs, &block)
-            super(attrs, &nil)
-            return with(&block) if block
-            self
-          end
-      RUBY
+      def attributes(attrs, &block)
+        super(attrs, &nil)
+        return with(&block) if block
+        self
+      end
 
       protected
 
@@ -363,20 +359,20 @@ module HammerBuilder
 
         if instance_methods.include?(attribute.name)
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{name}(*args, &block)
-            super(*args, &nil)
-            return with(&block) if block
-            self
-          end
+              def #{name}(*args, &block)
+                super(*args, &nil)
+                return with(&block) if block
+                self
+              end
           RUBY
         else
           content_rendering = attribute_content_rendering(attribute)
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{name}(content#{' = true' if attribute.type == :boolean}, &block)
-            #{content_rendering}
-            return with(&block) if block
-            self
-          end
+              def #{name}(content#{' = true' if attribute.type == :boolean}, &block)
+                #{content_rendering}
+                return with(&block) if block
+                self
+              end
           RUBY
         end
       end

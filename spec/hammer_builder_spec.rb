@@ -182,7 +182,7 @@ describe HammerBuilder do
       quick_render { div.mimic(obj) { text 'a' } }.should == %Q(<div id="object_an_id" class="object">a</div>)
     end
 
-    it "#data-.*" do
+    it "#data-secret" do
       quick_render { div('a').data_secret("I won't tell.") }.should == '<div data-secret="I won\'t tell.">a</div>'
     end
 

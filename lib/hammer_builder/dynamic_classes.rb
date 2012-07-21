@@ -137,12 +137,19 @@ module HammerBuilder
                          DescribableClass
                      end
 
-        klass              = Class.new(superclass, &klass_definition.definition)
-        klass._description = "#{base}.dc[:#{klass_definition.name}]"
+        set_up_klass = lambda do |klass, description, block|
+          klass._description = description
+          klass.instance_variable_set :@dynamic_class_base, base
+          klass.singleton_class.send :attr_reader, :dynamic_class_base
+          klass.class_eval &block
+        end
+
+        klass = Class.new(superclass)
+        set_up_klass.call klass, "#{base}.dc[:#{klass_definition.name}]", klass_definition.definition
 
         class_extensions(name).each do |klass_extension|
-          klass              = Class.new(klass, &klass_extension.definition)
-          klass._description = "#{base}.dc[:#{klass_extension.name}]"
+          klass = Class.new klass
+          set_up_klass.call klass, "#{base}.dc[:#{klass_extension.name}]", klass_extension.definition
         end
 
         @classes[name] = klass

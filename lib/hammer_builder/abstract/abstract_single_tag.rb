@@ -8,7 +8,7 @@ module HammerBuilder
         # closes the tag
         def flush
           flush_classes
-          @output << Strings::SLASH_GT
+          @output << @_str_slash_gt
           nil
         end
       end ###import
