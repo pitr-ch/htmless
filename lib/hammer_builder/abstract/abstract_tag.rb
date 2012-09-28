@@ -148,6 +148,7 @@ module HammerBuilder
               self.send method, *args
             else
               self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash))
+              self.attributes args.first
             end
           else
             super(method, *args, &block)
