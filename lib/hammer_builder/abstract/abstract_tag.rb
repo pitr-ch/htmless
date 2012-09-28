@@ -62,10 +62,12 @@ module HammerBuilder
           name = attribute.name.to_s
           case attribute.type
             when :string
-              strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{@_str_quote}"
+              strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{strings_injector[:quote]}"
               "@output << @_str_attr_#{name} << CGI.escapeHTML(content.to_s) << @_str_quote"
             when :boolean
-              strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{@_str_quote}#{name}#{@_str_quote}"
+              strings_injector.add(
+                  "attr_#{name}",
+                  " #{name.gsub('_', '-')}=#{strings_injector[:quote]}#{name}#{strings_injector[:quote]}")
               "@output << @_str_attr_#{name} if content"
           end
         end

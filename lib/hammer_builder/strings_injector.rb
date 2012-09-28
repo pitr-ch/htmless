@@ -4,7 +4,7 @@ module HammerBuilder
     attr_reader :strings, :objects_to_update
 
     def initialize(&block)
-      @strings           = { }
+      @strings           = Hash.new {|hash, key| raise ArgumentError "missing key #{key}" }
       @objects_to_update = []
       instance_eval &block
     end
