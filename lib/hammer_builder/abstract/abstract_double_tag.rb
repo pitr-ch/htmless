@@ -20,7 +20,7 @@ module HammerBuilder
               self.send method, *args, &block
             else
               self.content(args[0]) if args[0]
-              self.__send__($3 == '!' ? :id : :class, $2, &block)
+              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash), &block)
             end
           else
             super(method, *args, &block)

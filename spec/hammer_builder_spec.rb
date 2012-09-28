@@ -119,31 +119,31 @@ describe HammerBuilder do
 
     it 'should render #id' do
       quick_render { div.id :an_id }.should == '<div id="an_id"></div>'
-      quick_render { div.an_id! }.should == '<div id="an_id"></div>'
-      quick_render { div.an_id! { text 'content' } }.should == '<div id="an_id">content</div>'
-      quick_render { div.an_id! 'content' }.should == '<div id="an_id">content</div>'
-      quick_render { div.an_id! }.should == '<div id="an_id"></div>'
+      quick_render { div.an_id! }.should == '<div id="an-id"></div>'
+      quick_render { div.an_id! { text 'content' } }.should == '<div id="an-id">content</div>'
+      quick_render { div.an_id! 'content' }.should == '<div id="an-id">content</div>'
+      quick_render { div.an_id! }.should == '<div id="an-id"></div>'
       quick_render { div :id => 12 }.should == '<div id="12"></div>'
       quick_render { div 'asd', :id => 12 }.should == '<div id="12">asd</div>'
       quick_render { hr.id 'an_id' }.should == '<hr id="an_id" />'
-      quick_render { hr.an_id! }.should == '<hr id="an_id" />'
+      quick_render { hr.an_id! }.should == '<hr id="an-id" />'
       quick_render { hr :id => 'an_id' }.should == '<hr id="an_id" />'
 
-      quick_render { hr.id 'an', 'id', nil, false }.should == '<hr id="an_id" />'
-      quick_render { div.id 'an', 'id', nil, false }.should == '<div id="an_id"></div>'
+      quick_render { hr.id 'an', 'id', nil, false }.should == '<hr id="an-id" />'
+      quick_render { div.id 'an', 'id', nil, false }.should == '<div id="an-id"></div>'
     end
 
     it 'should render #class' do
       #noinspection RubyArgCount
       quick_render { div.class 'an_class' }.should == '<div class="an_class"></div>'
-      quick_render { div.an_class }.should == '<div class="an_class"></div>'
+      quick_render { div.an_class }.should == '<div class="an-class"></div>'
       quick_render { div :class => 'an_class' }.should == '<div class="an_class"></div>'
       #noinspection RubyArgCount
       quick_render { hr.class 'an_class' }.should == '<hr class="an_class" />'
-      quick_render { hr.an_class }.should == '<hr class="an_class" />'
+      quick_render { hr.an_class }.should == '<hr class="an-class" />'
       quick_render { hr :class => 'an_class' }.should == '<hr class="an_class" />'
 
-      quick_render { div.an_class.another_class }.should == '<div class="an_class another_class"></div>'
+      quick_render { div.an_class.another_class }.should == '<div class="an-class another-class"></div>'
       #noinspection RubyArgCount
       quick_render { div.class 'an_class', 'another_class' }.should == '<div class="an_class another_class"></div>'
       quick_render { div :class => ['an_class', 'another_class'] }.should == '<div class="an_class another_class"></div>'
@@ -159,7 +159,7 @@ describe HammerBuilder do
 
     it '#[]' do
       obj = Object.new
-      quick_render { div[obj] }.should == %Q(<div id="object_#{obj.object_id}" class="object"></div>)
+      quick_render { div[obj] }.should == %Q(<div id="object-#{obj.object_id}" class="object"></div>)
 
       class AnObject
         def self.hammer_builder_ref
@@ -178,8 +178,8 @@ describe HammerBuilder do
           "an_id";
         end
       end)
-      quick_render { div[obj] }.should == %Q(<div id="object_an_id" class="object"></div>)
-      quick_render { div.mimic(obj) { text 'a' } }.should == %Q(<div id="object_an_id" class="object">a</div>)
+      quick_render { div[obj] }.should == %Q(<div id="object-an_id" class="object"></div>)
+      quick_render { div.mimic(obj) { text 'a' } }.should == %Q(<div id="object-an_id" class="object">a</div>)
     end
 
     it "#data-secret" do
@@ -240,7 +240,7 @@ describe HammerBuilder do
           comment 'asd'
         end
       end.should == '<!DOCTYPE html>' + "\n" +
-          '<html xmlns="http://www.w3.org/1999/xhtml"><head><title id="an_id">a_title</title><meta charset="utf-8" />'+
+          '<html xmlns="http://www.w3.org/1999/xhtml"><head><title id="an-id">a_title</title><meta charset="utf-8" />'+
           '</head><body id="content">asd<div style="" class="left">asd<hr /></div><br /><div class="left"><hr />'+
           '<script type="text/javascript">asd</script><script type="text/javascript"><![CDATA[asd]]></script>'+
           '</div><!--asd--></body><!--asd--></html>'

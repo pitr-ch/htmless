@@ -25,6 +25,7 @@ module HammerBuilder
         add :gt, '>'
         add :slash_lt, '</'
         add :slash_gt, ' />'
+        add :dash, '-'
         add :underscore, '_'
         add :space, ' '
         add :spaces, Array.new(300) { |i| ('  ' * i).freeze }

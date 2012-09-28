@@ -147,7 +147,7 @@ module HammerBuilder
               self.rclass.add_attributes Data::Attribute.new(method, :string)
               self.send method, *args
             else
-              self.__send__($3 == '!' ? :id : :class, $2)
+              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash))
             end
           else
             super(method, *args, &block)
@@ -172,9 +172,9 @@ module HammerBuilder
         # adds id to the tag by joining +values+ with '_'
         # @param [Array<#to_s>] values
         # @example
-        #   id('user', 12) #=> id="user_15"
+        #   id('user', 12) #=> id="user-15"
         def id(*values)
-          @output << @_str_attr_id << CGI.escapeHTML(values.select { |v| v }.join(@_str_underscore)) << @_str_quote
+          @output << @_str_attr_id << CGI.escapeHTML(values.select { |v| v }.join(@_str_dash)) << @_str_quote
           self
         end
 
