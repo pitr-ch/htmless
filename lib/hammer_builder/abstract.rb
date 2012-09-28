@@ -143,7 +143,7 @@ module HammerBuilder
     # @example
     #  HammerBuilder::Formatted.new.go_in('asd') do |string|
     #    div string
-    #  end.to_html! #=> "<div>asd</div>"
+    #  end.to_html #=> "<div>asd</div>"
     #
     def go_in(*variables, &block)
       instance_exec *variables, &block
