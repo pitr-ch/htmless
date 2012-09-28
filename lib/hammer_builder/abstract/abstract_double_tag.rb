@@ -19,11 +19,11 @@ module HammerBuilder
               self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
               self.send method, *args, &block
             else
-              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash), &block)
               attributes(if args.last.is_a?(Hash)
                            args.pop
                          end)
               content args.first
+              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash), &block)
             end
           else
             super(method, *args, &block)

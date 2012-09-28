@@ -133,6 +133,8 @@ describe HammerBuilder do
       quick_render { div.id 'an', 'id', nil, false }.should == '<div id="an-id"></div>'
 
       quick_render { div.an_id! :class => 'big' }.should == '<div id="an-id" class="big"></div>'
+      quick_render { div.an_id!(:class => 'big') { text 'content' } }.should ==
+          '<div id="an-id" class="big">content</div>'
       quick_render { div.an_id! 'content', :class => 'big' }.should == '<div id="an-id" class="big">content</div>'
       quick_render { div.an_id! 'content' }.should == '<div id="an-id">content</div>'
       quick_render { hr.an_id! :class => 'big' }.should == '<hr id="an-id" class="big" />'
