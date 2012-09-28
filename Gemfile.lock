@@ -18,6 +18,7 @@ GEM
       bundler (~> 1.0)
       git (>= 1.2.5)
       rake
+    libv8 (3.3.10.4)
     markaby (0.7.2)
       builder (>= 2.0.0)
     multi_json (1.0.4)
@@ -42,6 +43,8 @@ GEM
       simplecov (>= 0.4.1)
     tagz (9.1.0)
     tenjin (0.7.1)
+    therubyracer (0.10.1)
+      libv8 (~> 3.3.10)
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
@@ -66,4 +69,5 @@ DEPENDENCIES
   simplecov-rcov
   tagz
   tenjin
+  therubyracer
   yard

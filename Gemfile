@@ -18,4 +18,5 @@ group :development do
   gem "tagz"
   gem "simplecov", :require => false
   gem "simplecov-rcov", :require => false
+  gem "therubyracer"
 end

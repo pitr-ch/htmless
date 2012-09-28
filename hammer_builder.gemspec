@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "hammer_builder"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Petr Chalupa"]
-  s.date = "2012-01-10"
+  s.date = "2012-09-28"
   s.description = "Fast extensible ruby html5 builder"
   s.email = "email@pitr.ch"
   s.extra_rdoc_files = [
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     "lib/hammer_builder/pool.rb",
     "lib/hammer_builder/rails.rb",
     "lib/hammer_builder/standard.rb",
-    "lib/hammer_builder/strings.rb"
+    "lib/hammer_builder/strings_injector.rb"
   ]
   s.homepage = "https://github.com/ruby-hammer/hammer-builder"
   s.licenses = ["MIT"]
@@ -61,6 +61,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<tagz>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
       s.add_development_dependency(%q<simplecov-rcov>, [">= 0"])
+      s.add_development_dependency(%q<therubyracer>, [">= 0"])
       s.add_runtime_dependency(%q<activesupport>, ["~> 3.1"])
       s.add_runtime_dependency(%q<i18n>, ["~> 0.6"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
@@ -84,6 +85,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<tagz>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<simplecov-rcov>, [">= 0"])
+      s.add_dependency(%q<therubyracer>, [">= 0"])
       s.add_dependency(%q<activesupport>, ["~> 3.1"])
       s.add_dependency(%q<i18n>, ["~> 0.6"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
@@ -108,6 +110,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<tagz>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<simplecov-rcov>, [">= 0"])
+    s.add_dependency(%q<therubyracer>, [">= 0"])
     s.add_dependency(%q<activesupport>, ["~> 3.1"])
     s.add_dependency(%q<i18n>, ["~> 0.6"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
