@@ -26,6 +26,12 @@ begin
 
     gem.test_files = FileList["spec/**/*.*"].to_a
     gem.extra_rdoc_files = FileList["README.md","CHANGELOG.md"].to_a
+    gem.post_install_message = <<-MESSAGE
+Gem hammer_builder was renamed to htmless.
+
+This version is here just for transition. This gem won't
+be developed further. Please see https://github.com/pitr-ch/htmless.
+    MESSAGE
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
