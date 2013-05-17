@@ -1,0 +1,687 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+<title>
+  File: README_FULL
+  
+    &mdash; Htmless
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README_FULL</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'><h1>Htmless</h1>
+
+<p>Fast extensible html5 builder in pure Ruby</p>
+
+<ul>
+<li>  Documentation: <a href="http://blog.pitr.ch/htmless">http://blog.pitr.ch/htmless</a></li>
+<li>  Source: <a href="https://github.com/pitr-ch/htmless">https://github.com/pitr-ch/htmless</a></li>
+<li>  Blog: <a href="http://blog.pitr.ch/blog/categories/htmless/">http://blog.pitr.ch/blog/categories/htmless/</a></li>
+</ul>
+
+<h2>Why?</h2>
+
+<p>I needed html builder with these characteristics:</p>
+
+<ul>
+<li>  Ruby</li>
+<li>  Fast</li>
+<li>  Extensibility for each tag</li>
+</ul>
+
+<p>Disadvanteges of other options:</p>
+
+<ul>
+<li>  Erector - quite high level, no tag extensibility</li>
+<li>  Markaby - slow</li>
+<li>  Wee::Brush - extensible but not a standalone gem</li>
+<li>  Tagz - very slow</li>
+<li>  Erubis - fast but temlate engine and no tag extensibility</li>
+<li>  Tenjin - faster but temlate engine and no tag extensibility</li>
+</ul>
+
+<h2>Quick syntax example</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_html5'>html5</span>
+  <span class='id identifier rubyid_html'>html</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_head'>head</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_title'>title</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>my_page</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_body'>body</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_content!'>content!</span> <span class='kw'>do</span>
+        <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_centered'>centered</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my page's content</span><span class='tstring_end'>&quot;</span></span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html'>to_html</span>
+</code></pre>
+
+<p>returns</p>
+
+<pre class="code html"><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;my_page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;content&quot;&gt;
+      &lt;p class=&quot;centered&quot;&gt;my page's content&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h2>Chaining</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>menu</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>border</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_onclick'>onclick</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>run();</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_with'>with</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>hello</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>prints</p>
+
+<pre class="code html"><code class="html">&lt;div class=&quot;left border&quot; id=&quot;menu&quot; onclick=&quot;run();&quot;&gt;hello&lt;/div&gt;
+</code></pre>
+
+<p>Content block must be last in the chain. No other calls are allowed after block.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>an_id</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='comment'># won't work
+</span></code></pre>
+
+<h2>Attributes</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>menu</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:class</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span> <span class='comment'># is shortcut for:
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>menu</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:class</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span>
+</code></pre>
+
+<ul>
+<li>  <code>#attributes</code> calls underlining methods <code>#id</code> and <code>#class</code></li>
+<li>  If you extend tag by a method, you can call it through <code>#attributes</code> or <code>#attribute</code></li>
+</ul>
+
+<p>Any attribute method you call is immediately appended to output with exception of classes. They are acumulating
+until tag is closed.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='lparen'>(</span><span class='symbol'>:class</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>center</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='comment'># &lt;div class='left center'&gt;&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span>                   <span class='comment'># &lt;div id=&quot;1&quot; id=&quot;2&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p>Udefined attribute can be rendered with.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_html'>html</span><span class='period'>.</span><span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:xmlns</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://www.w3.org/1999/xhtml</span><span class='tstring_end'>'</span></span>
+<span class='comment'># =&gt; &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;/html&gt;
+</span></code></pre>
+
+<p>If <code>#attribute</code> finds defined method for desired attribute, the method is called.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:class</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span> <span class='comment'># is equvivalent to:
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span>
+</code></pre>
+
+<h2>Content, Boolean attributes</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>                       <span class='comment'># &lt;div&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_content'>content</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>               <span class='comment'># &lt;div&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>           <span class='comment'># &lt;div&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>              <span class='comment'># &lt;div&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_with'>with</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>         <span class='comment'># &lt;div&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='symbol'>:id</span>           <span class='comment'># &lt;div id=&quot;id&quot;&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='symbol'>:id</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>  <span class='comment'># &lt;div id=&quot;id&quot;&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='symbol'>:id</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span>                                 <span class='comment'># &lt;div id=&quot;id&quot;&gt;content&lt;/div&gt;
+</span></code></pre>
+
+<h3>Boolean attributes</h3>
+
+<p>Attributes like <code>checked</code> and <code>disabled</code> test value for true, if false they render nothing</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_input'>input</span><span class='period'>.</span><span class='id identifier rubyid_disabled'>disabled</span> <span class='id identifier rubyid_am_i_disabled?'>am_i_disabled?</span>
+<span class='comment'># =&gt; &lt;input disabled=&quot;disabled&quot; /&gt;
+</span><span class='comment'># or &lt;input /&gt;
+</span></code></pre>
+
+<h2>Id, class and mimic</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_menu!'>menu!</span><span class='period'>.</span><span class='id identifier rubyid_left'>left</span><span class='period'>.</span><span class='id identifier rubyid_hidden'>hidden</span> <span class='comment'># =&gt; &lt;div id=&quot;menu&quot; class=&quot;left hidden&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p>Content can be passed in the usual way:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_menu!'>menu!</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span>       <span class='comment'># =&gt; &lt;div id=&quot;menu&quot;&gt;content&lt;/div&gt;
+</span><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_menu!'>menu!</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_p'>p</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>content</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span> <span class='comment'># =&gt; &lt;div id=&quot;menu&quot;&gt;&lt;p&gt;content&lt;/p&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p><code>#class</code> accepts an array, values are joined with spaces and <code>false</code>, <code>nil</code> values are ignored</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>menu</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>big</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id identifier rubyid_hide?'>hide?</span> <span class='op'>&amp;&amp;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>hidden</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+<span class='comment'># =&gt; &lt;div class=&quot;menu big hidden&quot;&gt;&lt;/div&gt;
+</span><span class='comment'># or &lt;div class=&quot;menu big&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p><code>#id</code> accepts also an array, values are joined with &#39;-&#39; and <code>false</code>, <code>nil</code> values are ignored</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>menu</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>big</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id identifier rubyid_a_failing_test'>a_failing_test</span> <span class='op'>&amp;&amp;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>useless</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='comment'># =&gt; &lt;div id=&quot;menu-big&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p>Object (model) can be used to set class and id</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_div'>div</span><span class='lparen'>(</span><span class='symbol'>:class</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>model</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='id identifier rubyid_user'>user</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_with'>with</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>data</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>
+<span class='comment'># =&gt; &lt;div id=&quot;user-1&quot; class=&quot;model user&quot;&gt;data&lt;/div&gt;
+</span></code></pre>
+
+<p><code>#mimic</code> which is aliased as <code>#[]</code> looks for <code>.htmless_ref</code> or it uses the class name to render the class part.
+As id is used already determined class and <code>#htmless_ref</code>, <code>#id</code>, <code>#object_id</code> which one is found first.</p>
+
+<h2>Data attributes, Join</h2>
+
+<h3>Data attributes</h3>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_data_secret'>data_secret</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>I won't tell.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='comment'># =&gt; &lt;div data-secret=&quot;I won't tell.&quot;&gt;&lt;/div&gt;
+</span><span class='id identifier rubyid_data'>data</span> <span class='symbol'>:secret</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>I won't tell.</span><span class='tstring_end'>&quot;</span></span>  <span class='comment'># =&gt; &lt;div data-secret=&quot;I won't tell.&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<h3>Join</h3>
+
+<p><code>#join</code> enables easy rendering of collections</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='float'>1.2</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='tlambeg'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='id identifier rubyid_b'>b</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_n'>n</span><span class='rbrace'>}</span><span class='tstring_content'>cm</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+    <span class='comment'># =&gt; &quot;&lt;b&gt;1cm&lt;/b&gt;, &lt;b&gt;1.2cm&lt;/b&gt;&quot;
+</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='float'>1.2</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='id identifier rubyid_b'>b</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_n'>n</span><span class='rbrace'>}</span><span class='tstring_content'>cm</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+    <span class='comment'># =&gt; &quot;&lt;b&gt;1cm&lt;/b&gt;, &lt;b&gt;1.2cm&lt;/b&gt;&quot;
+</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='tlambeg'>{</span> <span class='id identifier rubyid_text'>text</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>missing</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='id identifier rubyid_b'>b</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_n'>n</span><span class='rbrace'>}</span><span class='tstring_content'>cm</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+    <span class='comment'># =&gt; &quot;&lt;b&gt;1cm&lt;/b&gt;, missing&quot;
+</span></code></pre>
+
+<p>A block in the collection is rendered directly without iterator. This can be useful when menu with some delimiters
+is rendered based on collection of some objects and you need to add one or more untypical menu items.</p>
+
+<h2>&#39;_&#39; vs &#39;-&#39;</h2>
+
+<p>&#39;_&#39; in attributes is transformed to &#39;-&#39;</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_meta'>meta</span><span class='period'>.</span><span class='id identifier rubyid_http_equiv'>http_equiv</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Content-Type</span><span class='tstring_end'>'</span></span> <span class='comment'># =&gt; &lt;meta http-equip=&quot;Content-Type&quot; /&gt;
+</span></code></pre>
+
+<p>&#39;_&#39; in class shortcut methods is transformed to &#39;-&#39;</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_a_class'>a_class</span><span class='period'>.</span><span class='id identifier rubyid_an_id!'>an_id!</span> <span class='comment'># =&gt; &lt;div id=&quot;an-id&quot; class=&quot;a-class&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p>Ids generated by Arrays are joined with &#39;-&#39;</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>an</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='comment'># =&gt; &lt;div id=&quot;an-id&quot;&gt;&lt;/div&gt;
+</span></code></pre>
+
+<h2>Tag&#39;s reprezentation</h2>
+
+<p>Each tag has its own class.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_rclass'>rclass</span> <span class='comment'># =&gt; #&lt;Class:0x00000001d449b8(Htmless::Formatted.dc[:Div])&gt;
+</span><span class='id identifier rubyid_li'>li</span><span class='period'>.</span><span class='id identifier rubyid_rclass'>rclass</span>  <span class='comment'># =&gt; #&lt;Class:0x00000001d449b8(Htmless::Formatted.dc[:Li])&gt;
+</span></code></pre>
+
+<p><code>#rclass</code> is original ruby method <code>#class</code></p>
+
+<h2>Getting a builder</h2>
+
+<p>Creating new builder is relatively expensive. There is a pool of builders implemented.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>if</span> <span class='id identifier rubyid_am_i_smart?'>am_i_smart?</span>
+  <span class='id identifier rubyid_pool'>pool</span> <span class='op'>=</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Pool</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span> <span class='comment'># store pool somewhere globalish for reuse
+</span>  <span class='id identifier rubyid_builder'>builder</span> <span class='op'>=</span> <span class='id identifier rubyid_pool'>pool</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='comment'># =&gt; new builder from pool if there is one, or a newlly created one
+</span>  <span class='comment'># ... do yours stuff
+</span>  <span class='id identifier rubyid_builder'>builder</span><span class='period'>.</span><span class='id identifier rubyid_release'>release</span> <span class='comment'># resets builder and returns it to the pool
+</span><span class='kw'>else</span>
+  <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='comment'># ... do yours stuff
+</span>  <span class='comment'># later on builder gets garbage collected
+</span><span class='kw'>end</span>
+</code></pre>
+
+<p>Be careful not to use builder after you have released it.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>if</span> <span class='id identifier rubyid_am_i_freaking_smart?'>am_i_freaking_smart?</span>
+  <span class='id identifier rubyid_pool'>pool</span> <span class='op'>=</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Pool</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span>
+  <span class='id identifier rubyid_xhtml'>xhtml</span> <span class='op'>=</span> <span class='id identifier rubyid_pool'>pool</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span><span class='lparen'>(</span><span class='id identifier rubyid_your_data'>your_data</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_data'>data</span><span class='op'>|</span>
+    <span class='comment'># render your data ...
+</span>  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html!'>to_html!</span> <span class='comment'># returns xhtml and releases the builder
+</span><span class='kw'>end</span>
+</code></pre>
+
+<p>This way builder doesn&#39;t get stored anywhere.</p>
+
+<h2>How to use</h2>
+
+<p>The idea is that any object intended to rendering will have methods which renders the object into builder.
+There is a <code>Htmless::Helper</code> and method <code>#render</code> (also aliased as <code>#r</code>) for that purpose.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>User</span> <span class='op'>&lt;</span> <span class='const'>Struct</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:login</span><span class='comma'>,</span> <span class='symbol'>:email</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_extend'>extend</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Helper</span>
+
+  <span class='id identifier rubyid_builder'>builder</span> <span class='symbol'>:detail</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_user'>user</span><span class='op'>|</span>
+    <span class='id identifier rubyid_ul'>ul</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:name</span>
+      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:login</span>
+      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:email</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>def</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='comma'>,</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_li'>li</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_strong'>strong</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_attribute'>attribute</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_text'>text</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_attribute'>attribute</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p><code>.builder</code> is just shortcut to define method <code>User#detail</code> like this:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>def</span> <span class='id identifier rubyid_detail'>detail</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_user'>user</span><span class='op'>|</span> <span class='comment'># this block is the same as the one passed
+</span>    <span class='id identifier rubyid_ul'>ul</span> <span class='kw'>do</span>                 <span class='comment'># above to .builder
+</span>      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:name</span>
+      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:login</span>
+      <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:email</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>is same as</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_builder'>builder</span> <span class='symbol'>:detail</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_user'>user</span><span class='op'>|</span>
+  <span class='id identifier rubyid_ul'>ul</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:name</span>
+    <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:login</span>
+    <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:attribute</span><span class='comma'>,</span> <span class='symbol'>:email</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>and</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Peter</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>peter</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>peter@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_pool'>pool</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_dive'>dive</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_r'>r</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='symbol'>:detail</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html!'>to_html!</span>
+</code></pre>
+
+<p>returns:</p>
+
+<pre class="code html"><code class="html">&lt;ul&gt;
+  &lt;li&gt;
+    &lt;strong&gt;name: &lt;/strong&gt;Peter
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;strong&gt;login: &lt;/strong&gt;peter
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;strong&gt;email: &lt;/strong&gt;peter@example.com
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<h2>Contexts</h2>
+
+<p>Html can be rendered outside of builder&#39;s context</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>User</span>
+  <span class='id identifier rubyid_attr_reder'>attr_reder</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:age</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_detail'>detail</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span> <span class='comment'># builder
+</span>    <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_ul'>ul</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_li'>li</span> <span class='id identifier rubyid_name'>name</span><span class='semicolon'>;</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_li'>li</span> <span class='id identifier rubyid_name'>name</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>or <code>#go_in</code> (also aliased as <code>#dive</code>) can be used to get into builder&#39;s context</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>User</span>
+  <span class='id identifier rubyid_extend'>extend</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Helper</span>
+  <span class='id identifier rubyid_attr_reder'>attr_reder</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:age</span>
+  <span class='id identifier rubyid_builder'>builder</span> <span class='symbol'>:detail</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_user'>user</span><span class='op'>|</span>
+    <span class='id identifier rubyid_ul'>ul</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_li'>li</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='semicolon'>;</span> <span class='id identifier rubyid_li'>li</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_age'>age</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+<span class='comment'># =&gt; &lt;ul&gt;&lt;li&gt;john Doe&lt;/li&gt;&lt;li&gt;25&lt;/li&gt;&lt;/ul&gt;
+</span></code></pre>
+
+<h2>Helpers</h2>
+
+<p>If they are needed they can be mixed directly into Builder&#39;s instance</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_extend'>extend</span> <span class='const'>ActionView</span><span class='op'>::</span><span class='const'>Helpers</span><span class='op'>::</span><span class='const'>NumberHelper</span>
+  <span class='id identifier rubyid_div'>div</span> <span class='id identifier rubyid_number_with_precision'>number_with_precision</span><span class='lparen'>(</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span><span class='comma'>,</span> <span class='symbol'>:precision</span> <span class='op'>=&gt;</span> <span class='int'>4</span><span class='rparen'>)</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html'>to_html</span> <span class='comment'># =&gt; &lt;div&gt;3.1416&lt;/div&gt;
+</span></code></pre>
+
+<p><em>Be careful when you are using this with <code>Pool</code>. Some instances may have helpers and some don&#39;t.</em></p>
+
+<p>Or new builder descendant can be made.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>MyBuilder</span> <span class='op'>&lt;</span> <span class='const'>Hammer</span><span class='op'>::</span><span class='const'>FormattedBuilder</span>
+  <span class='id identifier rubyid_include'>include</span> <span class='const'>ActionView</span><span class='op'>::</span><span class='const'>Helpers</span><span class='op'>::</span><span class='const'>NumberHelper</span>
+<span class='kw'>end</span>
+
+<span class='const'>MyBuilder</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_div'>div</span> <span class='id identifier rubyid_number_with_precision'>number_with_precision</span><span class='lparen'>(</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span><span class='comma'>,</span> <span class='symbol'>:precision</span> <span class='op'>=&gt;</span> <span class='int'>4</span><span class='rparen'>)</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html'>to_html</span> <span class='comment'># =&gt; &lt;div&gt;3.1416&lt;/div&gt;
+</span></code></pre>
+
+<h2>Implementation details - Tag&#39;s shared instances</h2>
+
+<p>There are no multiple instances for each tag.
+Every tag of the same type share a same instance (unique within the instance of a builder).</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_puts'>puts</span><span class='lparen'>(</span><span class='id identifier rubyid_pool'>pool</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_object_id'>object_id</span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_object_id'>object_id</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html!'>to_html!</span><span class='rparen'>)</span>
+<span class='comment'># =&gt;
+</span><span class='comment'># 10069200
+</span><span class='comment'># 10069200
+</span><span class='comment'># &lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;
+</span></code></pre>
+
+<p><code>Htmless</code> creates what he can prior to rendering and uses heavily meta-programming, because of that instantiating
+the very first instance of builder triggers some magic staff taking about a one second. Creating new builders of the
+same class is than much faster and getting builder from a pool is instant.</p>
+
+<p>This won&#39;t work:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_puts'>puts</span><span class='lparen'>(</span><span class='id identifier rubyid_pool'>pool</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='id identifier rubyid_div'>div</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>a</span><span class='tstring_end'>'</span></span>
+  <span class='id identifier rubyid_div'>div</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>b</span><span class='tstring_end'>'</span></span>
+  <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html!'>to_html!</span><span class='rparen'>)</span>
+<span class='comment'># =&gt; &lt;div&gt;a&lt;/div&gt;&lt;div class=&quot;class&quot;&gt;b&lt;/div&gt;
+</span></code></pre>
+
+<p>because when <code>#class</code> is called the second div is being built.</p>
+
+<h2>Implementation details - DynamicClasses</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Parent</span>
+  <span class='kw'>class</span> <span class='const'>LeftEye</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
+      <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left eye</span><span class='tstring_end'>'</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='kw'>class</span> <span class='const'>RightEye</span> <span class='op'>&lt;</span> <span class='const'>LeftEye</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
+      <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>next to </span><span class='tstring_end'>'</span></span> <span class='op'>+</span> <span class='kw'>super</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+<span class='kw'>class</span> <span class='const'>AChild</span> <span class='op'>&lt;</span> <span class='const'>Parent</span>
+<span class='kw'>end</span>
+<span class='kw'>class</span> <span class='const'>AMutant</span>
+  <span class='kw'>class</span> <span class='const'>LeftEye</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_superclass'>superclass</span><span class='op'>::</span><span class='const'>LeftEye</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
+      <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>laser </span><span class='tstring_end'>'</span></span> <span class='op'>+</span> <span class='kw'>super</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>How to define <code>AMutant::RihtEye</code> to return <code>&quot;next to laser left eye&quot;</code> ?</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Parent</span>
+  <span class='id identifier rubyid_extend'>extend</span> <span class='const'>DynamicClasses</span>
+  <span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_def_class'>def_class</span> <span class='symbol'>:LeftEye</span> <span class='kw'>do</span>
+      <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span><span class='semicolon'>;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left eye</span><span class='tstring_end'>'</span></span><span class='semicolon'>;</span> <span class='kw'>end</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_def_class'>def_class</span> <span class='symbol'>:RightEye</span><span class='comma'>,</span> <span class='symbol'>:LeftEye</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='heredoc_beg'>&lt;&lt;-RUBYCODE</span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='kw'>__LINE__</span><span class='op'>+</span><span class='int'>1</span>
+<span class='tstring_content'>        def to_s; 'next to ' + super; end
+</span><span class='heredoc_end'>      RUBYCODE
+</span>    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+
+<span class='kw'>class</span> <span class='const'>AChild</span> <span class='op'>&lt;</span> <span class='const'>Parent</span>
+<span class='kw'>end</span>
+
+<span class='kw'>class</span> <span class='const'>AMutant</span> <span class='op'>&lt;</span> <span class='const'>Parent</span>
+  <span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_extend_class'>extend_class</span> <span class='symbol'>:LeftEye</span> <span class='kw'>do</span>
+      <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span><span class='semicolon'>;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>laser </span><span class='tstring_end'>'</span></span> <span class='op'>+</span> <span class='kw'>super</span><span class='semicolon'>;</span> <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Each class is a diferent object.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span> <span class='comment'># =&gt; #&lt;Class:0x00000001d449b8(A.dc[:LeftEye])&gt;
+</span><span class='const'>AChild</span><span class='period'>.</span><span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span> <span class='comment'># =&gt; #&lt;Class:0x00000001d42398(A.dc[:LeftEye])&gt;
+</span></code></pre>
+
+<p><code>AMutant.dc[:RightEye]</code> automaticaly inherits from extended <code>AMutant.dc[:LeftEye]</code></p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>   <span class='comment'># =&gt; 'left eye'
+</span><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:RightEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>  <span class='comment'># =&gt; 'next to left eye'
+</span>
+<span class='const'>AChild</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>   <span class='comment'># =&gt; 'left eye'
+</span><span class='const'>AChild</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:RightEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>  <span class='comment'># =&gt; 'next to left eye'
+</span>
+<span class='const'>AMutant</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>  <span class='comment'># =&gt; 'laser left eye'
+</span><span class='const'>AMutant</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:RightEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='comment'># =&gt; 'next to laser left eye'
+</span></code></pre>
+
+<h2>Extensibility</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>MyBuilder</span> <span class='op'>&lt;</span> <span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span>
+  <span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span> <span class='kw'>do</span>
+    <span class='comment'># define new method to all tags
+</span>    <span class='id identifier rubyid_extend_class'>extend_class</span> <span class='symbol'>:AbstractTag</span> <span class='kw'>do</span>
+      <span class='kw'>def</span> <span class='id identifier rubyid_hide!'>hide!</span>
+        <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>hidden</span><span class='tstring_end'>'</span></span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+
+    <span class='comment'># add pseudo tag
+</span>    <span class='id identifier rubyid_def_class'>def_class</span> <span class='symbol'>:Component</span><span class='comma'>,</span> <span class='symbol'>:Div</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='heredoc_beg'>&lt;&lt;-RUBYCODE</span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='kw'>__LINE__</span> <span class='op'>+</span> <span class='int'>1</span>
+<span class='tstring_content'>        def open(id, attributes = nil, &amp;block)
+          super(attributes, &amp;nil).id(id).class('component')
+          block ? with(&amp;block) : self
+        end
+</span><span class='heredoc_end'>      RUBYCODE
+</span>    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_define_tag'>define_tag</span> <span class='symbol'>:component</span>
+
+  <span class='comment'># if the class is not needed same can be done this way
+</span>  <span class='kw'>def</span> <span class='id identifier rubyid_simple_component'>simple_component</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+
+<span class='const'>MyBuilder</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_content!'>content!</span><span class='period'>.</span><span class='id identifier rubyid_with'>with</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_span'>span</span><span class='period'>.</span><span class='id identifier rubyid_secret!'>secret!</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>left</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_hide!'>hide!</span>
+    <span class='id identifier rubyid_component'>component</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>component-1</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_strong'>strong</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>something</span><span class='tstring_end'>'</span></span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_simple_component'>simple_component</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>component-1</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html'>to_html</span>
+</code></pre>
+
+<p>returns</p>
+
+<pre class="code html"><code class="html">&lt;div id=&quot;content&quot;&gt;
+  &lt;span id=&quot;secret&quot; class=&quot;left hidden&quot;&gt;&lt;/span&gt;
+  &lt;div id=&quot;component-1&quot; class=&quot;component&quot;&gt;
+    &lt;strong&gt;something&lt;/strong&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;component-1&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h2>Benchmarks</h2>
+
+<h3>Synthetic</h3>
+
+<p>Benchmatk can be found on github. It renders simple page with two collections. &#39;reuse&#39; means
+that template is precompiled and reused during benchmark.</p>
+
+<pre class="code ruby"><code class="ruby">                               user     system      total        real
+tenjin-reuse               2.040000   0.000000   2.040000 (  2.055140)
+Htmless::Standard          2.520000   0.000000   2.520000 (  2.519284)
+fasterubis-reuse           2.580000   0.000000   2.580000 (  2.581407)
+erubis-reuse               2.680000   0.000000   2.680000 (  2.690176)
+Htmless::Formatted         2.780000   0.000000   2.780000 (  2.794307)
+erubis                     5.180000   0.000000   5.180000 (  5.183333)
+fasterubis                 5.210000   0.000000   5.210000 (  5.219176)
+tenjin                     7.650000   0.160000   7.810000 (  7.820490)
+erector                    9.450000   0.010000   9.460000 (  9.471654)
+markaby                   14.300000   0.000000  14.300000 ( 14.318844)
+tagz                      33.430000   0.000000  33.430000 ( 33.483693)
+</code></pre>
+
+<h3>Rails 3</h3>
+
+<p>Benchmatk can be found on github.
+Single page with or without a partial which is rendered 200 times. Partials make no diffrence for Htmless.</p>
+
+<pre class="code ruby"><code class="ruby">BenchTest#test_erubis_partials (3.34 sec warmup)
+           wall_time: 3.56 sec
+             gc_runs: 15
+             gc_time: 0.53 ms
+BenchTest#test_erubis_single (552 ms warmup)
+           wall_time: 544 ms
+             gc_runs: 4
+             gc_time: 0.12 ms
+BenchTest#test_htmless (2.33 sec warmup)
+           wall_time: 847 ms
+             gc_runs: 5
+             gc_time: 0.17 ms
+BenchTest#test_tenjin_partial (942 ms warmup)
+           wall_time: 1.21 sec
+             gc_runs: 7
+             gc_time: 0.25 ms
+BenchTest#test_tenjin_single (531 ms warmup)
+           wall_time: 532 ms
+             gc_runs: 6
+             gc_time: 0.20 ms
+</code></pre>
+
+<h2>Why is it fast?</h2>
+
+<ul>
+<li>  Optimalization of garbage collecting.
+
+<ul>
+<li>  10-15% improvment.</li>
+<li>  Preinicialization (tag&#39;s instances, even strings).</li>
+<li>  No string&#39;s <code>#+</code>, <code>#{}</code>. Just <code>#&lt;&lt;</code> to buffer.</li>
+<li>  Precomputed spaces for indentation.</li>
+</ul></li>
+<li>  Doing as less as posible when rendering.</li>
+<li>  Magic by metaprograming not by <code>method_missing</code>. Magic is run on inicialization not when rendering.</li>
+<li>  Number of micro optimalization.
+
+<ul>
+<li>  Data in constants or instance variables.</li>
+<li>  Buffer.</li>
+<li>  No <code>#define_method</code>.</li>
+<li>  Method inlining.</li>
+<li>  Probably no real effect :)</li>
+</ul></li>
+</ul>
+
+<h2>Future plans</h2>
+
+<ul>
+<li>  compile rendering methods on objects to javascript which will render html form json</li>
+<li>  Helpers for Sinatra, Rails 3</li>
+<li>  Helpers for fragment caching</li>
+</ul>
+
+<h2>Why use it?</h2>
+
+<ul>
+<li>  Its fast</li>
+<li>  You can use inheritance (imposible with templates) and other goodness of Ruby</li>
+<li>  You can use pure Ruby to write the html</li>
+</ul>
+</div></div>
+
+    <div id="footer">
+  Generated on Fri May 17 11:43:08 2013 by <a href='http://blog.pitr.ch'>pitr.ch</a> with
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.6.1 (ruby-1.9.3).
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-4005004-8', 'pitr.ch');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
