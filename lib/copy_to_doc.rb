@@ -3,15 +3,15 @@
 require 'pp'
 root = File.expand_path File.dirname(__FILE__)
 $: << root
-require "#{root}/hammer_builder"
+require "#{root}/htmless"
 
-File.open "#{root}/hammer_builder/doc.rb", 'w' do |out|
-  out.write "module HammerBuilder\n"
+File.open "#{root}/htmless/doc.rb", 'w' do |out|
+  out.write "module Htmless\n"
   out.write "  module StubBuilderForDocumentation\n"
 
-  files = ["#{root}/hammer_builder/abstract/abstract_tag.rb",
-           "#{root}/hammer_builder/abstract/abstract_single_tag.rb",
-           "#{root}/hammer_builder/abstract/abstract_double_tag.rb"]
+  files = ["#{root}/htmless/abstract/abstract_tag.rb",
+           "#{root}/htmless/abstract/abstract_single_tag.rb",
+           "#{root}/htmless/abstract/abstract_double_tag.rb"]
   files.each do |file_path|
     source = File.open(file_path, 'r') { |f| f.read }
     source.scan(/def_class\s+(:\w+)(|,\s*(:\w+))\s+do\s+###import(([^#]|#[^#]|##[^#])*)end\s+###import/m) do |match|

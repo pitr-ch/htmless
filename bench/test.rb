@@ -1,7 +1,7 @@
 $: << "#{File.dirname(__FILE__)}/../lib"
 
 require "hammer_builder.rb"
-pool = HammerBuilder::Pool.new HammerBuilder::Formatted
+pool = Htmless::Pool.new Htmless::Formatted
 
 #require 'active_support'
 #require 'action_view'
@@ -44,7 +44,7 @@ pool = HammerBuilder::Pool.new HammerBuilder::Formatted
 #
 
 class User < Struct.new(:name, :login, :email)
-  include HammerBuilder::Helper
+  include Htmless::Helper
 
   builder :detail do |user|
     ul do
@@ -183,7 +183,7 @@ require 'ruby-prof'
 
 result = RubyProf.profile do
   10000.times do
-    r = HammerBuilder::Formatted.get!
+    r = Htmless::Formatted.get!
     r.go_in do
       xhtml5!
       html do
@@ -228,7 +228,7 @@ exit
 
 require 'perftools'
 
-r = HammerBuilder::Formatted.new
+r = Htmless::Formatted.new
 PerfTools::CpuProfiler.start("hammer_builder") do
   100000.times do
     r.go_in do

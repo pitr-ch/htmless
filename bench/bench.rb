@@ -5,8 +5,7 @@ require 'benchmark'
 #require "#{File.dirname(__FILE__)}/render_3.rb"
 #require "#{File.dirname(__FILE__)}/render_4.rb"
 
-$: << "#{File.dirname(__FILE__)}/../lib"
-require "hammer_builder.rb"
+require 'htmless'
 
 class ::Class
   def spy
@@ -32,10 +31,10 @@ TIMES    = 25000
 #TIMES    = 500
 #TIMES    = 100
 #TIMES    = 1
-BERECTOR = false
-BTENJIN  = false
-BMARKABY = false
-BTAGZ    = false
+BERECTOR = true
+BTENJIN  = true
+BMARKABY = true
+BTAGZ    = true
 
 
 class AModel
@@ -48,8 +47,8 @@ end
 
 Benchmark.bmbm(23) do |b|
   model = AModel.new 'a', 'b'
-  b.report("HammerBuilder::Standard") do
-    pool    = HammerBuilder::Pool.new HammerBuilder::Standard
+  b.report("Htmless::Standard") do
+    pool    = Htmless::Pool.new Htmless::Standard
     builder = pool.get
     TIMES.times do
       builder.go_in do
@@ -75,8 +74,8 @@ Benchmark.bmbm(23) do |b|
     end
     builder.release
   end
-  b.report("HammerBuilder::Formatted") do
-    pool    = HammerBuilder::Pool.new HammerBuilder::Formatted
+  b.report("Htmless::Formatted") do
+    pool    = Htmless::Pool.new Htmless::Formatted
     builder = pool.get
     TIMES.times do
       builder.go_in do
@@ -270,8 +269,8 @@ end
 
 
 #                               user     system      total        real
-#HammerBuilder::Standard    4.560000   0.020000   4.580000 (  4.812072)
-#HammerBuilder::Formatted   4.790000   0.000000   4.790000 (  4.796346)
+#Htmless::Standard          4.560000   0.020000   4.580000 (  4.812072)
+#Htmless::Formatted         4.790000   0.000000   4.790000 (  4.796346)
 #erubis                     6.150000   0.000000   6.150000 (  6.252211)
 #erubis-reuse               3.740000   0.000000   3.740000 (  3.738390)
 #fasterubis                 6.430000   0.000000   6.430000 (  6.431873)

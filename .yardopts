@@ -1,10 +1,16 @@
 --protected
 --private
 --verbose
---main=README.md
+--main=README_FULL.md
 --output-dir=./yardoc/
---title=HammerBuilder
-./lib/**/*.rb -
-LICENSE
+--markup markdown
+--title=Htmless
+--template-path ./../yard-template
+--template default
+
+./lib/htmless/*.rb
+./lib/htmless/dara/*.rb
+./lib/htmless.rb
+-
+MIT-LICENSE
 README.md
-CHANGELOG.md

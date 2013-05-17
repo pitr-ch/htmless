@@ -1,9 +1,11 @@
-nbproject
-.rake_tasks~
-pkg
 .yardoc
 yardoc
 .idea
 .project
-bin
+.bin
+.bundle
+.ruby-version
+*.gem
 coverage
+playground
+presentation

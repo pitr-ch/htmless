@@ -2,7 +2,7 @@ OBJECTS_COUNT = 50
 
 User = Struct.new(:id, :login, :password, :age)
 class User
-  extend HammerBuilder::Helper
+  extend Htmless::Helper
 
   builder :menu do |user|
     li { a(user.login).href("user/#{user.id}") }
@@ -26,7 +26,7 @@ end
 
 Comment = Struct.new(:id, :subject, :content)
 class Comment
-  extend HammerBuilder::Helper
+  extend Htmless::Helper
 
   builder :menu do |comment|
     li { a(comment.subject).href("comment/#{comment.id}") }
@@ -75,16 +75,18 @@ class BenchController < ApplicationController
     render :text => @tenjin_partial.render('tenjin_partial.rbhtml')
   end
 
+  Pool = Htmless::Pool.new Htmless::Standard
+
   def hammer_builder
-    render :text => builder_page(HammerBuilder::Standard.get).to_html!
+    render :text => builder_page(Pool.get).to_html!
   end
 
   private
 
-  extend HammerBuilder::Helper
+  extend Htmless::Helper
 
   builder :builder_page do |_|
-    xhtml5!
+    html5
     html do
       head { title 'Comunity' }
       body do
