@@ -88,8 +88,8 @@
 <li>  Markaby - slow</li>
 <li>  Wee::Brush - extensible but not a standalone gem</li>
 <li>  Tagz - very slow</li>
-<li>  Erubis - fast but temlate engine and no tag extensibility</li>
-<li>  Tenjin - faster but temlate engine and no tag extensibility</li>
+<li>  Erubis - fast but template engine and no tag extensibility</li>
+<li>  Tenjin - faster but template engine and no tag extensibility</li>
 </ul>
 
 <h2>Quick syntax example</h2>
@@ -159,7 +159,7 @@ until tag is closed.</p>
 </span><span class='id identifier rubyid_div'>div</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span>                   <span class='comment'># &lt;div id=&quot;1&quot; id=&quot;2&quot;&gt;&lt;/div&gt;
 </span></code></pre>
 
-<p>Udefined attribute can be rendered with.</p>
+<p>Undefined attribute can be rendered with.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_html'>html</span><span class='period'>.</span><span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:xmlns</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://www.w3.org/1999/xhtml</span><span class='tstring_end'>'</span></span>
 <span class='comment'># =&gt; &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;/html&gt;
@@ -267,7 +267,7 @@ is rendered based on collection of some objects and you need to add one or more 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>an</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='comment'># =&gt; &lt;div id=&quot;an-id&quot;&gt;&lt;/div&gt;
 </span></code></pre>
 
-<h2>Tag&#39;s reprezentation</h2>
+<h2>Tag&#39;s representation</h2>
 
 <p>Each tag has its own class.</p>
 
@@ -508,13 +508,13 @@ same class is than much faster and getting builder from a pool is instant.</p>
 <span class='kw'>end</span>
 </code></pre>
 
-<p>Each class is a diferent object.</p>
+<p>Each class is a different object.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span> <span class='comment'># =&gt; #&lt;Class:0x00000001d449b8(A.dc[:LeftEye])&gt;
 </span><span class='const'>AChild</span><span class='period'>.</span><span class='id identifier rubyid_dynamic_classes'>dynamic_classes</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span> <span class='comment'># =&gt; #&lt;Class:0x00000001d42398(A.dc[:LeftEye])&gt;
 </span></code></pre>
 
-<p><code>AMutant.dc[:RightEye]</code> automaticaly inherits from extended <code>AMutant.dc[:LeftEye]</code></p>
+<p><code>AMutant.dc[:RightEye]</code> automatically inherits from extended <code>AMutant.dc[:LeftEye]</code></p>
 
 <pre class="code ruby"><code class="ruby"><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:LeftEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>   <span class='comment'># =&gt; 'left eye'
 </span><span class='const'>Parent</span><span class='period'>.</span><span class='id identifier rubyid_dc'>dc</span><span class='lbracket'>[</span><span class='symbol'>:RightEye</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>  <span class='comment'># =&gt; 'next to left eye'
@@ -582,7 +582,7 @@ same class is than much faster and getting builder from a pool is instant.</p>
 
 <h3>Synthetic</h3>
 
-<p>Benchmatk can be found on github. It renders simple page with two collections. &#39;reuse&#39; means
+<p>Benchmark can be found on Github. It renders simple page with two collections. &#39;reuse&#39; means
 that template is precompiled and reused during benchmark.</p>
 
 <pre class="code ruby"><code class="ruby">                               user     system      total        real
@@ -601,8 +601,8 @@ tagz                      33.430000   0.000000  33.430000 ( 33.483693)
 
 <h3>Rails 3</h3>
 
-<p>Benchmatk can be found on github.
-Single page with or without a partial which is rendered 200 times. Partials make no diffrence for Htmless.</p>
+<p>Benchmark can be found on Github.
+Single page with or without a partial which is rendered 200 times. Partials make no difference for Htmless.</p>
 
 <pre class="code ruby"><code class="ruby">BenchTest#test_erubis_partials (3.34 sec warmup)
            wall_time: 3.56 sec
@@ -629,17 +629,17 @@ BenchTest#test_tenjin_single (531 ms warmup)
 <h2>Why is it fast?</h2>
 
 <ul>
-<li>  Optimalization of garbage collecting.
+<li>  Optimization of garbage collecting.
 
 <ul>
-<li>  10-15% improvment.</li>
-<li>  Preinicialization (tag&#39;s instances, even strings).</li>
+<li>  10-15% improvement.</li>
+<li>  Pre-initialization (tag&#39;s instances, even strings).</li>
 <li>  No string&#39;s <code>#+</code>, <code>#{}</code>. Just <code>#&lt;&lt;</code> to buffer.</li>
 <li>  Precomputed spaces for indentation.</li>
 </ul></li>
-<li>  Doing as less as posible when rendering.</li>
-<li>  Magic by metaprograming not by <code>method_missing</code>. Magic is run on inicialization not when rendering.</li>
-<li>  Number of micro optimalization.
+<li>  Doing as less as possible when rendering.</li>
+<li>  Magic by meta-programing not by <code>method_missing</code>. Magic is run on initialization not when rendering.</li>
+<li>  Number of micro optimization.
 
 <ul>
 <li>  Data in constants or instance variables.</li>
@@ -661,14 +661,14 @@ BenchTest#test_tenjin_single (531 ms warmup)
 <h2>Why use it?</h2>
 
 <ul>
-<li>  Its fast</li>
-<li>  You can use inheritance (imposible with templates) and other goodness of Ruby</li>
-<li>  You can use pure Ruby to write the html</li>
+<li>  Its as fast as template-engines (erb) and much faster then other Ruby HTML builders.</li>
+<li>  You can use inheritance (impossible with templates) and other goodness of Ruby.</li>
+<li>  You can write html in pure Ruby.</li>
 </ul>
 </div></div>
 
     <div id="footer">
-  Generated on Fri May 17 11:43:08 2013 by <a href='http://blog.pitr.ch'>pitr.ch</a> with
+  Generated on Fri May 17 15:19:40 2013 by <a href='http://blog.pitr.ch'>pitr.ch</a> with
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.6.1 (ruby-1.9.3).
 </div>
