@@ -61,19 +61,51 @@
 
     <iframe id="search_frame"></iframe>
 
-    <div id="content"><div id='filecontents'><h2>Htmless</h2>
+    <div id="content"><div id='filecontents'><h1>Htmless</h1>
 
-<p>Fast extensible html5 builder in pure Ruby</p>
+<p><a href="https://travis-ci.org/pitr-ch/htmless"><img src="https://travis-ci.org/pitr-ch/htmless.png" alt="Build Status"></a></p>
+
+<p><strong>Fast</strong> and <strong>extensible</strong> HTML5 builder in pure <strong>Ruby</strong></p>
 
 <ul>
 <li>  Documentation: <a href="http://blog.pitr.ch/htmless">http://blog.pitr.ch/htmless</a></li>
 <li>  Source: <a href="https://github.com/pitr-ch/htmless">https://github.com/pitr-ch/htmless</a></li>
 <li>  Blog: <a href="http://blog.pitr.ch/blog/categories/htmless/">http://blog.pitr.ch/blog/categories/htmless/</a></li>
 </ul>
+
+<h2>Quick syntax example</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Htmless</span><span class='op'>::</span><span class='const'>Formatted</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_go_in'>go_in</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_html5'>html5</span>
+  <span class='id identifier rubyid_html'>html</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_head'>head</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_title'>title</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>my_page</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_body'>body</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_div'>div</span><span class='period'>.</span><span class='id identifier rubyid_content!'>content!</span> <span class='kw'>do</span>
+        <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_centered'>centered</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my page's content</span><span class='tstring_end'>&quot;</span></span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_to_html'>to_html</span>
+</code></pre>
+
+<p>returns</p>
+
+<pre class="code html"><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;my_page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;content&quot;&gt;
+      &lt;p class=&quot;centered&quot;&gt;my page's content&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 </div></div>
 
     <div id="footer">
-  Generated on Fri May 17 15:19:40 2013 by <a href='http://blog.pitr.ch'>pitr.ch</a> with
+  Generated on Sat Jun  1 16:50:39 2013 by <a href='http://blog.pitr.ch'>pitr.ch</a> with
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.6.1 (ruby-1.9.3).
 </div>
