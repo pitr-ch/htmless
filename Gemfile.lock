@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    htmless (0.4)
+    htmless (0.4.1)
 
 GEM
   remote: https://rubygems.org/

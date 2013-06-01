@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name             = 'htmless'
-  s.version          = '0.4'
+  s.version          = File.read(File.join(File.dirname(__FILE__), 'VERSION'))
   s.date             = '2013-05-12'
   s.summary          = 'Fast extensible html5 builder in pure Ruby'
   s.description      = 'Fast extensible html5 builder in pure Ruby'
