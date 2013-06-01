@@ -1,10 +1,42 @@
 # Htmless
 
-Fast extensible html5 builder in pure Ruby
+**Fast** and **extensible** HTML5 builder in pure **Ruby**
 
 -   Documentation: <http://blog.pitr.ch/htmless>
 -   Source: <https://github.com/pitr-ch/htmless>
 -   Blog: <http://blog.pitr.ch/blog/categories/htmless/>
+
+## Quick syntax example
+
+```ruby
+Htmless::Formatted.new.go_in do
+  html5
+  html do
+    head { title 'my_page' }
+    body do
+      div.content! do
+        p.centered "my page's content"
+      end
+    end
+  end
+end.to_html
+```
+
+returns
+
+```html5
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>my_page</title>
+  </head>
+  <body>
+    <div id="content">
+      <p class="centered">my page's content</p>
+    </div>
+  </body>
+</html>
+```
 
 ## Why?
 
@@ -22,36 +54,6 @@ Disadvanteges of other options:
 *   Tagz - very slow
 *   Erubis - fast but template engine and no tag extensibility
 *   Tenjin - faster but template engine and no tag extensibility
-
-## Quick syntax example
-
-    !!!ruby
-    Htmless::Formatted.new.go_in do
-      html5
-      html do
-        head { title 'my_page' }
-        body do
-          div.content! do
-            p.centered "my page's content"
-          end
-        end
-      end
-    end.to_html
-
-returns
-
-    !!!html
-    <!DOCTYPE html>
-    <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <title>my_page</title>
-      </head>
-      <body>
-        <div id="content">
-          <p class="centered">my page's content</p>
-        </div>
-      </body>
-    </html>
 
 ## Chaining
 

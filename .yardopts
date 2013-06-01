@@ -3,7 +3,8 @@
 --verbose
 --main=README_FULL.md
 --output-dir=./yardoc/
---markup markdown
+--markup-provider=redcarpet
+--markup=markdown
 --title=Htmless
 --template-path ./../yard-template
 --template default

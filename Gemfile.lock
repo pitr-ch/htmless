@@ -6,52 +6,49 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    builder (3.0.4)
+    builder (3.2.1)
     coderay (1.0.9)
-    diff-lcs (1.1.3)
-    erector (0.8.3)
-      rake
-      rake
-      treetop
+    diff-lcs (1.2.4)
+    erector (0.9.0)
       treetop (>= 1.2.3)
     erubis (2.7.0)
     ffi (1.8.1-java)
-    kramdown (1.0.1)
+    github-markup (0.7.5)
     markaby (0.7.2)
       builder (>= 2.0.0)
     method_source (0.8.1)
-    multi_json (1.7.2)
+    multi_json (1.7.4)
     nokogiri (1.5.9)
     nokogiri (1.5.9-java)
     polyglot (0.3.3)
-    pry (0.9.12)
+    pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    pry (0.9.12-java)
+    pry (0.9.12.2-java)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
       spoon (~> 0.0)
-    rake (10.0.4)
-    rspec (2.8.0)
-      rspec-core (~> 2.8.0)
-      rspec-expectations (~> 2.8.0)
-      rspec-mocks (~> 2.8.0)
-    rspec-core (2.8.0)
-    rspec-expectations (2.8.0)
-      diff-lcs (~> 1.1.2)
-    rspec-mocks (2.8.0)
+    redcarpet (2.3.0)
+    rspec (2.13.0)
+      rspec-core (~> 2.13.0)
+      rspec-expectations (~> 2.13.0)
+      rspec-mocks (~> 2.13.0)
+    rspec-core (2.13.1)
+    rspec-expectations (2.13.0)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.13.1)
     simplecov (0.7.1)
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
     simplecov-rcov (0.2.3)
       simplecov (>= 0.4.1)
-    slop (3.4.4)
+    slop (3.4.5)
     spoon (0.0.4)
       ffi
-    tagz (9.1.0)
+    tagz (9.6.2)
     tenjin (0.7.1)
     treetop (1.4.12)
       polyglot
@@ -65,12 +62,13 @@ PLATFORMS
 DEPENDENCIES
   erector
   erubis
+  github-markup
   htmless!
-  kramdown
   markaby
   multi_json
   nokogiri
   pry
+  redcarpet
   rspec
   simplecov
   simplecov-rcov

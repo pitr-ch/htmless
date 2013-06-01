@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
 
   { 'rspec'          => nil,
     'yard'           => nil,
-    'kramdown'       => nil,
+    'redcarpet'      => nil,
+    'github-markup'  => nil,
     'nokogiri'       => nil,
     'erubis'         => nil,
     'tenjin'         => nil,
