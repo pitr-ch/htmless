@@ -1,6 +1,6 @@
 # Htmless
 
-[![Build Status](https://travis-ci.org/pitr-ch/htmless.png)](https://travis-ci.org/pitr-ch/htmless)
+[![Build Status](https://travis-ci.org/pitr-ch/htmless.png?branch=master)](https://travis-ci.org/pitr-ch/htmless)
 
 **Fast** and **extensible** HTML5 builder in pure **Ruby**
 
