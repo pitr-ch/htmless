@@ -164,6 +164,10 @@ describe Htmless do
           '<div class="an_class another_class"></div>'
     end
 
+    it 'renders method attribute on form tag' do
+      quick_render { form :method => 'post' }.should == '<form method="post"></form>'
+    end
+
     it "#attribute" do
       quick_render { div.attribute 'xml:ns', 'gibris' }.should == '<div xml:ns="gibris"></div>'
       quick_render { div.attribute(:class, 'a') { text 'asd' } }.should == '<div class="a">asd</div>'

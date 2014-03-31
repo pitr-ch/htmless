@@ -139,11 +139,14 @@ module Htmless
           self
         end
 
-        # original Ruby method for class, class is used for html classes
-        alias_method(:rclass, :class)
+        # renaming original object methods
+        alias_method :rclass, :class
+        undef_method :class
+        alias_method :rmethod, :method
+        undef_method :method
 
-        id_class       = /^([\w]+)(!|)$/
-        data_attribute = /^data_([a-z_]+)$/
+        id_class              = /^([\w]+)(!|)$/
+        data_attribute        = /^data_([a-z_]+)$/
         METHOD_MISSING_REGEXP = /#{data_attribute}|#{id_class}/ unless defined? METHOD_MISSING_REGEXP
 
         # allows data-* attributes and id, classes by method_missing
