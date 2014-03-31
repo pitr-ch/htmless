@@ -199,15 +199,15 @@ describe Htmless do
     end
 
     it "#data-secret" do
-      quick_render { div('a').data_secret("I won't tell.") }.should == '<div data-secret="I won\'t tell.">a</div>'
+      quick_render { div('a').data_secret("I do not tell.") }.should == '<div data-secret="I do not tell.">a</div>'
     end
 
     it '#data' do
       quick_render { hr.data(:secret => true) }.should == '<hr data-secret="true" />'
-      quick_render { div('a', :data => { :secret => "I won't tell." }) }.should ==
-          '<div data-secret="I won\'t tell.">a</div>'
-      quick_render { div('a').data(:secret => "I won't tell.") { text 'a' } }.should ==
-          '<div data-secret="I won\'t tell.">a</div>'
+      quick_render { div('a', :data => { :secret => "I do not tell." }) }.should ==
+          '<div data-secret="I do not tell.">a</div>'
+      quick_render { div('a').data(:secret => "I do not tell.") { text 'a' } }.should ==
+          '<div data-secret="I do not tell.">a</div>'
     end
 
     it 'tags should have all the attributes' do
