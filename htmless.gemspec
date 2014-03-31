@@ -6,13 +6,13 @@
 Gem::Specification.new do |s|
   s.name             = 'htmless'
   s.version          = File.read(File.join(File.dirname(__FILE__), 'VERSION'))
-  s.date             = '2013-05-12'
+  s.date             = Time.now.strftime('%Y-%m-%d')
   s.summary          = 'Fast extensible html5 builder in pure Ruby'
   s.description      = 'Fast extensible html5 builder in pure Ruby'
   s.authors          = ['Petr Chalupa']
   s.email            = 'git@pitr.ch'
   s.homepage         = 'https://github.com/pitr-ch/htmless'
-  s.extra_rdoc_files = %w(README.md README_FULL.md MIT-LICENSE)
+  s.extra_rdoc_files = %w(README.md README_FULL.md MIT-LICENSE VERSION)
   s.files            = Dir['lib/**/*.rb']
   s.require_paths    = %w(lib)
   s.license          = 'MIT'
