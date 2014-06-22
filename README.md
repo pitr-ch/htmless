@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/pitr-ch/htmless.png?branch=master)](https://travis-ci.org/pitr-ch/htmless)
 
-**Fast** and **extensible** HTML5 builder in pure **Ruby**
+**Fast** and **extensible** HTML5 builder written in pure **Ruby**, replaces templating engines without loosing speed bringing back the power of OOP.
 
 -   Documentation: <http://blog.pitr.ch/htmless>
 -   Source: <https://github.com/pitr-ch/htmless>
