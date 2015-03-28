@@ -101,7 +101,7 @@ describe Htmless do
     describe 'Parent.dc.class_names' do
       it do
         Parent.dc.class_names.should include(:LeftEye, :RightEye)
-        Parent.dc.class_names.should have(2).items
+        Parent.dc.class_names.size.should eq 2
       end
     end
   end
@@ -124,38 +124,23 @@ describe Htmless do
 
     it 'should render #id' do
       quick_render { div.id :an_id }.should == '<div id="an_id"></div>'
-      quick_render { div.an_id! }.should == '<div id="an-id"></div>'
-      quick_render { div.an_id! { text 'content' } }.should == '<div id="an-id">content</div>'
-      quick_render { div.an_id! 'content' }.should == '<div id="an-id">content</div>'
-      quick_render { div.an_id! }.should == '<div id="an-id"></div>'
-      quick_render { div :id => 12 }.should == '<div id="12"></div>'
-      quick_render { div 'asd', :id => 12 }.should == '<div id="12">asd</div>'
+      quick_render { div id: 12 }.should == '<div id="12"></div>'
+      quick_render { div 'asd', id: 12 }.should == '<div id="12">asd</div>'
       quick_render { hr.id 'an_id' }.should == '<hr id="an_id" />'
-      quick_render { hr.an_id! }.should == '<hr id="an-id" />'
-      quick_render { hr :id => 'an_id' }.should == '<hr id="an_id" />'
+      quick_render { hr id: 'an_id' }.should == '<hr id="an_id" />'
 
       quick_render { hr.id 'an', 'id', nil, false }.should == '<hr id="an-id" />'
       quick_render { div.id 'an', 'id', nil, false }.should == '<div id="an-id"></div>'
-
-      quick_render { div.an_id! :class => 'big' }.should == '<div id="an-id" class="big"></div>'
-      quick_render { div.an_id!(:class => 'big') { text 'content' } }.should ==
-          '<div id="an-id" class="big">content</div>'
-      quick_render { div.an_id! 'content', :class => 'big' }.should == '<div id="an-id" class="big">content</div>'
-      quick_render { div.an_id! 'content' }.should == '<div id="an-id">content</div>'
-      quick_render { hr.an_id! :class => 'big' }.should == '<hr id="an-id" class="big" />'
     end
 
     it 'should render #class' do
       #noinspection RubyArgCount
       quick_render { div.class 'an_class' }.should == '<div class="an_class"></div>'
-      quick_render { div.an_class }.should == '<div class="an-class"></div>'
       quick_render { div :class => 'an_class' }.should == '<div class="an_class"></div>'
       #noinspection RubyArgCount
       quick_render { hr.class 'an_class' }.should == '<hr class="an_class" />'
-      quick_render { hr.an_class }.should == '<hr class="an-class" />'
       quick_render { hr :class => 'an_class' }.should == '<hr class="an_class" />'
 
-      quick_render { div.an_class.another_class }.should == '<div class="an-class another-class"></div>'
       #noinspection RubyArgCount
       quick_render { div.class 'an_class', 'another_class' }.should == '<div class="an_class another_class"></div>'
       quick_render { div :class => ['an_class', 'another_class'] }.should == '<div class="an_class another_class"></div>'
@@ -170,6 +155,7 @@ describe Htmless do
 
     it "#attribute" do
       quick_render { div.attribute 'xml:ns', 'gibris' }.should == '<div xml:ns="gibris"></div>'
+      quick_render { div.attributes 'xml:ns' => 'gibris' }.should == '<div xml:ns="gibris"></div>'
       quick_render { div.attribute(:class, 'a') { text 'asd' } }.should == '<div class="a">asd</div>'
     end
 
@@ -190,10 +176,10 @@ describe Htmless do
       quick_render { div[obj] }.should == %Q(<div id="b" class="a"></div>)
 
       obj = Object.new.extend(Module.new do
-        def id;
-          "an_id";
-        end
-      end)
+                                def id;
+                                  "an_id";
+                                end
+                              end)
       quick_render { div[obj] }.should == %Q(<div id="object-an_id" class="object"></div>)
       quick_render { div.mimic(obj) { text 'a' } }.should == %Q(<div id="object-an_id" class="object">a</div>)
     end
@@ -204,7 +190,7 @@ describe Htmless do
 
     it '#data' do
       quick_render { hr.data(:secret => true) }.should == '<hr data-secret="true" />'
-      quick_render { div('a', :data => { :secret => "I do not tell." }) }.should ==
+      quick_render { div('a', :data => {:secret => "I do not tell."}) }.should ==
           '<div data-secret="I do not tell.">a</div>'
       quick_render { div('a').data(:secret => "I do not tell.") { text 'a' } }.should ==
           '<div data-secret="I do not tell.">a</div>'
@@ -236,17 +222,17 @@ describe Htmless do
         html5
         html do
           head do
-            title.an_id! 'a_title'
+            title 'a_title', id: 'an-id'
             meta.charset "utf-8"
           end
           body.id 'content' do
             text 'asd'
-            div.left.style nil do
+            div.class('left').style(nil) do
               raw 'asd'
               hr
             end
             br
-            div.left do
+            div class: 'left' do
               hr
               js 'asd'
               js 'asd', :cdata => true

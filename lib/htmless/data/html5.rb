@@ -18,7 +18,7 @@ module Htmless
           oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart
           onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onpause onplay
           onplaying onprogress onratechange onreadystatechange onreset onscroll onseeked onseeking
-          onselect onshow onstalled onsubmit onsuspend ontimeupdate onvolumechange onwaiting ]
+          onselect onshow onstalled onsubmit onsuspend ontimeupdate onvolumechange onwaiting role ]
 
     tag_attributes = {
         :a          => %w[href target ping rel media hreflang type],

@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   #  s.add_runtime_dependency(gem, [version || '>= 0'])
   #end
 
-  { 'rspec'          => nil,
+  { 'rspec'          => '~> 2.0',
     'yard'           => nil,
     'redcarpet'      => nil,
     'github-markup'  => nil,

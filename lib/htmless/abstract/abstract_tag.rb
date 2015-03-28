@@ -52,7 +52,7 @@ module Htmless
         # @api private
         def self.define_attribute_method(attribute)
           return if instance_methods.include?(attribute.name)
-          name              = attribute.name.to_s
+          name = attribute.name.to_s
           content_rendering = attribute_content_rendering(attribute)
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}(content#{' = true' if attribute.type == :boolean})
@@ -95,10 +95,10 @@ module Htmless
 
         # @api private
         def initialize(builder)
-          @builder  = builder
-          @output   = builder.instance_eval { @_output }
-          @stack    = builder.instance_eval { @_stack }
-          @classes  = []
+          @builder = builder
+          @output = builder.instance_eval { @_output }
+          @stack = builder.instance_eval { @_stack }
+          @classes = []
           @tag_name = self.rclass.tag_name
 
           self.rclass.strings_injector.inject_to self
@@ -116,9 +116,9 @@ module Htmless
         # it renders attribute using defined attribute method or by rendering attribute directly
         # @param [String, Symbol] name
         # @param [#to_s] value
-        def attribute(name, value)
-          return __send__(name, value) if respond_to?(name)
-          @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(value.to_s) << @_str_quote
+        def attribute(name, *values)
+          return __send__(name, *values) if respond_to?(name)
+          @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(values.first.to_s) << @_str_quote
           self
         end
 
@@ -129,13 +129,7 @@ module Htmless
         # attribute`s methods are called on background (in this case #id is called)
         def attributes(attrs)
           return self unless attrs
-          attrs.each do |attr, value|
-            if value.kind_of?(Array)
-              __send__(attr, *value)
-            else
-              __send__(attr, value)
-            end
-          end
+          attrs.each { |attr, *values| attribute attr, *values }
           self
         end
 
@@ -145,21 +139,15 @@ module Htmless
         alias_method :rmethod, :method
         undef_method :method
 
-        id_class              = /^([\w]+)(!|)$/
-        data_attribute        = /^data_([a-z_]+)$/
-        METHOD_MISSING_REGEXP = /#{data_attribute}|#{id_class}/ unless defined? METHOD_MISSING_REGEXP
+        data_attribute = /^data_([a-z_]+)$/
+        aria_attribute = /^aria_([a-z_]+)$/
+        METHOD_MISSING_REGEXP = /#{data_attribute}|#{aria_attribute}/ unless defined? METHOD_MISSING_REGEXP
 
         # allows data-* attributes and id, classes by method_missing
         def method_missing(method, *args, &block)
-          method = method.to_s
-          if method =~ METHOD_MISSING_REGEXP
-            if $1
-              self.rclass.add_attributes Data::Attribute.new(method, :string)
-              self.send method, *args
-            else
-              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash))
-              self.attributes args.first
-            end
+          if method.to_s =~ METHOD_MISSING_REGEXP
+            self.rclass.add_attributes Data::Attribute.new(method, :string)
+            self.send method, *args, &block
           else
             super(method, *args, &block)
           end

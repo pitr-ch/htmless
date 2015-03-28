@@ -11,25 +11,6 @@ module Htmless
           @content = nil
         end
 
-        # allows data-* attributes and id, classes by method_missing
-        def method_missing(method, *args, &block)
-          method = method.to_s
-          if method =~ METHOD_MISSING_REGEXP
-            if $1
-              self.rclass.add_attributes Data::Attribute.new(method.to_sym, :string)
-              self.send method, *args, &block
-            else
-              attributes(if args.last.is_a?(Hash)
-                           args.pop
-                         end)
-              content args.first
-              self.__send__($3 == '!' ? :id : :class, $2.gsub(@_str_underscore, @_str_dash), &block)
-            end
-          else
-            super(method, *args, &block)
-          end
-        end
-
         # @api private
         def open(*args, &block)
           attributes = if args.last.is_a?(Hash)
@@ -75,7 +56,7 @@ module Htmless
         def with
           flush_classes
           @output << @_str_gt
-          @content         = nil
+          @content = nil
           @builder.current = nil
           yield
           #if (content = yield).is_a?(String)
