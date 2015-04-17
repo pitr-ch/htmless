@@ -17,27 +17,4 @@ Gem::Specification.new do |s|
   s.require_paths    = %w(lib)
   s.license          = 'LGPL'
   s.test_files       = Dir['spec/**/*.rb']
-
-
-  #{}.each do |gem, version|
-  #  s.add_runtime_dependency(gem, [version || '>= 0'])
-  #end
-
-  { 'rspec'          => '~> 2.0',
-    'yard'           => nil,
-    'redcarpet'      => nil,
-    'github-markup'  => nil,
-    'nokogiri'       => nil,
-    'erubis'         => nil,
-    'tenjin'         => nil,
-    'erector'        => nil,
-    'markaby'        => nil,
-    'tagz'           => nil,
-    'simplecov'      => nil,
-    'simplecov-rcov' => nil,
-    'pry'            => nil,
-    'multi_json'     => nil,
-  }.each do |gem, version|
-    s.add_development_dependency(gem, [version || '>= 0'])
-  end
 end
