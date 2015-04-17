@@ -16,8 +16,8 @@ Htmless::Formatted.new.go_in do
   html do
     head { title 'my_page' }
     body do
-      div.content! do
-        p.centered "my page's content"
+      div id: 'content' do
+        p "my page's content", class: centered
       end
     end
   end
