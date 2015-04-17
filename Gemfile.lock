@@ -33,7 +33,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    redcarpet (3.2.2)
+    redcarpet (3.2.3)
     rspec (2.99.0)
       rspec-core (~> 2.99.0)
       rspec-expectations (~> 2.99.0)
@@ -54,7 +54,7 @@ GEM
       ffi
     tagz (9.9.2)
     tenjin (0.7.1)
-    treetop (1.5.3)
+    treetop (1.6.2)
       polyglot (~> 0.3)
     yard (0.8.7.6)
 

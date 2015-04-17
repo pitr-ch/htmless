@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.md README_FULL.md MIT-LICENSE VERSION)
   s.files            = Dir['lib/**/*.rb']
   s.require_paths    = %w(lib)
-  s.license          = 'MIT'
+  s.license          = 'LGPL'
   s.test_files       = Dir['spec/**/*.rb']
 
 
