@@ -23,18 +23,18 @@ class ::Class
   end
 end
 
-#TIMES    = 50000
-TIMES    = 25000
-#TIMES    = 10000
-#TIMES    = 2500
-#TIMES    = 1000
+TIMES    = 50000
+# TIMES    = 25000
+# TIMES    = 10000
+# TIMES    = 2500
+# TIMES    = 1000
 #TIMES    = 500
 #TIMES    = 100
 #TIMES    = 1
 BERECTOR = true
 BTENJIN  = true
 BMARKABY = true
-BTAGZ    = true
+BTAGZ    = false
 
 
 class AModel
@@ -63,7 +63,7 @@ Benchmark.bmbm(23) do |b|
                 end
               end
             end
-            div.content! do
+            div.id :content do
               10.times { text 'asd asha sdha sdjhas ahs'*10 }
             end
           end
@@ -90,7 +90,7 @@ Benchmark.bmbm(23) do |b|
                 end
               end
             end
-            div.content! do
+            div.id :content do
               10.times { text 'asd asha sdha sdjhas ahs'*10 }
             end
           end
@@ -170,7 +170,7 @@ TMP
     class AWidget < Erector::Widget
       def content
         html do
-          head { }
+          head {}
           body do
             div :id => 'menu' do
               ul do
@@ -214,7 +214,7 @@ TMP
       TIMES.times do
         mark = Markaby::Builder.new(:model => model) do
           html do
-            head { }
+            head {}
             body do
               div :id => 'menu' do
                 ul do
