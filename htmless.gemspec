@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.authors          = ['Petr Chalupa']
   s.email            = 'git@pitr.ch'
   s.homepage         = 'https://github.com/pitr-ch/htmless'
-  s.extra_rdoc_files = %w(README.md README_FULL.md MIT-LICENSE VERSION)
+  s.extra_rdoc_files = %w(README.md README_FULL.md LICENSE.txt VERSION)
   s.files            = Dir['lib/htmless/**/*.rb'] + %w(lib/htmless.rb)
   s.require_paths    = %w(lib)
   s.license          = 'MIT'
