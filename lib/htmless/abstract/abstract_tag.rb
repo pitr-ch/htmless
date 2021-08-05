@@ -86,14 +86,14 @@ module Htmless
         def self.attribute_content_rendering(attribute)
           name = attribute.name.to_s
           case attribute.type
-            when :string
-              strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{strings_injector[:quote]}"
-              "@output << @_str_attr_#{name} << CGI.escapeHTML(content.to_s) << @_str_quote"
-            when :boolean
-              strings_injector.add(
-                  "attr_#{name}",
-                  " #{name.gsub('_', '-')}=#{strings_injector[:quote]}#{name}#{strings_injector[:quote]}")
-              "@output << @_str_attr_#{name} if content"
+          when :string
+            strings_injector.add "attr_#{name}", " #{name.gsub('_', '-')}=#{strings_injector[:quote]}"
+            "@output << @_str_attr_#{name} << CGI.escapeHTML(content.to_s) << @_str_quote"
+          when :boolean
+            strings_injector.add(
+              "attr_#{name}",
+              " #{name.gsub('_', '-')}=#{strings_injector[:quote]}#{name}#{strings_injector[:quote]}")
+            "@output << @_str_attr_#{name} if content"
           end
         end
 
@@ -134,9 +134,9 @@ module Htmless
         # it renders attribute using defined attribute method or by rendering attribute directly
         # @param [String, Symbol] name
         # @param [#to_s] value
-        def attribute(name, *values)
-          return __send__(name, *values) if respond_to?(name)
-          @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(values.first.to_s) << @_str_quote
+        def attribute(name, value)
+          return __send__(name, value) if respond_to?(name)
+          @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(value.to_s) << @_str_quote
           self
         end
 
@@ -147,7 +147,13 @@ module Htmless
         # attribute`s methods are called on background (in this case #id is called)
         def attributes(attrs)
           return self unless attrs
-          attrs.each { |attr, *values| attribute attr, *values }
+          attrs.each do |attr, value|
+            if value.kind_of?(Array)
+              __send__(attr, *value)
+            else
+              attribute(attr, value)
+            end
+          end
           self
         end
 
@@ -161,11 +167,12 @@ module Htmless
         aria_attribute = /^aria_([a-z_]+)$/
         METHOD_MISSING_REGEXP = /#{data_attribute}|#{aria_attribute}/ unless defined? METHOD_MISSING_REGEXP
 
-        # allows data-* attributes and id, classes by method_missing
+        # allows data-* attributes method_missing
         def method_missing(method, *args, &block)
           if method.to_s =~ METHOD_MISSING_REGEXP
+            raise ArgumentError, "attributes do not take blocks" if block
             self.rclass.add_attributes Data::Attribute.new(method, :string)
-            self.send method, *args, &block
+            self.__send__ method, *args
           else
             super(method, *args, &block)
           end
@@ -210,12 +217,12 @@ module Htmless
                   end
 
           id = case
-                 when obj.respond_to?(:htmless_ref)
-                   obj.htmless_ref
-                 when obj.respond_to?(:id)
-                   [klass, obj.id]
-                 else
-                   [klass, obj.object_id]
+               when obj.respond_to?(:htmless_ref)
+                 obj.htmless_ref
+               when obj.respond_to?(:id)
+                 [klass, obj.id]
+               else
+                 [klass, obj.object_id]
                end
           #noinspection RubyArgCount
           self.class(klass).id(id)
