@@ -5,7 +5,7 @@ require 'htmless'
 #  config.mock_with :rspec
 #end
 
-describe Htmless do
+RSpec.describe Htmless do
   shared_examples "pool" do
     it('should return correct instance') { pool.get.should be_kind_of(Htmless::Formatted) }
     it "should return instance into pool" do
