@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.md README_FULL.md MIT-LICENSE VERSION)
   s.files            = Dir['lib/htmless/**/*.rb'] + %w(lib/htmless.rb)
   s.require_paths    = %w(lib)
-  s.license          = 'LGPL'
+  s.license          = 'MIT'
   s.test_files       = Dir['spec/**/*.rb']
 end
