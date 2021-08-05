@@ -39,20 +39,23 @@ module Htmless
       end
     end
 
-    attr_reader :klass
+    attr_reader :klass, :args
 
-    def initialize(klass)
+    def initialize(klass, *args)
       @klass = klass
+      @args  = args
       @pool  = []
       klass.send :include, Helper
     end
 
-    # This the preferred way of getting new Builder. If you forget to release it, it does not matter -
+    # This is the preferred way of getting new Builder. If you forget to release it, it does not matter -
     # builder gets GCed after you lose reference
     # @return [Abstract]
     def get
       if @pool.empty?
-        @klass.new.instance_exec(self) { |origin| @_origin = origin; self }
+        b = @klass.new(*@args)
+        b.instance_exec(self) { |origin| @_origin = origin }
+        b
       else
         @pool.pop
       end
