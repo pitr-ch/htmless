@@ -185,6 +185,7 @@ RSpec.describe Htmless do
     end
 
     it "#data-secret" do
+      quick_render { div('a', data_secret: "I do not tell.") }.should == '<div data-secret="I do not tell.">a</div>'
       quick_render { div('a').data_secret("I do not tell.") }.should == '<div data-secret="I do not tell.">a</div>'
     end
 

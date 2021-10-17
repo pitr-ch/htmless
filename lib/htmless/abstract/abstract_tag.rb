@@ -118,7 +118,7 @@ module Htmless
         # @param [#to_s] value
         def attribute(name, value)
           return __send__(name, value) if respond_to?(name)
-          @output << @_str_space << name.to_s << @_str_eql_quote << CGI.escapeHTML(value.to_s) << @_str_quote
+          @output << @_str_space << name.to_s.gsub('_', '-') << @_str_eql_quote << CGI.escapeHTML(value.to_s) << @_str_quote
           self
         end
 
